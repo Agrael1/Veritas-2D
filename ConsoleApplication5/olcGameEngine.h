@@ -60,7 +60,7 @@ struct sKeyState
 
 extern const void* olcGameEngine;
 
-typedef struct olcGameEngine 
+struct olcGameEngine 
 {
 	const void* class;
 	int m_nScreenWidth;
@@ -86,7 +86,7 @@ typedef struct olcGameEngine
 
 	int(*ConstructConsole)(void* _self, int width, int heigh, int fontw, int fonth);
 	void(*Start)(void* _self);
-} GameEngine;
+};
 
 static void* olcGameEngine_ctor(void* _self, va_list *app)
 {
