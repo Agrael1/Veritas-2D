@@ -88,9 +88,16 @@ struct olcGameEngine
 	void(*Start)(void* _self);
 };
 
+
 static void* olcGameEngine_ctor(void* _self, va_list *app)
 {
 	struct olcGameEngine* this = _self;
+
+	int ConstructConsole(void* _self, int width, int heigh, int fontw, int fonth);
+	void Start(void* _self);
+
+	this->ConstructConsole = ConstructConsole;
+	this->Start = Start;
 
 	this->m_nScreenWidth = 80;
 	this->m_nScreenHeight = 30;

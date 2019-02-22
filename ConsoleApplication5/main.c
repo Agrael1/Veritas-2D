@@ -6,13 +6,11 @@ main()
 	struct GameDemo *GD = new(GameDemo);
 
 	GD->_.ConstructConsole(GD, 160, 100, 8, 8);
-	//GD->_.Start(GD);
+	GD->_.Start(GD);
 	
-
-
-
 	return 0;
 }
+
 /*
 #include <Windows.h>
 #include <stdio.h>

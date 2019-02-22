@@ -11,9 +11,9 @@ static const struct Class _olcGameEngine =
 
 const void* olcGameEngine = &_olcGameEngine;
 
-static DWORD _stdcall GameThread(void* _self);
+DWORD _stdcall GameThread(void* _self);
 
-static int ConstructConsole(void* _self, int width, int heigh, int fontw, int fonth)
+int ConstructConsole(void* _self, int width, int heigh, int fontw, int fonth)
 {
 	struct olcGameEngine* this = _self;
 	this->m_nScreenHeight = heigh;
@@ -50,7 +50,7 @@ static int ConstructConsole(void* _self, int width, int heigh, int fontw, int fo
 	return 0;
 }
 
-static void Start(void* _self)
+void Start(void* _self)
 {
 	DWORD dwThreadID;
 	HANDLE hThread;
@@ -58,7 +58,7 @@ static void Start(void* _self)
 	struct olcGameEngine* this = _self;
 	this->m_bAtomActive = true;
 
-	CreateThread(
+	hThread = CreateThread(
 		NULL,
 		0,
 		&GameThread,
@@ -69,7 +69,7 @@ static void Start(void* _self)
 	WaitForSingleObject(hThread, INFINITE);
 }
 
-static DWORD _stdcall GameThread(void* _self)
+DWORD _stdcall GameThread(void* _self)
 {
 	struct olcGameEngine* this = _self;
 
@@ -120,4 +120,5 @@ static DWORD _stdcall GameThread(void* _self)
 		SetConsoleTitle(s);
 		WriteConsoleOutputW(this->m_hConsole, this->m_bufScreen, (COORD){ (short)this->m_nScreenWidth, (short)this->m_nScreenHeight }, (COORD){ 0,0 }, &this->m_rectWindow);
 	}
+
 }
