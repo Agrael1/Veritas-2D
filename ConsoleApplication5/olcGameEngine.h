@@ -80,12 +80,13 @@ struct olcGameEngine
 	struct sKeyState *m_keys;
 
 	bool (*OnUserCreate)();
-	bool (*OnUserUpdate)(float fElapsedTime);
+	bool (*OnUserUpdate)(void* self, float fElapsedTime);
 	// Optional for clean up 
 	bool(*OnUserDestroy)();
 
 	int(*ConstructConsole)(void* _self, int width, int heigh, int fontw, int fonth);
 	void(*Start)(void* _self);
+	void(*Draw)(void* _self, int x, int y, wchar_t character, short color);				//Symbolic Draw Routine: 
 };
 
 
@@ -95,9 +96,7 @@ static void* olcGameEngine_ctor(void* _self, va_list *app)
 
 	int ConstructConsole(void* _self, int width, int heigh, int fontw, int fonth);
 	void Start(void* _self);
-
-	this->ConstructConsole = ConstructConsole;
-	this->Start = Start;
+	void Draw(void* _self, int x, int y, wchar_t character, short color);
 
 	this->m_nScreenWidth = 80;
 	this->m_nScreenHeight = 30;
@@ -110,6 +109,10 @@ static void* olcGameEngine_ctor(void* _self, va_list *app)
 	this->m_keys = (struct sKeyState*)calloc(256, sizeof(struct sKeyState));
 
 	this->m_bEnableSound = false;
+
+	this->ConstructConsole = ConstructConsole;
+	this->Start = Start;
+	this->Draw = Draw;
 
 	return this;
 }

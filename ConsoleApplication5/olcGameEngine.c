@@ -69,6 +69,16 @@ void Start(void* _self)
 	WaitForSingleObject(hThread, INFINITE);
 }
 
+void Draw(void* _self, int x, int y, wchar_t character, short color)
+{
+	struct olcGameEngine* this = _self;
+	if (x >= 0 && x < this->m_nScreenWidth&&y >= 0 && y < this->m_nScreenHeight)
+	{
+		this->m_bufScreen[y*this->m_nScreenWidth + x].Char.UnicodeChar = character;
+		this->m_bufScreen[y*this->m_nScreenWidth + x].Attributes = color;
+	}
+}
+
 DWORD _stdcall GameThread(void* _self)
 {
 	struct olcGameEngine* this = _self;
@@ -113,7 +123,7 @@ DWORD _stdcall GameThread(void* _self)
 			this->m_keyOldState[i] = this->m_keyNewState[i];
 		}
 		// Handle frame update
-		if (!this->OnUserUpdate(fElapsedTime))
+		if (!this->OnUserUpdate(this,fElapsedTime))
 			this->m_bAtomActive = false;
 		WCHAR s[40];
 		swprintf_s(s,40,L"Custom OLC Engine test-%3.2f", 1.0f / fElapsedTime);
