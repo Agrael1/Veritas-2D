@@ -3,82 +3,9 @@
 #include <stdio.h>
 #include "Class.h"
 
-static const struct Class _olcGameEngine =
-{
-	sizeof(struct olcGameEngine), 
-	olcGameEngine_ctor
-};
+// Internal functions. Paste functions here:
 
-const void* olcGameEngine = &_olcGameEngine;
-
-DWORD _stdcall GameThread(void* _self);
-
-int ConstructConsole(void* _self, int width, int heigh, int fontw, int fonth)
-{
-	struct olcGameEngine* this = _self;
-	this->m_nScreenHeight = heigh;
-	this->m_nScreenWidth = width;
-	bool bMaxWindow = false;
-
-
-	CONSOLE_FONT_INFOEX cfi;
-	cfi.cbSize = sizeof(cfi);
-	cfi.nFont = 0;
-	cfi.dwFontSize.X = fontw;
-	cfi.dwFontSize.Y = fonth;
-	cfi.FontFamily = FF_DONTCARE;
-	cfi.FontWeight = FW_NORMAL;
-	wcscpy(cfi.FaceName, L"Consolas");
-
-	if (!SetCurrentConsoleFontEx(this->m_hConsole, bMaxWindow, &cfi))
-		return -1;
-
-	COORD coordLargest = GetLargestConsoleWindowSize(this->m_hConsole);
-	if (this->m_nScreenHeight > coordLargest.Y)
-		return -2;
-	if (this->m_nScreenWidth > coordLargest.X)
-		return -3;
-
-	COORD buffer = { (short)this->m_nScreenWidth,(short)this->m_nScreenHeight };
-	if (!SetConsoleScreenBufferSize(this->m_hConsole, buffer))
-		return -4;
-	this->m_rectWindow = (SMALL_RECT){ 0,0,(short)this->m_nScreenWidth - 1,(short)this->m_nScreenHeight - 1 };
-	if (!SetConsoleWindowInfo(this->m_hConsole, TRUE, &this->m_rectWindow))
-		return -5;
-
-	this->m_bufScreen = malloc(this->m_nScreenHeight*this->m_nScreenWidth * sizeof(CHAR_INFO));
-	return 0;
-}
-
-void Start(void* _self)
-{
-	DWORD dwThreadID;
-	HANDLE hThread;
-
-	struct olcGameEngine* this = _self;
-	this->m_bAtomActive = true;
-
-	hThread = CreateThread(
-		NULL,
-		0,
-		&GameThread,
-		_self,
-		0,
-		&dwThreadID);
-
-	WaitForSingleObject(hThread, INFINITE);
-}
-
-void Draw(void* _self, int x, int y, wchar_t character, short color)
-{
-	struct olcGameEngine* this = _self;
-	if (x >= 0 && x < this->m_nScreenWidth&&y >= 0 && y < this->m_nScreenHeight)
-	{
-		this->m_bufScreen[y*this->m_nScreenWidth + x].Char.UnicodeChar = character;
-		this->m_bufScreen[y*this->m_nScreenWidth + x].Attributes = color;
-	}
-}
-
+// Game thread function
 DWORD _stdcall GameThread(void* _self)
 {
 	struct olcGameEngine* this = _self;
@@ -130,5 +57,114 @@ DWORD _stdcall GameThread(void* _self)
 		SetConsoleTitle(s);
 		WriteConsoleOutputW(this->m_hConsole, this->m_bufScreen, (COORD){ (short)this->m_nScreenWidth, (short)this->m_nScreenHeight }, (COORD){ 0,0 }, &this->m_rectWindow);
 	}
-
+	return 0;
 }
+// Constructs console with input params
+int ConstructConsole(void* _self, int width, int heigh, int fontw, int fonth)
+{
+	struct olcGameEngine* this = _self;
+	this->m_nScreenHeight = heigh;
+	this->m_nScreenWidth = width;
+	bool bMaxWindow = false;
+
+
+	CONSOLE_FONT_INFOEX cfi;
+	cfi.cbSize = sizeof(cfi);
+	cfi.nFont = 0;
+	cfi.dwFontSize.X = fontw;
+	cfi.dwFontSize.Y = fonth;
+	cfi.FontFamily = FF_DONTCARE;
+	cfi.FontWeight = FW_NORMAL;
+	wcscpy(cfi.FaceName, L"Consolas");
+
+	if (!SetCurrentConsoleFontEx(this->m_hConsole, bMaxWindow, &cfi))
+		return -1;
+
+	COORD coordLargest = GetLargestConsoleWindowSize(this->m_hConsole);
+	if (this->m_nScreenHeight > coordLargest.Y)
+		return -2;
+	if (this->m_nScreenWidth > coordLargest.X)
+		return -3;
+
+	COORD buffer = { (short)this->m_nScreenWidth,(short)this->m_nScreenHeight };
+	if (!SetConsoleScreenBufferSize(this->m_hConsole, buffer))
+		return -4;
+	this->m_rectWindow = (SMALL_RECT){ 0,0,(short)this->m_nScreenWidth - 1,(short)this->m_nScreenHeight - 1 };
+	if (!SetConsoleWindowInfo(this->m_hConsole, TRUE, &this->m_rectWindow))
+		return -5;
+
+	this->m_bufScreen = malloc(this->m_nScreenHeight*this->m_nScreenWidth * sizeof(CHAR_INFO));
+	return 0;
+}
+// Start rouitine, assembles a thread and gives it a handle
+void Start(void* _self)
+{
+	DWORD dwThreadID;
+	HANDLE hThread;
+
+	struct olcGameEngine* this = _self;
+	this->m_bAtomActive = true;
+
+	hThread = CreateThread(
+		NULL,
+		0,
+		&GameThread,
+		_self,
+		0,
+		&dwThreadID);
+
+	WaitForSingleObject(hThread, INFINITE);
+}
+// Symbolic print function
+void Printscr(void* _self, int x, int y, wchar_t character, short color)
+{
+	struct olcGameEngine* this = _self;
+	if (x >= 0 && x < this->m_nScreenWidth&&y >= 0 && y < this->m_nScreenHeight)
+	{
+		this->m_bufScreen[y*this->m_nScreenWidth + x].Char.UnicodeChar = character;
+		this->m_bufScreen[y*this->m_nScreenWidth + x].Attributes = color;
+	}
+}
+
+// Constructor (must be last to bind methods)
+void* olcGameEngine_ctor(void* _self, va_list *app)
+{
+	struct olcGameEngine* this = _self;
+
+	this->m_nScreenWidth = 80;
+	this->m_nScreenHeight = 30;
+
+	this->m_hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	this->m_hConsoleIn = GetStdHandle(STD_INPUT_HANDLE);
+
+	*this->m_keyNewState = (short)malloc(256 * sizeof(short));
+	*this->m_keyOldState = (short)malloc(256 * sizeof(short));
+	this->m_keys = (struct sKeyState*)calloc(256, sizeof(struct sKeyState));
+
+	this->m_bEnableSound = false;
+
+	this->ConstructConsole = ConstructConsole;
+	this->Start = Start;
+	this->Printscr = Printscr;
+
+	return this;
+}
+// Destructor
+void* olcGameEngine_dtor(void* self)
+{
+	struct olcGameEngine *this = self;
+	free(this->m_keyNewState);
+	free(this->m_keyOldState);
+	free(this->m_keys);
+
+	SetConsoleActiveScreenBuffer(this->m_hOriginalConsole);
+	free(this->m_bufScreen);
+	return this;
+}
+
+static const struct Class _olcGameEngine =
+{
+	sizeof(struct olcGameEngine), 
+	olcGameEngine_ctor, olcGameEngine_dtor
+};
+const void* olcGameEngine = &_olcGameEngine;

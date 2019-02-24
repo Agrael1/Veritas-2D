@@ -7,7 +7,7 @@ main()
 
 	GD->_.ConstructConsole(GD, 160, 100, 8, 8);
 	GD->_.Start(GD);
-	
+	delete(GD);
 	return 0;
 }
 

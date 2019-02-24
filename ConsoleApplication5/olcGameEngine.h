@@ -78,44 +78,33 @@ struct olcGameEngine
 	bool m_bAtomActive;
 
 	struct sKeyState *m_keys;
+	
+	// Virtual functions 
 
-	bool (*OnUserCreate)();
-	bool (*OnUserUpdate)(void* self, float fElapsedTime);
-	// Optional for clean up 
-	bool(*OnUserDestroy)();
+		// Creation handling *unused*
+		bool(*OnUserCreate)();
+		// Frame handling
+		// *self - class pointer input
+		// float fElapsedTime - time input for controls
+		bool(*OnUserUpdate)(void* self, float fElapsedTime);
+		// Optional for clean up *unused*
+		bool(*OnUserDestroy)();
 
-	int(*ConstructConsole)(void* _self, int width, int heigh, int fontw, int fonth);
-	void(*Start)(void* _self);
-	void(*Draw)(void* _self, int x, int y, wchar_t character, short color);				//Symbolic Draw Routine: 
+	// Internal class functions
+
+		// Constructs console with input params:
+		// _self - class pointer input
+		// width, height - width and height of a console
+		// fontw, fonth - width and height of the font on screen
+		int(*ConstructConsole)(void* _self, int width, int heigh, int fontw, int fonth);
+		// Start routine
+		// *_self - class pointer input
+		void(*Start)(void* _self);
+		// Prints character on the screen
+		// *_self - Game engine class pointer
+		// x, y - coordinates of input charachter
+		void(*Printscr)(void* _self, int x, int y, wchar_t character, short color);
 };
-
-
-static void* olcGameEngine_ctor(void* _self, va_list *app)
-{
-	struct olcGameEngine* this = _self;
-
-	int ConstructConsole(void* _self, int width, int heigh, int fontw, int fonth);
-	void Start(void* _self);
-	void Draw(void* _self, int x, int y, wchar_t character, short color);
-
-	this->m_nScreenWidth = 80;
-	this->m_nScreenHeight = 30;
-
-	this->m_hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-	this->m_hConsoleIn = GetStdHandle(STD_INPUT_HANDLE);
-
-	*this->m_keyNewState = (short)malloc(256 * sizeof(short));
-	*this->m_keyOldState = (short)malloc(256 * sizeof(short));
-	this->m_keys = (struct sKeyState*)calloc(256, sizeof(struct sKeyState));
-
-	this->m_bEnableSound = false;
-
-	this->ConstructConsole = ConstructConsole;
-	this->Start = Start;
-	this->Draw = Draw;
-
-	return this;
-}
 #endif // !OLCGAMEENGINE
 
 
