@@ -4,7 +4,15 @@
 #include "Class.h"
 
 // Internal functions. Paste functions here:
-
+// Clipping wrap
+void Clip(void* self, int *x, int *y)
+{
+	struct olcGameEngine* this = self;
+	if (*x < 0) *x = 0;
+	if (*x >= this->m_nScreenWidth) *x = this->m_nScreenWidth;
+	if (*y < 0) *y = 0;
+	if (*y >= this->m_nScreenHeight) *y = this->m_nScreenHeight;
+}
 // Game thread function
 DWORD _stdcall GameThread(void* _self)
 {
@@ -16,7 +24,7 @@ DWORD _stdcall GameThread(void* _self)
 	tp2 = clock();
 
 	// Create user resources as part of this thread
-	if (!this->OnUserCreate())
+	if (!this->OnUserCreate(this))
 		this->m_bAtomActive = false;
 
 	while (this->m_bAtomActive)
@@ -67,6 +75,10 @@ int ConstructConsole(void* _self, int width, int heigh, int fontw, int fonth)
 	this->m_nScreenWidth = width;
 	bool bMaxWindow = false;
 
+	CONSOLE_CURSOR_INFO info;
+	info.dwSize = 100;
+	info.bVisible = FALSE;
+	SetConsoleCursorInfo(this->m_hConsole, &info);
 
 	CONSOLE_FONT_INFOEX cfi;
 	cfi.cbSize = sizeof(cfi);
@@ -125,6 +137,21 @@ void Printscr(void* _self, int x, int y, wchar_t character, short color)
 		this->m_bufScreen[y*this->m_nScreenWidth + x].Attributes = color;
 	}
 }
+// Fill function
+void Fill(void* _self, int x1, int y1, int x2, int y2, wchar_t sym, short color)
+{
+	struct olcGameEngine* this = _self;
+	Clip(this, &x1, &y1);
+	Clip(this, &x2, &y2);
+	{
+		for (int x = x1; x < x2; x++)
+			for (int y = y1; y < y2; y++)
+			{
+				this->m_bufScreen[y*this->m_nScreenWidth + x].Char.UnicodeChar = sym;
+				this->m_bufScreen[y*this->m_nScreenWidth + x].Attributes = color;
+			}
+	}
+}
 
 // Constructor (must be last to bind methods)
 void* olcGameEngine_ctor(void* _self, va_list *app)
@@ -146,7 +173,7 @@ void* olcGameEngine_ctor(void* _self, va_list *app)
 	this->ConstructConsole = ConstructConsole;
 	this->Start = Start;
 	this->Printscr = Printscr;
-
+	this->Fill = Fill;
 	return this;
 }
 // Destructor

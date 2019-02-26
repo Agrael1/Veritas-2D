@@ -81,8 +81,8 @@ struct olcGameEngine
 	
 	// Virtual functions 
 
-		// Creation handling *unused*
-		bool(*OnUserCreate)();
+		// Creation handling
+		bool(*OnUserCreate)(void* self);
 		// Frame handling
 		// *self - class pointer input
 		// float fElapsedTime - time input for controls
@@ -104,6 +104,8 @@ struct olcGameEngine
 		// *_self - Game engine class pointer
 		// x, y - coordinates of input charachter
 		void(*Printscr)(void* _self, int x, int y, wchar_t character, short color);
+		// Makes a part of a screen filled with specific character
+		void(*Fill)(void* _self, int x1, int y1, int x2, int y2, wchar_t sym, short color);
 };
 #endif // !OLCGAMEENGINE
 
