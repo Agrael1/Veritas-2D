@@ -106,6 +106,9 @@ struct olcGameEngine
 		void(*Printscr)(void* _self, int x, int y, wchar_t character, short color);
 		// Makes a part of a screen filled with specific character
 		void(*Fill)(void* _self, int x1, int y1, int x2, int y2, wchar_t sym, short color);
+		// Fills a center part of screen with symbol
+		// Dimx, DimY - dimensions of center segment
+		void(*FillCenter) (void* _self, int DimX, int DimY, wchar_t sym, short color);
 };
 #endif // !OLCGAMEENGINE
 

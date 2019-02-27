@@ -25,6 +25,7 @@ bool OnUserUpdate(void* self, float fElapsedTime)
 		m_fPlayerY += 15.0f*fElapsedTime;
 
 	this->_.Fill(this, 0, 0, this->_.m_nScreenWidth, this->_.m_nScreenHeight, L' ', 0);
+	this->_.FillCenter(this, 7, 7, L'&', BG_CYAN);
 	this->_.Fill(this, (int)m_fPlayerX, (int)m_fPlayerY, (int)m_fPlayerX+5, (int)m_fPlayerY+5, L' ', BG_WHITE);
 	return true;
 }

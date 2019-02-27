@@ -31,9 +31,9 @@ DWORD _stdcall GameThread(void* _self)
 	{
 		// Time handle
 		tp2 = clock();
-		clock_t elapsedTime = tp2 - tp1;
+		float fElapsedTime = (float)(tp2 - tp1) / (float)(CLOCKS_PER_SEC);
 		tp1 = tp2;
-		float fElapsedTime = (float)(elapsedTime) / (float)(CLOCKS_PER_SEC);
+		
 
 		for (int i = 0; i < 256; i++)
 		{
@@ -61,7 +61,7 @@ DWORD _stdcall GameThread(void* _self)
 		if (!this->OnUserUpdate(this,fElapsedTime))
 			this->m_bAtomActive = false;
 		WCHAR s[40];
-		swprintf_s(s,40,L"Custom OLC Engine test-%3.2f", 1.0f / fElapsedTime);
+		swprintf_s(s,40,L"Custom OLC Engine test-%3.2f", 1.0 / fElapsedTime);
 		SetConsoleTitle(s);
 		WriteConsoleOutputW(this->m_hConsole, this->m_bufScreen, (COORD){ (short)this->m_nScreenWidth, (short)this->m_nScreenHeight }, (COORD){ 0,0 }, &this->m_rectWindow);
 	}
@@ -153,6 +153,19 @@ void Fill(void* _self, int x1, int y1, int x2, int y2, wchar_t sym, short color)
 	}
 }
 
+void FillCenter(void* _self, int DimX, int DimY, wchar_t sym, short color)
+{
+	struct olcGameEngine* this = _self;
+	Clip(this, &DimX, &DimY);
+
+	for(int y = (int)((this->m_nScreenHeight-DimY)/2);y<(this->m_nScreenHeight - DimY) / 2+DimY; y++)
+		for (int x = (int)((this->m_nScreenWidth - DimX) / 2); x < (this->m_nScreenWidth - DimX) / 2 + DimX; x++)
+		{
+			this->m_bufScreen[y*this->m_nScreenWidth + x].Char.UnicodeChar = sym;
+			this->m_bufScreen[y*this->m_nScreenWidth + x].Attributes = color;
+		}
+}
+
 // Constructor (must be last to bind methods)
 void* olcGameEngine_ctor(void* _self, va_list *app)
 {
@@ -174,6 +187,7 @@ void* olcGameEngine_ctor(void* _self, va_list *app)
 	this->Start = Start;
 	this->Printscr = Printscr;
 	this->Fill = Fill;
+	this->FillCenter = FillCenter;
 	return this;
 }
 // Destructor
