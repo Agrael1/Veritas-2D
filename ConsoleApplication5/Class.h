@@ -3,6 +3,7 @@
 
 #include <stdarg.h>
 
+
 struct Class
 {
 	unsigned size;												// size for construction
@@ -11,8 +12,9 @@ struct Class
 	void* (*dtor) (void* self);									// destructor to be able to reverse what c-tor has done
 	void* (*clone) (const void* self);							// copy func to copy properly
 	int(*differ) (const void* self, const void* b);				// just a simple ass comparator
-	unsigned int(*sizeOf)(const void* self);
 };
+
+
 
 #endif // !Class_h
 

@@ -2,7 +2,6 @@
 #include <assert.h>
 #include "Class.h"
 
-
 void* new(const void* _class,...)
 {
 	const struct Class* class = _class;	// we need to convert pointer from void* to class* safely

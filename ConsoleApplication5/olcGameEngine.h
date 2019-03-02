@@ -82,11 +82,11 @@ struct olcGameEngine
 	// Virtual functions 
 
 		// Creation handling
-		bool(*OnUserCreate)(void* self);
+		bool(*OnUserCreate)();
 		// Frame handling
 		// *self - class pointer input
 		// float fElapsedTime - time input for controls
-		bool(*OnUserUpdate)(void* self, float fElapsedTime);
+		bool(*OnUserUpdate)(float fElapsedTime);
 		// Optional for clean up *unused*
 		bool(*OnUserDestroy)();
 

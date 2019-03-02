@@ -9,5 +9,7 @@ struct GameDemo
 {
 	struct olcGameEngine _;
 };
+
+
 #endif
 

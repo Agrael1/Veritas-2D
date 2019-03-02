@@ -13,6 +13,23 @@ void Clip(void* self, int *x, int *y)
 	if (*y < 0) *y = 0;
 	if (*y >= this->m_nScreenHeight) *y = this->m_nScreenHeight;
 }
+
+// Fill function
+void Fill(void* _self, int x1, int y1, int x2, int y2, wchar_t sym, short color)
+{
+	struct olcGameEngine* this = _self;
+	Clip(this, &x1, &y1);
+	Clip(this, &x2, &y2);
+	{
+		for (int x = x1; x < x2; x++)
+			for (int y = y1; y < y2; y++)
+			{
+				this->m_bufScreen[y*this->m_nScreenWidth + x].Char.UnicodeChar = sym;
+				this->m_bufScreen[y*this->m_nScreenWidth + x].Attributes = color;
+			}
+	}
+}
+
 // Game thread function
 DWORD _stdcall GameThread(void* _self)
 {
@@ -58,7 +75,7 @@ DWORD _stdcall GameThread(void* _self)
 			this->m_keyOldState[i] = this->m_keyNewState[i];
 		}
 		// Handle frame update
-		if (!this->OnUserUpdate(this,fElapsedTime))
+		if (!this->OnUserUpdate(fElapsedTime))
 			this->m_bAtomActive = false;
 		WCHAR s[40];
 		swprintf_s(s,40,L"Custom OLC Engine test-%3.2f", 1.0 / fElapsedTime);
@@ -106,6 +123,11 @@ int ConstructConsole(void* _self, int width, int heigh, int fontw, int fonth)
 		return -5;
 
 	this->m_bufScreen = malloc(this->m_nScreenHeight*this->m_nScreenWidth * sizeof(CHAR_INFO));
+
+	// init buffer
+	if ((*this).m_bufScreen)
+		Fill(this, 0, 0, this->m_nScreenWidth, this->m_nScreenHeight, L' ', BG_BLACK);
+
 	return 0;
 }
 // Start rouitine, assembles a thread and gives it a handle
@@ -135,21 +157,6 @@ void Printscr(void* _self, int x, int y, wchar_t character, short color)
 	{
 		this->m_bufScreen[y*this->m_nScreenWidth + x].Char.UnicodeChar = character;
 		this->m_bufScreen[y*this->m_nScreenWidth + x].Attributes = color;
-	}
-}
-// Fill function
-void Fill(void* _self, int x1, int y1, int x2, int y2, wchar_t sym, short color)
-{
-	struct olcGameEngine* this = _self;
-	Clip(this, &x1, &y1);
-	Clip(this, &x2, &y2);
-	{
-		for (int x = x1; x < x2; x++)
-			for (int y = y1; y < y2; y++)
-			{
-				this->m_bufScreen[y*this->m_nScreenWidth + x].Char.UnicodeChar = sym;
-				this->m_bufScreen[y*this->m_nScreenWidth + x].Attributes = color;
-			}
 	}
 }
 
@@ -194,8 +201,8 @@ void* olcGameEngine_ctor(void* _self, va_list *app)
 void* olcGameEngine_dtor(void* self)
 {
 	struct olcGameEngine *this = self;
-	free(this->m_keyNewState);
-	free(this->m_keyOldState);
+	free(*this->m_keyNewState);
+	free(*this->m_keyOldState);
 	free(this->m_keys);
 
 	SetConsoleActiveScreenBuffer(this->m_hOriginalConsole);
