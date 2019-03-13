@@ -147,14 +147,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BitStack.c" />
     <ClCompile Include="Class.c" />
     <ClCompile Include="Gamedemo.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="MazeGen.c" />
     <ClCompile Include="olcGameEngine.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Class.h" />
     <ClInclude Include="GameDemo.h" />
+    <ClInclude Include="BitStack.h" />
+    <ClInclude Include="Maze.h" />
     <ClInclude Include="New.h" />
     <ClInclude Include="olcGameEngine.h" />
   </ItemGroup>

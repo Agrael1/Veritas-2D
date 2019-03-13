@@ -29,7 +29,6 @@ void Fill(void* _self, int x1, int y1, int x2, int y2, wchar_t sym, short color)
 			}
 	}
 }
-
 // Game thread function
 DWORD _stdcall GameThread(void* _self)
 {
@@ -75,7 +74,7 @@ DWORD _stdcall GameThread(void* _self)
 			this->m_keyOldState[i] = this->m_keyNewState[i];
 		}
 		// Handle frame update
-		if (!this->OnUserUpdate(fElapsedTime))
+		if (!this->OnUserUpdate(this,fElapsedTime))
 			this->m_bAtomActive = false;
 		WCHAR s[40];
 		swprintf_s(s,40,L"Custom OLC Engine test-%3.2f", 1.0 / fElapsedTime);
@@ -184,8 +183,6 @@ void* olcGameEngine_ctor(void* _self, va_list *app)
 	this->m_hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	this->m_hConsoleIn = GetStdHandle(STD_INPUT_HANDLE);
 
-	*this->m_keyNewState = (short)malloc(256 * sizeof(short));
-	*this->m_keyOldState = (short)malloc(256 * sizeof(short));
 	this->m_keys = (struct sKeyState*)calloc(256, sizeof(struct sKeyState));
 
 	this->m_bEnableSound = false;
@@ -201,8 +198,6 @@ void* olcGameEngine_ctor(void* _self, va_list *app)
 void* olcGameEngine_dtor(void* self)
 {
 	struct olcGameEngine *this = self;
-	free(*this->m_keyNewState);
-	free(*this->m_keyOldState);
 	free(this->m_keys);
 
 	SetConsoleActiveScreenBuffer(this->m_hOriginalConsole);

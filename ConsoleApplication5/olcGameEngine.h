@@ -53,9 +53,9 @@ enum PIXEL_TYPE
 
 struct sKeyState
 {
-	bool bPressed;
-	bool bReleased;
-	bool bHeld;
+	bool bPressed:1;
+	bool bReleased:1;
+	bool bHeld:1;
 };
 
 extern const void* olcGameEngine;
@@ -73,20 +73,20 @@ struct olcGameEngine
 	SMALL_RECT m_rectWindow;
 	short m_keyOldState[256];
 	short m_keyNewState[256];
-	bool m_bConsoleInFocus;
-	bool m_bEnableSound;
-	bool m_bAtomActive;
+	bool m_bConsoleInFocus:1;
+	bool m_bEnableSound:1;
+	bool m_bAtomActive:1;
 
 	struct sKeyState *m_keys;
 	
 	// Virtual functions 
 
 		// Creation handling
-		bool(*OnUserCreate)();
+		bool(*OnUserCreate)(void* self);
 		// Frame handling
 		// *self - class pointer input
 		// float fElapsedTime - time input for controls
-		bool(*OnUserUpdate)(float fElapsedTime);
+		bool(*OnUserUpdate)(void* self, float fElapsedTime);
 		// Optional for clean up *unused*
 		bool(*OnUserDestroy)();
 

@@ -8,6 +8,7 @@ extern const void* GameDemo;
 struct GameDemo
 {
 	struct olcGameEngine _;
+	struct Maze* maze;
 };
 
 
