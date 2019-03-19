@@ -3,7 +3,6 @@
 #include "New.h"
 #include <stdlib.h>
 #include <time.h>
-#include <stdio.h>
 
 // Internal Variables
 unsigned char ByteX;
@@ -11,27 +10,8 @@ unsigned char* matrix;
 struct Stack* S;
 unsigned char vector;
 
-jmp_buf environment;
 unsigned char rotor;
 unsigned char rotct, retcond;
-/* void toBinary(const void* _matrix, unsigned char Y, unsigned char dimX)
-{
-	unsigned char local;
-
-	for (int j = 0; j < Y; j++)		//for the strings of y
-	{
-		for (int i = 0; i < dimX; i++)		//first bytes cycle (1 2)
-		{
-			local = *(matrix + (j*dimX + i));
-			for (int k = 0; k < 8; k++)
-			{
-				printf("%2d", local % 2);
-				local /= 2;
-			}
-		}
-		printf("\n");
-	}
-}*/
 
 void bitSet(unsigned char x, unsigned char y)
 {
@@ -112,16 +92,12 @@ errhand2:// this is the part in which we are taken over direction control manual
 	unres:	if (rotct < 3)
 	{
 		vector -= rotor - 1;
-		//printf("cannot rotate %d ", rotor);
 		rotor = (rotor + 1) % 3; rotct++;
-		//printf("shall go%d\n", rotor);
 		goto errhand1;
 	}
 			else
 			{
-				//printf("we need to go deeper\n\n");
-
-				if((t = S->bPop(S, 2)) ==-1)
+				if((t = S->method->bPop(S, 2)) ==-1)
 				{
 					free(matrix);
 					return 1;
@@ -136,19 +112,21 @@ errhand2:// this is the part in which we are taken over direction control manual
 	}
 	if (!retcond)
 	{
-		S->bPush(S, vector, 2);			// if everything's ok push to the stack and return to your business
+		S->method->bPush(S, vector, 2);			// if everything's ok push to the stack and return to your business
 		bitSet(*nx, *ny);
 	}
 	return 0;
 }
 
+const vftb __method = { MazeNext };
+
 void* Maze_ctor(void* self, va_list *ap)
 {
-	S = new(Stack);
 	struct Maze* this = self;
 
-	this->MazeNext = MazeNext;
-
+	S = new(Stack);
+	
+	this->method = &__method;
 	this->DimX = va_arg(*ap, unsigned char);
 	this->DimY = va_arg(*ap, unsigned char);
 
@@ -165,5 +143,12 @@ void* Maze_ctor(void* self, va_list *ap)
 	return this;
 }
 
-const struct Class _Maze = { sizeof(struct Maze) ,.ctor = Maze_ctor};
+void* Maze_dtor(void* self)
+{
+	struct Maze* this = self;
+	delete(S);
+	return this;
+}
+
+const struct Class _Maze = { sizeof(struct Maze) ,.ctor = Maze_ctor, .dtor = Maze_dtor};
 const void* Maze = &_Maze;

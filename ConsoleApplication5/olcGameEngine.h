@@ -5,6 +5,7 @@
 
 #define false 0;
 #define true 1;
+#define vftb olcGameEngine_vftb
 typedef char bool;
 
 enum COLOUR
@@ -60,25 +61,8 @@ struct sKeyState
 
 extern const void* olcGameEngine;
 
-struct olcGameEngine 
+typedef struct
 {
-	const void* class;
-	int m_nScreenWidth;
-	int m_nScreenHeight;
-	CHAR_INFO *m_bufScreen;
-	HANDLE m_hOriginalConsole;
-	CONSOLE_SCREEN_BUFFER_INFO m_OriginalConsoleInfo;
-	HANDLE m_hConsole;
-	HANDLE m_hConsoleIn;
-	SMALL_RECT m_rectWindow;
-	short m_keyOldState[256];
-	short m_keyNewState[256];
-	bool m_bConsoleInFocus:1;
-	bool m_bEnableSound:1;
-	bool m_bAtomActive:1;
-
-	struct sKeyState *m_keys;
-	
 	// Virtual functions 
 
 		// Creation handling
@@ -109,6 +93,28 @@ struct olcGameEngine
 		// Fills a center part of screen with symbol
 		// Dimx, DimY - dimensions of center segment
 		void(*FillCenter) (void* _self, int DimX, int DimY, wchar_t sym, short color);
+}vftb;
+
+struct olcGameEngine 
+{
+	const void* class;
+	vftb* method;
+
+	int m_nScreenWidth;
+	int m_nScreenHeight;
+	CHAR_INFO *m_bufScreen;
+	HANDLE m_hOriginalConsole;
+	CONSOLE_SCREEN_BUFFER_INFO m_OriginalConsoleInfo;
+	HANDLE m_hConsole;
+	HANDLE m_hConsoleIn;
+	SMALL_RECT m_rectWindow;
+	short m_keyOldState[256];
+	short m_keyNewState[256];
+	bool m_bConsoleInFocus:1;
+	bool m_bEnableSound:1;
+	bool m_bAtomActive:1;
+
+	struct sKeyState *m_keys;
 };
 #endif // !OLCGAMEENGINE
 

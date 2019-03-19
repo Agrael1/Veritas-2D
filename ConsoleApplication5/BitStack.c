@@ -1,38 +1,32 @@
+// BitStack.c
+//
+//		GNU GPL License 3.0. Usage or modification is strictly welcome.
+//
+// Class implementation file
+// Stack for small bit values (<8 bit in length)
 #include "BitStack.h"
 #include "Class.h"
-#include <setjmp.h>
-#include <stdio.h>
 
-#if _WIN64
-#define NREG 64
-#define DST 30
-#else
-#define NREG 32
-#define DST 50
-#endif
-
-void bPush(void* self, unsigned char value, unsigned char length)
+int bPush(void* self, unsigned char value, unsigned char length)
 {
 	struct Stack* this = self;
 
-	if (this->bitctr < 32)
+	if (this->bitctr+length <= NREG)
 	{
-		this->data[this->head] = ((this->data[this->head]) << 2) | value;
-		//printf("pushed => %d\n", value);
-		this->bitctr++;
+		this->data[this->head] = ((this->data[this->head]) << length) | value;
+		this->bitctr+=length;
+		return 0;
 	}
 	else
 	{
-		if (this->head < 50)
+		if (this->head < DST)
 		{
-			//printf("pushed => %I64u to big stack\n", this->data[this->head]);
 			this->head++;
-
-			this->bitctr = 1;
+			this->bitctr = length;
 			this->data[this->head] = value;
+			return 0;
 		}
-		//else
-			//printf("Stack overflow!");
+		else return -1;	
 	}
 }
 
@@ -40,22 +34,20 @@ short bPop(void* self, unsigned char length)
 {
 	struct Stack* this = self;
 	short a;
+
 	if (this->bitctr > 0)
 	{
-		a = (this->data[this->head]) % 4;
-		//printf("popped <= %d\n", a);
-		this->data[this->head] >>= 2;
-		this->bitctr--;
+		a = (this->data[this->head]) % (2*length);
+		this->data[this->head] >>= length;
+		this->bitctr-=length;
 		return a;
 	}
 	else
 	{
 		if (this->head > 0)
 		{
-			//printf("popped <= %I64u from the big stack\n", this->data[this->head]);
 			this->head--;
-			this->bitctr = 32;
-
+			this->bitctr = NREG;
 			bPop(this, length);
 		}
 		else
@@ -65,15 +57,16 @@ short bPop(void* self, unsigned char length)
 	}
 }
 
+const vftb method = { bPush,bPop };
+
 // Constructor (must be last)
 void* stack_ctor(void* self, va_list *ap)
 {
 	struct Stack* this = self;
 
-	this->bitctr = 1;
-	this->bPop = bPop;
-	this->bPush = bPush;
+	this->bitctr = 0;
 	this->head = 0;
+	this->method = &method;
 
 	return this;
 }

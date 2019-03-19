@@ -1,21 +1,15 @@
 #include "GameDemo.h"
 #include "New.h"
+#include "BitStack.h"
+#include <stdio.h>
 
 main()
 {
-	
 	struct GameDemo *GD = new(GameDemo);
 
-	GD->_.ConstructConsole(GD, 160, 100, 8, 8);
-	GD->_.Start(GD);
+	GD->_.method->ConstructConsole(GD, 160, 100, 8, 8);
+	GD->_.method->Start(GD);
 	delete(GD);
-	/*
-	int x, y, z;
-
-	y = rand();
-	z = y % 3; 
-	x = 1 << z;
-	return 0;*/
 }
 
 /*

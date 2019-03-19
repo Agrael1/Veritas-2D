@@ -19,12 +19,12 @@ void DrawBackground(void* self)
 {
 	struct GameDemo* this = self;
 
-	base.Fill(this, 0, 0, base.m_nScreenWidth, base.m_nScreenHeight, L' ', BG_BLACK);
+	base.method->Fill(this, 0, 0, base.m_nScreenWidth, base.m_nScreenHeight, L' ', BG_BLACK);
 
 	// Labyrinth cells
 	for (int i = 0; i < base.m_nScreenWidth; i += cellL)
 		for (int j = 0; j < base.m_nScreenHeight; j += cellL)
-			base.Fill(this, i + 1, j + 1, i + cellL, j + cellL, L'&', BG_CYAN);
+			base.method->Fill(this, i + 1, j + 1, i + cellL, j + cellL, L'&', BG_CYAN);
 }
 // Creation handling override
 bool OnUserCreate(void* self)
@@ -64,16 +64,16 @@ bool OnUserUpdate(void* self, float fElapsedTime)
 
 	//DrawBackground(this);
 
-	if (key&&this->maze->MazeNext(this->maze, current.X, current.Y, &next.X, &next.Y)==0)
+	if (key&&this->maze->method->MazeNext(this->maze, current.X, current.Y, &next.X, &next.Y)==0)
 	{
 		if ((next.X <= current.X)&&(next.Y >= current.Y))
-			base.Fill(this, next.X*cellL + 1, current.Y*cellL + 1, current.X*cellL + cellL, next.Y*cellL + cellL, L' ', BG_WHITE);
+			base.method->Fill(this, next.X*cellL + 1, current.Y*cellL + 1, current.X*cellL + cellL, next.Y*cellL + cellL, L' ', BG_WHITE);
 		else if ((next.X>=current.X)&&(next.Y<=current.Y))
-			base.Fill(this, current.X*cellL + 1, next.Y*cellL + 1, next.X*cellL + cellL, current.Y*cellL + cellL, L' ', BG_WHITE);
+			base.method->Fill(this, current.X*cellL + 1, next.Y*cellL + 1, next.X*cellL + cellL, current.Y*cellL + cellL, L' ', BG_WHITE);
 		else if (next.X<=current.X&&next.Y<=current.Y)
-			base.Fill(this, next.X*cellL + 1, next.Y*cellL + 1, current.X*cellL + cellL, current.Y*cellL + cellL, L' ', BG_WHITE);
+			base.method->Fill(this, next.X*cellL + 1, next.Y*cellL + 1, current.X*cellL + cellL, current.Y*cellL + cellL, L' ', BG_WHITE);
 		else
-			base.Fill(this, current.X*cellL+1, current.Y*cellL+1, next.X*cellL+cellL, next.Y*cellL + cellL, L' ', BG_WHITE);
+			base.method->Fill(this, current.X*cellL+1, current.Y*cellL+1, next.X*cellL+cellL, next.Y*cellL + cellL, L' ', BG_WHITE);
 
 		current = next;
 	}
@@ -82,10 +82,10 @@ bool OnUserUpdate(void* self, float fElapsedTime)
 		key = false;
 	}
 
-	base.Fill(this, this->maze->startx*cellL+1, this->maze->starty*cellL + 1, this->maze->startx*cellL + cellL, this->maze->starty*cellL + cellL, L' ', BG_RED);
-	base.Fill(this, current.X*cellL + 1, current.Y*cellL + 1, current.X*cellL + cellL, current.Y*cellL + cellL, L' ', BG_CYAN);
+	base.method->Fill(this, this->maze->startx*cellL+1, this->maze->starty*cellL + 1, this->maze->startx*cellL + cellL, this->maze->starty*cellL + cellL, L' ', BG_RED);
+	base.method->Fill(this, current.X*cellL + 1, current.Y*cellL + 1, current.X*cellL + cellL, current.Y*cellL + cellL, L' ', BG_CYAN);
 
-	//base.Fill(this, (int)m_fPlayerX, (int)m_fPlayerY, (int)m_fPlayerX + 5, (int)m_fPlayerY + 5, L' ', BG_WHITE);
+	base.method->Fill(this, (int)m_fPlayerX, (int)m_fPlayerY, (int)m_fPlayerX + 5, (int)m_fPlayerY + 5, L' ', BG_WHITE);
 
 	return true;
 }
@@ -94,8 +94,8 @@ void* GameDemo_ctor(void* _self, va_list *ap)
 {
 	struct GameDemo* this = ((struct Class*)olcGameEngine)->ctor(_self, ap);
 
-	base.OnUserCreate = OnUserCreate;
-	base.OnUserUpdate = OnUserUpdate;
+	base.method->OnUserCreate = OnUserCreate;
+	base.method->OnUserUpdate = OnUserUpdate;
 
 	return this;
 }
@@ -103,6 +103,8 @@ void* GameDemo_ctor(void* _self, va_list *ap)
 void* GameDemo_dtor(void* self)
 {
 	struct GameDemo* this = ((struct Class*)olcGameEngine)->dtor(self);
+
+	delete(this->maze);
 	return this;
 }
 

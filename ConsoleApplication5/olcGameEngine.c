@@ -40,7 +40,7 @@ DWORD _stdcall GameThread(void* _self)
 	tp2 = clock();
 
 	// Create user resources as part of this thread
-	if (!this->OnUserCreate(this))
+	if (!this->method->OnUserCreate(this))
 		this->m_bAtomActive = false;
 
 	while (this->m_bAtomActive)
@@ -74,7 +74,7 @@ DWORD _stdcall GameThread(void* _self)
 			this->m_keyOldState[i] = this->m_keyNewState[i];
 		}
 		// Handle frame update
-		if (!this->OnUserUpdate(this,fElapsedTime))
+		if (!this->method->OnUserUpdate(this,fElapsedTime))
 			this->m_bAtomActive = false;
 		WCHAR s[40];
 		swprintf_s(s,40,L"Custom OLC Engine test-%3.2f", 1.0 / fElapsedTime);
@@ -172,6 +172,8 @@ void FillCenter(void* _self, int DimX, int DimY, wchar_t sym, short color)
 		}
 }
 
+vftb _method = { .ConstructConsole = ConstructConsole, .Start = Start,.Printscr = Printscr,.Fill = Fill,.FillCenter = FillCenter};
+
 // Constructor (must be last to bind methods)
 void* olcGameEngine_ctor(void* _self, va_list *app)
 {
@@ -184,14 +186,8 @@ void* olcGameEngine_ctor(void* _self, va_list *app)
 	this->m_hConsoleIn = GetStdHandle(STD_INPUT_HANDLE);
 
 	this->m_keys = (struct sKeyState*)calloc(256, sizeof(struct sKeyState));
-
+	this->method = &_method;
 	this->m_bEnableSound = false;
-
-	this->ConstructConsole = ConstructConsole;
-	this->Start = Start;
-	this->Printscr = Printscr;
-	this->Fill = Fill;
-	this->FillCenter = FillCenter;
 	return this;
 }
 // Destructor
