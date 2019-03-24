@@ -3,8 +3,6 @@
 
 #include <Windows.h>
 
-#define false 0;
-#define true 1;
 #define vftb olcGameEngine_vftb
 typedef char bool;
 

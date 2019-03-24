@@ -11,11 +11,10 @@ typedef struct {
 
 struct Maze
 {
-	const void* _class;
-	vftb* method;
+	const void* class;
+	const vftb* method;
+	void* _private;
 
 	unsigned char DimX, DimY;
 	unsigned char startx, starty;
 };
-
-#undef class

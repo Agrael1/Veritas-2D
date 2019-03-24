@@ -2,32 +2,56 @@
 #include "Class.h"
 #include "New.h"
 #include <stdlib.h>
+#include <stdio.h>
 #include <time.h>
 
-// Internal Variables
-unsigned char ByteX;
-unsigned char* matrix;
-struct Stack* S;
-unsigned char vector;
+// Private Variables
+#define private (*(struct _private*)(this->_private))
+struct _private
+{
+	unsigned char SizeInBytes;
+	unsigned char* matrix;
+	struct Stack* S;
+	unsigned char ByteX;
+};
 
+unsigned char vector;
 unsigned char rotor;
 unsigned char rotct, retcond;
 
-void bitSet(unsigned char x, unsigned char y)
+void toBinary(const void* self)
 {
-	*(matrix + y*ByteX + x / 8) |= 1 << (x % 8);
+	struct Maze *this = self;
+	struct _private *r = this->_private;
+	unsigned char local;
+	for (int j = 0; j < 33; j++)		//for the strings of y
+	{
+		for (int i = 0; i < r->ByteX; i++)		//first bytes cycle (1 2)
+		{
+			local = *(r->matrix + (j*r->ByteX + i));
+			for (int k = 0; k < 8; k++)
+			{
+				printf("%2d", local % 2);
+				local /= 2;
+			}
+		}
+		printf("\n");
+	}
 }
+
+ #define bitSet(x, y) (private.matrix [(y)*private.ByteX + (x) / 8] |= 1 << ((x) % 8))
+
 // Tests the bit at x,y
-unsigned char bitTest(unsigned char x, unsigned char y)
+unsigned char bitTest(void* self, unsigned char x, unsigned char y)
 {
-	return *(matrix + y*ByteX + x / 8) & (1 << (x % 8));
+	struct Maze* this = self;
+	return *(private.matrix + y*private.ByteX + x / 8) & (1 << (x % 8));
 }
-
-
 // 
 void GetStart(void* self)
 {
 	struct Maze* this = self;
+
 	switch (rand() % 4) {
 	case 0:
 	{
@@ -54,13 +78,20 @@ void GetStart(void* self)
 		vector = 0b10; break;
 	}
 	}
-	bitSet(this->startx, this->starty);
+	bitSet(this->startx, this->starty);	
 }
 
 int MazeNext(void* self, unsigned char inx, unsigned char iny, unsigned char *nx, unsigned char *ny)
 {
 	struct Maze* this = self;
+
+	struct _private *r = this->_private;
+	
 	short t;
+
+	toBinary(this);
+
+	toBinary(private.matrix, 33, private.ByteX);
 
 	// flush rotor counter and return condition
 	rotct = 0;
@@ -77,44 +108,46 @@ errhand2:// this is the part in which we are taken over direction control manual
 	switch (vector %= 4)
 	{
 	case 0b00:
-		if ((inx + 1 < this->DimX) && (retcond || !bitTest(inx + 1, iny))) { *nx = inx + 1; *ny = iny; break; }
+		if ((inx + 1 < this->DimX) && (retcond || !bitTest(this, inx + 1, iny))) { *nx = inx + 1; *ny = iny; break; }
 		else goto unres;
 	case 0b01:
-		if ((iny + 1 < this->DimY) && (retcond || !bitTest(inx, iny + 1))) { *nx = inx; *ny = iny+1; break; }
+		if ((iny + 1 < this->DimY) && (retcond || !bitTest(this, inx, iny + 1))) { *nx = inx; *ny = iny+1; break; }
 		else goto unres;
 	case 0b10:
-		if ((inx - 1 >= 0) && (retcond || !bitTest(inx - 1, iny))) { *nx = inx - 1; *ny = iny; break; }
+		if ((inx - 1 >= 0) && (retcond || !bitTest(this, inx - 1, iny))) { *nx = inx - 1; *ny = iny; break; }
 		else goto unres;
 	case 0b11:
-		if ((iny - 1 >= 0) && (retcond || !bitTest(inx, iny - 1))) { *nx = inx; *ny = iny-1; break; }
+		if ((iny - 1 >= 0) && (retcond || !bitTest(this, inx, iny - 1))) { *nx = inx; *ny = iny-1; break; }
 		else goto unres;
 	default:								// unreacheable context used to avoid making function with many arguments
-	unres:	if (rotct < 3)
 	{
-		vector -= rotor - 1;
-		rotor = (rotor + 1) % 3; rotct++;
-		goto errhand1;
-	}
+	unres:	
+		if (rotct < 3)
+		{
+			vector -= rotor - 1;
+			rotor = (rotor + 1) % 3; rotct++;
+			goto errhand1;
+		}
+		else
+		{
+			if ((t = private.S->method->bPop(private.S, 2)) == -1)
+				return 1;
 			else
 			{
-				if((t = S->method->bPop(S, 2)) ==-1)
-				{
-					free(matrix);
-					return 1;
-				}
-				else 
-				{
-					vector = (unsigned char)(t)^2;
-					retcond = 1;
-					goto errhand2;
-				}
+				vector = (unsigned char)(t) ^ 2;
+				retcond = 1;
+				goto errhand2;
 			}
+		}
 	}
+	}	// end of switch
+
 	if (!retcond)
 	{
-		S->method->bPush(S, vector, 2);			// if everything's ok push to the stack and return to your business
-		bitSet(*nx, *ny);
+		private.S->method->bPush(private.S, vector, 2);			// if everything's ok push to the stack and return to your business
+		r->matrix[ (*ny)*(r->ByteX) + (*nx) / 8] |= 1 << ((*nx) % 8);
 	}
+
 	return 0;
 }
 
@@ -124,21 +157,28 @@ void* Maze_ctor(void* self, va_list *ap)
 {
 	struct Maze* this = self;
 
-	S = new(Stack);
-	
 	this->method = &__method;
 	this->DimX = va_arg(*ap, unsigned char);
 	this->DimY = va_arg(*ap, unsigned char);
 
-	ByteX = this->DimX % 8 > 0 ? this->DimX / 8 + 1 : this->DimX / 8;
+	
+		void * p = &(struct _private) 
+	{ 
+		.SizeInBytes = this->DimX*this->DimY >> 1,
+		.S = new(Stack),
+		.ByteX = this->DimX % 8 > 0 ? this->DimX / 8 + 1 : this->DimX / 8
+	};
+		this->_private = p;
+	private.matrix = (unsigned char*)malloc(private.ByteX*this->DimY);
+	private.S = new(Stack);
 
-	matrix = (unsigned char*)malloc(ByteX*this->DimY);
-
-	for (int i = 0; i < ByteX*this->DimY; i++)
-		*(matrix + i) = 0;
+	for (int i = 0; i < private.ByteX*this->DimY; i++)
+		*(private.matrix + i) = 0;
 
 	srand((unsigned int)time(NULL));
-	GetStart(this);
+	GetStart(this);			// matrix ptr = 0x00000249225c71e0 0x00007ff84244e6b4
+
+	toBinary(this);
 
 	return this;
 }
@@ -146,9 +186,11 @@ void* Maze_ctor(void* self, va_list *ap)
 void* Maze_dtor(void* self)
 {
 	struct Maze* this = self;
-	delete(S);
+	delete(private.S);
 	return this;
 }
 
 const struct Class _Maze = { sizeof(struct Maze) ,.ctor = Maze_ctor, .dtor = Maze_dtor};
 const void* Maze = &_Maze;
+
+

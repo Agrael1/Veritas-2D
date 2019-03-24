@@ -20,7 +20,7 @@ void DrawBackground(void* self)
 	struct GameDemo* this = self;
 
 	base.method->Fill(this, 0, 0, base.m_nScreenWidth, base.m_nScreenHeight, L' ', BG_BLACK);
-
+	
 	// Labyrinth cells
 	for (int i = 0; i < base.m_nScreenWidth; i += cellL)
 		for (int j = 0; j < base.m_nScreenHeight; j += cellL)
@@ -35,6 +35,7 @@ bool OnUserCreate(void* self)
 	cellsX = base.m_nScreenWidth / cellL;
 
 	this->maze = new(Maze, cellsX, cellsY);
+		
 	current.X = this->maze->startx;
 	current.Y = this->maze->starty;
 

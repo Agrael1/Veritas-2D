@@ -161,7 +161,6 @@
     <ClInclude Include="Maze.h" />
     <ClInclude Include="New.h" />
     <ClInclude Include="olcGameEngine.h" />
-    <ClInclude Include="vftb.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

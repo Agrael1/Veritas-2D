@@ -26,13 +26,13 @@ typedef struct {
 extern const void* Stack;						// type definition for new()
 
 #if _WIN64
-#define NREG 64					// using data type, which fits the entire register
+#define NREG 64									// using data type, which fits the entire register
 #define DST 50
 
 struct Stack
 {
 	const void* _class;							// class description goes here
-	vftb *method;								// class function table 
+	const vftb *method;								// class function table 
 
 	unsigned long long data[DST];				// storage for stack values || messing not recommended
 	unsigned int head;							// pointer to the last element of big stack
@@ -45,7 +45,7 @@ struct Stack
 struct Stack
 {
 	const void* class;							// class description goes here
-	vftb *method;					// class function table 
+	const vftb *method;								// class function table 
 
 	unsigned int data[90];						// storage for stack values || messing not recommended
 	unsigned int head;							// pointer to the last element of big stack
