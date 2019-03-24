@@ -3,16 +3,17 @@
 #include "New.h"
 #include "Maze.h"
 
+#define base (this->_)
+
 float m_fPlayerX, m_fPlayerY;
 int cellL = 3;
 unsigned char cellsX = 0, cellsY = 0;
 bool key = true;
 
-
 COORD current; 
 COORD next;
 
-#define base (this->_)
+
 
 
 void DrawBackground(void* self)
@@ -82,6 +83,8 @@ bool OnUserUpdate(void* self, float fElapsedTime)
 	{
 		key = false;
 	}
+
+
 
 	base.method->Fill(this, this->maze->startx*cellL+1, this->maze->starty*cellL + 1, this->maze->startx*cellL + cellL, this->maze->starty*cellL + cellL, L' ', BG_RED);
 	base.method->Fill(this, current.X*cellL + 1, current.Y*cellL + 1, current.X*cellL + cellL, current.Y*cellL + cellL, L' ', BG_CYAN);

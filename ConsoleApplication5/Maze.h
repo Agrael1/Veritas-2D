@@ -13,7 +13,7 @@ struct Maze
 {
 	const void* class;
 	const vftb* method;
-	void* _private;
+	char _private[32];					// sizeof(struct _private)
 
 	unsigned char DimX, DimY;
 	unsigned char startx, starty;

@@ -85,7 +85,9 @@ typedef struct
 		// Prints character on the screen
 		// *_self - Game engine class pointer
 		// x, y - coordinates of input charachter
-		void(*Printscr)(void* _self, int x, int y, wchar_t character, short color);
+		void(*PrintChar)(void* _self, int x, int y, wchar_t character, short color);
+
+		int (*PrintStringW)(_Inout_updates_(m_buffscreen) void* _self, int x, int y, _In_reads_(length) const wchar_t *strptr, unsigned int length, short color);
 		// Makes a part of a screen filled with specific character
 		void(*Fill)(void* _self, int x1, int y1, int x2, int y2, wchar_t sym, short color);
 		// Fills a center part of screen with symbol

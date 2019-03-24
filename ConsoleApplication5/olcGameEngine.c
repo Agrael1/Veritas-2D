@@ -149,7 +149,7 @@ void Start(void* _self)
 	WaitForSingleObject(hThread, INFINITE);
 }
 // Symbolic print function
-void Printscr(void* _self, int x, int y, wchar_t character, short color)
+void PrintChar(void* _self, int x, int y, wchar_t character, short color)
 {
 	struct olcGameEngine* this = _self;
 	if (x >= 0 && x < this->m_nScreenWidth&&y >= 0 && y < this->m_nScreenHeight)
@@ -157,6 +157,27 @@ void Printscr(void* _self, int x, int y, wchar_t character, short color)
 		this->m_bufScreen[y*this->m_nScreenWidth + x].Char.UnicodeChar = character;
 		this->m_bufScreen[y*this->m_nScreenWidth + x].Attributes = color;
 	}
+}
+// Prints string of wide char
+_Success_(return == length)
+int PrintStringW( _Inout_updates_(m_buffscreen) void* _self, int x, int y, _In_reads_(length) const wchar_t *strptr, unsigned int length, short color)
+{
+	struct olcGameEngine* this = _self;
+	Clip(this, &x, &y);
+
+	for (unsigned int i = 0; i < length; i++)
+	{
+		if ((i+x) != this->m_nScreenWidth - 1)
+		{
+			this->m_bufScreen[y*this->m_nScreenWidth + x].Char.UnicodeChar = strptr[i];
+			this->m_bufScreen[y*this->m_nScreenWidth + x].Attributes = color; x++;
+		}
+		else 
+			if(y+1<=this->m_nScreenHeight)
+				{ y++; x = 0; i--; continue; }
+			else return i;		
+	}
+	return length;
 }
 
 void FillCenter(void* _self, int DimX, int DimY, wchar_t sym, short color)
@@ -172,7 +193,7 @@ void FillCenter(void* _self, int DimX, int DimY, wchar_t sym, short color)
 		}
 }
 
-vftb _method = { .ConstructConsole = ConstructConsole, .Start = Start,.Printscr = Printscr,.Fill = Fill,.FillCenter = FillCenter};
+vftb _method = { .ConstructConsole = ConstructConsole, .Start = Start,.PrintChar = PrintChar,.Fill = Fill,.FillCenter = FillCenter,.PrintStringW = PrintStringW };
 
 // Constructor (must be last to bind methods)
 void* olcGameEngine_ctor(void* _self, va_list *app)
