@@ -13,9 +13,6 @@ bool key = true;
 COORD current; 
 COORD next;
 
-
-
-
 void DrawBackground(void* self)
 {
 	struct GameDemo* this = self;

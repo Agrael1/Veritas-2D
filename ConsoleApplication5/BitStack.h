@@ -32,7 +32,7 @@ extern const void* Stack;						// type definition for new()
 struct Stack
 {
 	const void* _class;							// class description goes here
-	const vftb *method;								// class function table 
+	const vftb *method;							// class function table 
 
 	unsigned long long data[DST];				// storage for stack values || messing not recommended
 	unsigned int head;							// pointer to the last element of big stack
