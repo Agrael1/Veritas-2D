@@ -13,17 +13,68 @@ bool key = true;
 COORD current; 
 COORD next;
 
-void DrawBackground(void* self)
+void AnimateMaze(void* self)
 {
 	struct GameDemo* this = self;
 
-	base.method->Fill(this, 0, 0, base.m_nScreenWidth, base.m_nScreenHeight, L' ', BG_BLACK);
+	next = current;
+	if (key&&this->maze->method->MazeNext(this->maze, &next.X, &next.Y) == 0)
+	{
+
+		if ((next.X <= current.X) && (next.Y >= current.Y))
+			base.method->Fill(this, next.X*cellL + 1, current.Y*cellL + 1, current.X*cellL + cellL, next.Y*cellL + cellL, L' ', BG_WHITE);
+		else if ((next.X >= current.X) && (next.Y <= current.Y))
+			base.method->Fill(this, current.X*cellL + 1, next.Y*cellL + 1, next.X*cellL + cellL, current.Y*cellL + cellL, L' ', BG_WHITE);
+		else if (next.X <= current.X&&next.Y <= current.Y)
+			base.method->Fill(this, next.X*cellL + 1, next.Y*cellL + 1, current.X*cellL + cellL, current.Y*cellL + cellL, L' ', BG_WHITE);
+		else
+			base.method->Fill(this, current.X*cellL + 1, current.Y*cellL + 1, next.X*cellL + cellL, next.Y*cellL + cellL, L' ', BG_WHITE);
+
+		current = next;
+	}
+	else
+	{
+		key = false;
+	}
+	base.method->Fill(this, current.X*cellL + 1, current.Y*cellL + 1, current.X*cellL + cellL, current.Y*cellL + cellL, L' ', BG_CYAN);
+}
+
+void DrawBackground(void* self)
+{
+	struct GameDemo* this = self;
 	
 	// Labyrinth cells
 	for (int i = 0; i < base.m_nScreenWidth; i += cellL)
 		for (int j = 0; j < base.m_nScreenHeight; j += cellL)
-			base.method->Fill(this, i + 1, j + 1, i + cellL, j + cellL, L'&', BG_CYAN);
+			base.method->Fill(this, i + 1, j + 1, i + cellL, j + cellL, L' ', BG_WHITE);
 }
+
+void DrawMaze(void* self)
+{
+	struct GameDemo* this = self;
+	// cellL will be the guide
+	// req borderL cellL
+	//  3
+	// ####
+	//2#  #0
+	// #  #
+	// ####
+	//  1
+	short elctr = 0;
+	for (int j = 0; j < cellsY; j++)
+		for (int i = !(j & 1); i < cellsX; i += 2, elctr++)
+		{
+			if (this->maze->MazeRep[elctr] & 1)
+				base.method->DrawRectangle(this, i*cellL + cellL, j*cellL + 1, i*cellL + cellL + 1, j*cellL + cellL, BG_WHITE);
+			if (this->maze->MazeRep[elctr] & 2)
+				base.method->DrawRectangle(this, i*cellL + cellL, j*cellL + cellL + 1, i*cellL + 1, j*cellL + cellL, BG_WHITE);
+			if (this->maze->MazeRep[elctr] & 4)
+				base.method->DrawRectangle(this, i*cellL, j*cellL + 1, i*cellL + 1, j*cellL + cellL, BG_WHITE);
+			if (this->maze->MazeRep[elctr] & 8)
+				base.method->DrawRectangle(this, i*cellL+1, j*cellL, i*cellL + cellL, j*cellL + 1, BG_WHITE);
+		}
+}
+
 // Creation handling override
 bool OnUserCreate(void* self)
 {
@@ -37,10 +88,11 @@ bool OnUserCreate(void* self)
 	current.X = this->maze->startx;
 	current.Y = this->maze->starty;
 
-	
-
 	m_fPlayerX = 10.0f;
 	m_fPlayerY = 10.0f;
+
+	this->maze->method->generateComplete(this->maze);
+
 	return true;
 }
 // Frame update handling override
@@ -60,33 +112,11 @@ bool OnUserUpdate(void* self, float fElapsedTime)
 		return false;
 #pragma endregion
 
-
-	//DrawBackground(this);
-
-	if (key&&this->maze->method->MazeNext(this->maze, current.X, current.Y, &next.X, &next.Y)==0)
-	{
-		if ((next.X <= current.X)&&(next.Y >= current.Y))
-			base.method->Fill(this, next.X*cellL + 1, current.Y*cellL + 1, current.X*cellL + cellL, next.Y*cellL + cellL, L' ', BG_WHITE);
-		else if ((next.X>=current.X)&&(next.Y<=current.Y))
-			base.method->Fill(this, current.X*cellL + 1, next.Y*cellL + 1, next.X*cellL + cellL, current.Y*cellL + cellL, L' ', BG_WHITE);
-		else if (next.X<=current.X&&next.Y<=current.Y)
-			base.method->Fill(this, next.X*cellL + 1, next.Y*cellL + 1, current.X*cellL + cellL, current.Y*cellL + cellL, L' ', BG_WHITE);
-		else
-			base.method->Fill(this, current.X*cellL+1, current.Y*cellL+1, next.X*cellL+cellL, next.Y*cellL + cellL, L' ', BG_WHITE);
-
-		current = next;
-	}
-	else
-	{
-		key = false;
-	}
-
-
+	DrawBackground(this);
+	DrawMaze(this);
+	// AnimateMaze(this);
 
 	base.method->Fill(this, this->maze->startx*cellL+1, this->maze->starty*cellL + 1, this->maze->startx*cellL + cellL, this->maze->starty*cellL + cellL, L' ', BG_RED);
-	base.method->Fill(this, current.X*cellL + 1, current.Y*cellL + 1, current.X*cellL + cellL, current.Y*cellL + cellL, L' ', BG_CYAN);
-
-	base.method->Fill(this, (int)m_fPlayerX, (int)m_fPlayerY, (int)m_fPlayerX + 5, (int)m_fPlayerY + 5, L' ', BG_WHITE);
 
 	return true;
 }

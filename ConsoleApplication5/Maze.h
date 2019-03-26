@@ -4,7 +4,8 @@
 #pragma region Bindings
 #define vftb Maze_vftb
 typedef struct {
-	int(*MazeNext)(void* self, unsigned char inx, unsigned char iny, unsigned char *nx, unsigned char *ny);
+	int(*MazeNext)(void* self, unsigned char *nx, unsigned char *ny);
+	void(*generateComplete)(void* self);
 }vftb;
 typedef struct 
 {

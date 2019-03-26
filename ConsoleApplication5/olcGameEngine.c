@@ -14,6 +14,8 @@ void Clip(void* self, int *x, int *y)
 	if (*y >= this->m_nScreenHeight) *y = this->m_nScreenHeight;
 }
 
+
+#pragma region Internal Functions
 // Fill function
 void Fill(void* _self, int x1, int y1, int x2, int y2, wchar_t sym, short color)
 {
@@ -148,6 +150,9 @@ void Start(void* _self)
 
 	WaitForSingleObject(hThread, INFINITE);
 }
+#pragma endregion
+
+#pragma region Print Functions
 // Symbolic print function
 void PrintChar(void* _self, int x, int y, wchar_t character, short color)
 {
@@ -158,6 +163,7 @@ void PrintChar(void* _self, int x, int y, wchar_t character, short color)
 		this->m_bufScreen[y*this->m_nScreenWidth + x].Attributes = color;
 	}
 }
+
 // Prints string of wide char
 _Success_(return == length)
 int PrintStringW( _Inout_updates_(m_buffscreen) void* _self, int x, int y, _In_reads_(length) const wchar_t *strptr, unsigned int length, short color)
@@ -192,8 +198,33 @@ void FillCenter(void* _self, int DimX, int DimY, wchar_t sym, short color)
 			this->m_bufScreen[y*this->m_nScreenWidth + x].Attributes = color;
 		}
 }
+#pragma endregion
 
-vftb _method = { .ConstructConsole = ConstructConsole, .Start = Start,.PrintChar = PrintChar,.Fill = Fill,.FillCenter = FillCenter,.PrintStringW = PrintStringW };
+#pragma region Draw Functions
+void DrawRectangle(void* self, unsigned x1, unsigned y1, unsigned x2, unsigned y2, unsigned short color)
+{
+	struct olcGameEngine *this = self;
+	if ((x2 <= x1) && (y2 >= y1))
+		this->method->Fill(this, x2, y1, x1, y2, L' ', color);
+	else if ((x2 >= x1) && (y2 <= y1))
+		this->method->Fill(this, x1, y2, x2, y1, L' ', color);
+	else if ((x2 <= x1)&&(y2 <= y1))
+		this->method->Fill(this, x2, y2, x1, y1, L' ', color);
+	else
+		this->method->Fill(this, x1, y1, x2, y2, L' ', color);
+}
+#pragma endregion
+
+// Function table with early binding
+vftb _method = { 
+	.ConstructConsole = ConstructConsole, 
+	.Start = Start,
+	.PrintChar = PrintChar,
+	.Fill = Fill,
+	.FillCenter = FillCenter,
+	.PrintStringW = PrintStringW, 
+	.DrawRectangle = DrawRectangle
+};
 
 // Constructor (must be last to bind methods)
 void* olcGameEngine_ctor(void* _self, va_list *app)

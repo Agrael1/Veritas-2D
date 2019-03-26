@@ -93,6 +93,12 @@ typedef struct
 		// Fills a center part of screen with symbol
 		// Dimx, DimY - dimensions of center segment
 		void(*FillCenter) (void* _self, int DimX, int DimY, wchar_t sym, short color);
+		// Draw rectangle with 4 coordinates 
+		// @ x1, y1 - from
+		// @ x2, y2 - to
+		// all the coordinates can be in random relation
+		void (*DrawRectangle)(void* self, unsigned x1, unsigned y1, unsigned x2, unsigned y2, unsigned short color);
+
 }vftb;
 
 struct olcGameEngine 
