@@ -9,6 +9,7 @@ main()
 
 	GD->_.method->ConstructConsole(GD, 160, 100, 8, 8);
 	GD->_.method->Start(GD);
+
 	delete(GD);
 }
 

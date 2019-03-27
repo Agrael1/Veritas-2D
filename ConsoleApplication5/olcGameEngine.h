@@ -2,9 +2,10 @@
 #define OLCGAMEENGINE
 
 #include <Windows.h>
+#include "EngineCommons.h"
 
-#define vftb olcGameEngine_vftb
-typedef char bool;
+#undef c_class
+#define c_class olcGameEngine
 
 enum COLOUR
 {

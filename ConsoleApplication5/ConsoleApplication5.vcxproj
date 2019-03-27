@@ -156,6 +156,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Class.h" />
+    <ClInclude Include="EngineCommons.h" />
     <ClInclude Include="GameDemo.h" />
     <ClInclude Include="BitStack.h" />
     <ClInclude Include="Maze.h" />

@@ -1,33 +1,39 @@
+// Maze.h
+//
+//		GNU GPL License 3.0. Usage or modification is strictly welcome.
+//
+// Class declaration file
+// Maze type for my maze generation algorithm
 #pragma once
 #include "BitStack.h"
 
 #pragma region Bindings
-#define vftb Maze_vftb
+
+#undef c_class
+#define c_class Maze
+
 typedef struct {
 	int(*MazeNext)(void* self, unsigned char *nx, unsigned char *ny);
 	void(*generateComplete)(void* self);
 }vftb;
-typedef struct 
-{
-	unsigned char* matrix;
-	struct Stack* S;
-	unsigned char ByteX;
-	unsigned char SizeInBytes;
-	unsigned char vector;
-	_Bool flag;
-}Maze_private;
 #pragma endregion
 
 extern const void* Maze;
 
 struct Maze
 {
-//Private:
-	const void* class;
-	char __[sizeof (Maze_private)];
+	const void* _class;
+	privatev(
+		Byte* matrix;		// Matrix of 0 and 1 for path checking
+		struct Stack* S;	// BitStack for vector saving
+		Byte ByteX;			// Parameter for Matrix (Matrix length)
+		Byte vector;
+		_Bool flag;
+		);
+
 // Public:
 	const vftb* method;
-	unsigned char* MazeRep;
-	unsigned char DimX, DimY;
-	unsigned char startx, starty;
+	Byte* MazeRep;
+	Byte DimX, DimY;
+	Byte startx, starty;
 };

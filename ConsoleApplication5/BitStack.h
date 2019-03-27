@@ -4,13 +4,15 @@
 //
 // Class declaration file
 // Stack for small bit values (<8 bit)
-
+#include "EngineCommons.h"
 
 #ifndef BitStack
 #define BitStack
 
-#define vftb Stack_vftb
+#undef c_class
+#define c_class Stack
 
+// Access methods table
 typedef struct {
 	// Pushes bits into the stack and automatically pushes complete 32/64 bits to the big one
 	// self - pointer to the current class pointer (this)
@@ -34,9 +36,12 @@ struct Stack
 	const void* _class;							// class description goes here
 	const vftb *method;							// class function table 
 
-	unsigned long long data[DST];				// storage for stack values || messing not recommended
+	privatev(
+	unsigned long long data[DST];				// storage for stack values
+	);
+					
 	unsigned int head;							// pointer to the last element of big stack
-	unsigned char bitctr;						// pointer to the last element of bits
+	Byte bitctr;						// pointer to the last element of bits
 };
 #else
 #define NREG 32
@@ -45,11 +50,14 @@ struct Stack
 struct Stack
 {
 	const void* class;							// class description goes here
-	const vftb *method;								// class function table 
+	const vftb *method;							// class function table 
 
-	unsigned int data[90];						// storage for stack values || messing not recommended
+	privatev(
+		unsigned int data[DST];			// storage for stack values
+	);
+
 	unsigned int head;							// pointer to the last element of big stack
-	unsigned char bitctr;						// pointer to the last element of bits
+	Byte bitctr;						// pointer to the last element of bits
 };
 #endif
 #endif // !BitStack

@@ -3,9 +3,6 @@
 
 #include <stdarg.h>
 
-#define bool _Bool
-#define true 1
-#define false 0
 struct Class
 {
 	unsigned size;												// size for construction

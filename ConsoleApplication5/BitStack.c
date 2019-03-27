@@ -7,13 +7,13 @@
 #include "BitStack.h"
 #include "Class.h"
 
-int bPush(void* self, unsigned char value, unsigned char length)
+int bPush(void* self, Byte value, Byte length)
 {
 	struct Stack* this = self;
 
 	if (this->bitctr+length <= NREG)
 	{
-		this->data[this->head] = ((this->data[this->head]) << length) | value;
+		private.data[this->head] = ((private.data[this->head]) << length) | value;
 		this->bitctr+=length;
 		return 0;
 	}
@@ -23,22 +23,22 @@ int bPush(void* self, unsigned char value, unsigned char length)
 		{
 			this->head++;
 			this->bitctr = length;
-			this->data[this->head] = value;
+			private.data[this->head] = value;
 			return 0;
 		}
 		else return -1;	
 	}
 }
 
-short bPop(void* self, unsigned char length)
+short bPop(void* self, Byte length)
 {
 	struct Stack* this = self;
 	short a;
 
 	if (this->bitctr > 0)
 	{
-		a = (this->data[this->head]) % (2*length);
-		this->data[this->head] >>= length;
+		a = (private.data[this->head]) % (2*length);
+		private.data[this->head] >>= length;
 		this->bitctr-=length;
 		return a;
 	}
