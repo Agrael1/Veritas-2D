@@ -40,7 +40,7 @@ void GetStart(struct Maze* this)
 	}
 	} 
 	bitSet(this->startx, this->starty);	
-	private.flag = this->startx & 1 ? !this->starty & 1 : this->starty & 1;
+	private.flag = this->startx & 1 ? (this->starty & 1)^1 : this->starty & 1;
 }
 
 int MazeNext(void* self, unsigned char *nx, unsigned char *ny)
@@ -102,7 +102,10 @@ errhand2:// this is the part in which we are taken over direction control manual
 		bitSet(*nx, *ny);
 	}
 	if (private.flag)
-		this->MazeRep[!((y) & 1) ? (((y) >> 1) * (this->DimX)) + ((x) >> 1) : (((y) * ((this->DimX) >> 1)) + ((x) >> 1)+(y >> 1))] |=1<< private.vector;
+	{
+		this->MazeRep[((y * this->DimX)>>1) + ((x) >> 1)] |=1<< private.vector;
+	}
+		
 	
 	private.flag ^= 1;
 

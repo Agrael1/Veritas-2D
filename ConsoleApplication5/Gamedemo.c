@@ -83,6 +83,9 @@ bool OnUserCreate(void* self)
 	cellsY = base.m_nScreenHeight / cellL;
 	cellsX = base.m_nScreenWidth / cellL;
 
+	/*cellsY = 6;
+	cellsX = 6;*/
+
 	this->maze = new(Maze, cellsX, cellsY);
 		
 	current.X = this->maze->startx;
