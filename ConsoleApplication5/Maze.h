@@ -6,10 +6,10 @@
 // Maze type for my maze generation algorithm
 #pragma once
 #include "BitStack.h"
+#include "EngineCommons.h"
 
 #pragma region Bindings
 
-#undef c_class
 #define c_class Maze
 
 typedef struct {

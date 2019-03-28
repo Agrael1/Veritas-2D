@@ -9,7 +9,6 @@
 #ifndef BitStack
 #define BitStack
 
-#undef c_class
 #define c_class Stack
 
 // Access methods table

@@ -4,7 +4,6 @@
 #include <Windows.h>
 #include "EngineCommons.h"
 
-#undef c_class
 #define c_class olcGameEngine
 
 enum COLOUR
