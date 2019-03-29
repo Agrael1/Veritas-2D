@@ -20,6 +20,7 @@ typedef unsigned short Word;
 #undef vftb
 #undef c_class
 #undef private
+
 // Easy mangling for method and private tables 
 #define __xvftb(x) x ## _vftb
 #define __rvftb(x) __xvftb(x)

@@ -129,6 +129,10 @@ int ConstructConsole(void* _self, int width, int heigh, int fontw, int fonth)
 	if ((*this).m_bufScreen)
 		Fill(this, 0, 0, this->m_nScreenWidth, this->m_nScreenHeight, L' ', BG_BLACK);
 
+	// set window as not resizeable
+	HWND consoleWindow = GetConsoleWindow();
+	SetWindowLong(consoleWindow, GWL_STYLE, GetWindowLong(consoleWindow, GWL_STYLE) & ~WS_MAXIMIZEBOX & ~WS_SIZEBOX );
+
 	return 0;
 }
 // Start rouitine, assembles a thread and gives it a handle
