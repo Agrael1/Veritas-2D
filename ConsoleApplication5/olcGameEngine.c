@@ -14,6 +14,8 @@ void Clip(void* self, int *x, int *y)
 	if (*y >= this->m_nScreenHeight) *y = this->m_nScreenHeight;
 }
 
+
+#pragma region Internal Functions
 // Fill function
 void Fill(void* _self, int x1, int y1, int x2, int y2, wchar_t sym, short color)
 {
@@ -40,7 +42,7 @@ DWORD _stdcall GameThread(void* _self)
 	tp2 = clock();
 
 	// Create user resources as part of this thread
-	if (!this->OnUserCreate(this))
+	if (!this->method->OnUserCreate(this))
 		this->m_bAtomActive = false;
 
 	while (this->m_bAtomActive)
@@ -74,7 +76,7 @@ DWORD _stdcall GameThread(void* _self)
 			this->m_keyOldState[i] = this->m_keyNewState[i];
 		}
 		// Handle frame update
-		if (!this->OnUserUpdate(this,fElapsedTime))
+		if (!this->method->OnUserUpdate(this,fElapsedTime))
 			this->m_bAtomActive = false;
 		WCHAR s[40];
 		swprintf_s(s,40,L"Custom OLC Engine test-%3.2f", 1.0 / fElapsedTime);
@@ -148,8 +150,11 @@ void Start(void* _self)
 
 	WaitForSingleObject(hThread, INFINITE);
 }
+#pragma endregion
+
+#pragma region Print Functions
 // Symbolic print function
-void Printscr(void* _self, int x, int y, wchar_t character, short color)
+void PrintChar(void* _self, int x, int y, wchar_t character, short color)
 {
 	struct olcGameEngine* this = _self;
 	if (x >= 0 && x < this->m_nScreenWidth&&y >= 0 && y < this->m_nScreenHeight)
@@ -157,6 +162,28 @@ void Printscr(void* _self, int x, int y, wchar_t character, short color)
 		this->m_bufScreen[y*this->m_nScreenWidth + x].Char.UnicodeChar = character;
 		this->m_bufScreen[y*this->m_nScreenWidth + x].Attributes = color;
 	}
+}
+
+// Prints string of wide char
+_Success_(return == length)
+int PrintStringW( _Inout_updates_(m_buffscreen) void* _self, int x, int y, _In_reads_(length) const wchar_t *strptr, unsigned int length, short color)
+{
+	struct olcGameEngine* this = _self;
+	Clip(this, &x, &y);
+
+	for (unsigned int i = 0; i < length; i++)
+	{
+		if ((i+x) != this->m_nScreenWidth - 1)
+		{
+			this->m_bufScreen[y*this->m_nScreenWidth + x].Char.UnicodeChar = strptr[i];
+			this->m_bufScreen[y*this->m_nScreenWidth + x].Attributes = color; x++;
+		}
+		else 
+			if(y+1<=this->m_nScreenHeight)
+				{ y++; x = 0; i--; continue; }
+			else return i;		
+	}
+	return length;
 }
 
 void FillCenter(void* _self, int DimX, int DimY, wchar_t sym, short color)
@@ -171,6 +198,47 @@ void FillCenter(void* _self, int DimX, int DimY, wchar_t sym, short color)
 			this->m_bufScreen[y*this->m_nScreenWidth + x].Attributes = color;
 		}
 }
+#pragma endregion
+
+#pragma region Draw Functions
+void DrawRectangle(void* self, unsigned x1, unsigned y1, unsigned x2, unsigned y2, unsigned short color)
+{
+	struct olcGameEngine *this = self;
+	if ((x2 <= x1) && (y2 >= y1))
+		this->method->Fill(this, x2, y1, x1, y2, L' ', color);
+	else if ((x2 >= x1) && (y2 <= y1))
+		this->method->Fill(this, x1, y2, x2, y1, L' ', color);
+	else if ((x2 <= x1)&&(y2 <= y1))
+		this->method->Fill(this, x2, y2, x1, y1, L' ', color);
+	else
+		this->method->Fill(this, x1, y1, x2, y2, L' ', color);
+}
+
+void Compose(void* self, struct Frame* localBuffer, int offsetX, int offsetY)
+{
+	struct c_class *this = self;
+	if(offsetX<this->m_nScreenWidth&&offsetY<this->m_nScreenWidth)
+		for(int j = offsetY; j<localBuffer->nFrameHeight; j++)
+			for (int i = offsetX; i<localBuffer->nFrameLength; i++)
+			{
+
+				this->m_bufScreen[j*this->m_nScreenWidth + i] = localBuffer->localFrame[(j-offsetY)*(localBuffer->nFrameLength) + i-offsetX];
+			}
+}
+
+#pragma endregion
+
+// Function table with early binding
+vftb _method = {
+	.ConstructConsole = ConstructConsole,
+	.Start = Start,
+	.PrintChar = PrintChar,
+	.Fill = Fill,
+	.FillCenter = FillCenter,
+	.PrintStringW = PrintStringW,
+	.DrawRectangle = DrawRectangle,
+	.Compose = Compose
+};
 
 // Constructor (must be last to bind methods)
 void* olcGameEngine_ctor(void* _self, va_list *app)
@@ -184,14 +252,8 @@ void* olcGameEngine_ctor(void* _self, va_list *app)
 	this->m_hConsoleIn = GetStdHandle(STD_INPUT_HANDLE);
 
 	this->m_keys = (struct sKeyState*)calloc(256, sizeof(struct sKeyState));
-
+	this->method = &_method;
 	this->m_bEnableSound = false;
-
-	this->ConstructConsole = ConstructConsole;
-	this->Start = Start;
-	this->Printscr = Printscr;
-	this->Fill = Fill;
-	this->FillCenter = FillCenter;
 	return this;
 }
 // Destructor

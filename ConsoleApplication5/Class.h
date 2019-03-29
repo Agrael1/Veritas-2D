@@ -3,7 +3,6 @@
 
 #include <stdarg.h>
 
-
 struct Class
 {
 	unsigned size;												// size for construction
