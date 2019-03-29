@@ -10,6 +10,7 @@
 #define ENGINECOMMONS_H
 typedef unsigned char Byte;
 typedef _Bool bool;
+typedef unsigned short Word;
 
 #define M_PI 3.14159265358979323846
 #define true 1

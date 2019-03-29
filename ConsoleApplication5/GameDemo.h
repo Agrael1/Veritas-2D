@@ -24,17 +24,12 @@ struct GameDemo
 
 	float fFOV;
 
-	WORD nMapWidth;
-	WORD nMapHeight;
-
-	wchar_t* map;
-
 	Byte fDepth;
 	Byte cellsX, cellsY;
 	Byte CellL;
 
 	
-
+	struct Frame *localFrame;
 	struct Maze* maze;
 };
 

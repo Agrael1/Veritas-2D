@@ -149,6 +149,7 @@
   <ItemGroup>
     <ClCompile Include="BitStack.c" />
     <ClCompile Include="Class.c" />
+    <ClCompile Include="Frame.c" />
     <ClCompile Include="Gamedemo.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="MazeGen.c" />
@@ -157,6 +158,7 @@
   <ItemGroup>
     <ClInclude Include="Class.h" />
     <ClInclude Include="EngineCommons.h" />
+    <ClInclude Include="Frame.h" />
     <ClInclude Include="GameDemo.h" />
     <ClInclude Include="BitStack.h" />
     <ClInclude Include="Maze.h" />

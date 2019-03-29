@@ -213,17 +213,31 @@ void DrawRectangle(void* self, unsigned x1, unsigned y1, unsigned x2, unsigned y
 	else
 		this->method->Fill(this, x1, y1, x2, y2, L' ', color);
 }
+
+void Compose(void* self, struct Frame* localBuffer, int offsetX, int offsetY)
+{
+	struct c_class *this = self;
+	if(offsetX<this->m_nScreenWidth&&offsetY<this->m_nScreenWidth)
+		for(int j = offsetY; j<localBuffer->nFrameHeight; j++)
+			for (int i = offsetX; i<localBuffer->nFrameLength; i++)
+			{
+
+				this->m_bufScreen[j*this->m_nScreenWidth + i] = localBuffer->localFrame[(j-offsetY)*(localBuffer->nFrameLength) + i-offsetX];
+			}
+}
+
 #pragma endregion
 
 // Function table with early binding
-vftb _method = { 
-	.ConstructConsole = ConstructConsole, 
+vftb _method = {
+	.ConstructConsole = ConstructConsole,
 	.Start = Start,
 	.PrintChar = PrintChar,
 	.Fill = Fill,
 	.FillCenter = FillCenter,
-	.PrintStringW = PrintStringW, 
-	.DrawRectangle = DrawRectangle
+	.PrintStringW = PrintStringW,
+	.DrawRectangle = DrawRectangle,
+	.Compose = Compose
 };
 
 // Constructor (must be last to bind methods)
