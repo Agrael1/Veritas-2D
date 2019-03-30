@@ -40,21 +40,18 @@ enum COLOUR
 
 #define c_class Frame
 
-typedef struct {
-	void (*PrintFrameW)(void* _self, int x, int y, wchar_t character, short color);
-	void (*DrawRectangle)(void* self, Word x1, Word y1, Word x2, Word y2, unsigned short color);
-}vftb;
-
-extern const void* c_class;
-
-struct c_class
+class
 {
 	const void* _class;
-	const vftb* method;
-
 
 	CHAR_INFO *localFrame;
-	WORD nFrameLength;
-	WORD nFrameHeight;
+	Word nFrameLength;
+	Word nFrameHeight;
+
+	methods(
+		void (*PrintFrameW)(void* _self, int x, int y, wchar_t character, short color);
+		void (*DrawRectangle)(void* self, Word x1, Word y1, Word x2, Word y2, unsigned short color);
+	);
 };
+
 

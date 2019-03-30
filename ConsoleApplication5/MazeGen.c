@@ -49,7 +49,7 @@ void GetStart(struct Maze* this)
 
 int MazeNext(void* self, Byte *nx, Byte *ny)
 {
-	struct Maze* this = self;
+	struct c_class* this = self;
 	Byte rotct = 0, retcond = 0; // debuggers
 	
 	// represent a vector rotation
@@ -117,17 +117,18 @@ void generateComplete(void* self)
 	while (MazeNext(this, &x, &y));
 }
 
-const vftb __method = { MazeNext ,generateComplete };
+constructMethodTable( MazeNext ,generateComplete );
 
 void* Maze_ctor(void* self, va_list *ap)
 {
-	struct Maze* this = self;
+	struct c_class* this = self;
 
-	this->method = &__method;
+	assignMethodTable(this);
+
 	this->DimX = va_arg(*ap, Byte);
 	this->DimY = va_arg(*ap, Byte);
 
-	private.S = new(Stack);
+	private.S = new(BitStack);
 	private.ByteX = this->DimX % 8 > 0 ? this->DimX / 8 + 1 : this->DimX / 8;
 	private.matrix = (Byte*)malloc(private.ByteX*this->DimY);
 
@@ -151,5 +152,5 @@ void* Maze_dtor(void* self)
 	return this;
 }
 
-const struct Class _Maze = { sizeof(struct Maze) ,.ctor = Maze_ctor, .dtor = Maze_dtor};
+const struct Class _Maze = { sizeof(struct c_class) ,.ctor = Maze_ctor, .dtor = Maze_dtor};
 const void* Maze = &_Maze;

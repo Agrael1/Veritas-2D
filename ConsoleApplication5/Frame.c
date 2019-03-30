@@ -1,7 +1,6 @@
 #include "Frame.h"
 #include "Class.h"
 
-
 void ClipL(void* self, int *x, int *y)
 {
 	struct c_class* this = self;
@@ -46,13 +45,13 @@ void DrawRectangleL(void* self, Word x1, Word y1, Word x2, Word y2, unsigned sho
 		FillL(this, x1, y1, x2, y2, L' ', color);
 }
 
-const vftb Frame_method = { .PrintFrameW = PrintFrameW, .DrawRectangle = DrawRectangleL };
+constructMethodTable( .PrintFrameW = PrintFrameW, .DrawRectangle = DrawRectangleL );
 
 void* Frame_ctor(void* self, va_list *ap)
 {
 	struct c_class* this = self;
+	assignMethodTable(this);
 
-	this->method = &Frame_method;
 
 	this->nFrameLength = va_arg(*ap, Word);
 	this->nFrameHeight = va_arg(*ap, Word);

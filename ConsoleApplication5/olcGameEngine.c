@@ -7,7 +7,7 @@
 // Clipping wrap
 void Clip(void* self, int *x, int *y)
 {
-	struct olcGameEngine* this = self;
+	struct c_class* this = self;
 	if (*x < 0) *x = 0;
 	if (*x >= this->m_nScreenWidth) *x = this->m_nScreenWidth;
 	if (*y < 0) *y = 0;
@@ -19,7 +19,7 @@ void Clip(void* self, int *x, int *y)
 // Fill function
 void Fill(void* _self, int x1, int y1, int x2, int y2, wchar_t sym, short color)
 {
-	struct olcGameEngine* this = _self;
+	struct c_class* this = _self;
 	Clip(this, &x1, &y1);
 	Clip(this, &x2, &y2);
 	{
@@ -34,7 +34,7 @@ void Fill(void* _self, int x1, int y1, int x2, int y2, wchar_t sym, short color)
 // Game thread function
 DWORD _stdcall GameThread(void* _self)
 {
-	struct olcGameEngine* this = _self;
+	struct c_class* this = _self;
 
 	clock_t tp1, tp2;
 	/* Recording the starting clock tick.*/
@@ -88,7 +88,7 @@ DWORD _stdcall GameThread(void* _self)
 // Constructs console with input params
 int ConstructConsole(void* _self, int width, int heigh, int fontw, int fonth)
 {
-	struct olcGameEngine* this = _self;
+	struct c_class* this = _self;
 	this->m_nScreenHeight = heigh;
 	this->m_nScreenWidth = width;
 	bool bMaxWindow = false;
@@ -141,7 +141,7 @@ void Start(void* _self)
 	DWORD dwThreadID;
 	HANDLE hThread;
 
-	struct olcGameEngine* this = _self;
+	struct c_class* this = _self;
 	this->m_bAtomActive = true;
 
 	hThread = CreateThread(
@@ -160,7 +160,7 @@ void Start(void* _self)
 // Symbolic print function
 void PrintChar(void* _self, int x, int y, wchar_t character, short color)
 {
-	struct olcGameEngine* this = _self;
+	struct c_class* this = _self;
 	if (x >= 0 && x < this->m_nScreenWidth&&y >= 0 && y < this->m_nScreenHeight)
 	{
 		this->m_bufScreen[y*this->m_nScreenWidth + x].Char.UnicodeChar = character;
@@ -172,7 +172,7 @@ void PrintChar(void* _self, int x, int y, wchar_t character, short color)
 _Success_(return == length)
 int PrintStringW( _Inout_updates_(m_buffscreen) void* _self, int x, int y, _In_reads_(length) const wchar_t *strptr, unsigned int length, short color)
 {
-	struct olcGameEngine* this = _self;
+	struct c_class* this = _self;
 	Clip(this, &x, &y);
 
 	for (unsigned int i = 0; i < length; i++)
@@ -192,7 +192,7 @@ int PrintStringW( _Inout_updates_(m_buffscreen) void* _self, int x, int y, _In_r
 
 void FillCenter(void* _self, int DimX, int DimY, wchar_t sym, short color)
 {
-	struct olcGameEngine* this = _self;
+	struct c_class* this = _self;
 	Clip(this, &DimX, &DimY);
 
 	for(int y = (int)((this->m_nScreenHeight-DimY)/2);y<(this->m_nScreenHeight - DimY) / 2+DimY; y++)
@@ -273,7 +273,7 @@ void* olcGameEngine_dtor(void* self)
 
 static const struct Class _olcGameEngine =
 {
-	sizeof(struct olcGameEngine), 
+	sizeof(struct c_class), 
 	olcGameEngine_ctor, olcGameEngine_dtor
 };
 const void* olcGameEngine = &_olcGameEngine;

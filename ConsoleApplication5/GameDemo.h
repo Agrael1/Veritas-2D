@@ -6,9 +6,7 @@
 
 #define c_class GameDemo
 
-extern const void* GameDemo;
-
-struct GameDemo
+class
 {
 	struct olcGameEngine _;
 
@@ -20,7 +18,7 @@ struct GameDemo
 
 		COORD current;
 		COORD next;
-	);
+		);
 
 	float fFOV;
 
@@ -28,7 +26,6 @@ struct GameDemo
 	Byte cellsX, cellsY;
 	Byte CellL;
 
-	
 	struct Frame *localFrame;
 	struct Maze* maze;
 };

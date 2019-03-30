@@ -4,16 +4,14 @@
 #include "Maze.h"
 #include "GameDemo.h"
 
-
 #define base (this->_)
 
 void Test(void* self)
 {
-	struct GameDemo* this = self;
+	struct c_class* this = self;
 
 	for (int x = 0; x < base.m_nScreenWidth; x++)
 	{
-
 	// Divides FOV by 2 and project a ray to World Space
 		float fRayAngle = (private.m_fPlayerA - this->fFOV / 2.0f) + ((float)x / (float)base.m_nScreenWidth)*this->fFOV;
 
@@ -45,7 +43,7 @@ void Test(void* self)
 			}
 		}
 		//Calculate perspective
-		int nCeiling = (float)(base.m_nScreenHeight / 2.0) - base.m_nScreenHeight / ((float)fDistancetoWall);
+		int nCeiling =(int)((float)(base.m_nScreenHeight / 2.0) - base.m_nScreenHeight / ((float)fDistancetoWall));
 		int nFloor = base.m_nScreenHeight - nCeiling;
 
 		short nShade = ' ';
@@ -114,7 +112,7 @@ void AnimateMaze(void* self)
 
 void DrawBackground(void* self)
 {
-	struct GameDemo* this = self;
+	struct c_class* this = self;
 	
 	// Labyrinth cells
 	for (Byte j = 0; j<this->cellsY;j++)
@@ -124,7 +122,7 @@ void DrawBackground(void* self)
 
 void DrawMaze(void* self)
 {
-	struct GameDemo* this = self;
+	struct c_class* this = self;
 
 	short elctr = 0;
 	for (int j = 0; j < this->cellsY; j++)
@@ -144,7 +142,7 @@ void DrawMaze(void* self)
 // Creation handling override
 bool OnUserCreate(void* self)
 {
-	struct GameDemo* this = self;
+	struct c_class* this = self;
 
 	this->cellsY = 8;
 	this->cellsX = 8;
@@ -167,14 +165,14 @@ bool OnUserCreate(void* self)
 
 	private.m_fPlayerX = 1;
 	private.m_fPlayerY = 1;
-	this->fFOV = M_PI / 4;
+	this->fFOV = (float)M_PI / 4;
 
 	return true;
 }
 // Frame update handling override
 bool OnUserUpdate(void* self, float fElapsedTime)
 {
-	struct GameDemo* this = self;
+	struct c_class* this = self;
 
 #pragma region Controls
 
@@ -219,7 +217,7 @@ bool OnUserUpdate(void* self, float fElapsedTime)
 // Constructor (must be last)
 void* GameDemo_ctor(void* _self, va_list *ap)
 {
-	struct GameDemo* this = ((struct Class*)olcGameEngine)->ctor(_self, ap);
+	struct c_class* this = ((struct Class*)olcGameEngine)->ctor(_self, ap);
 
 	base.method->OnUserCreate = OnUserCreate;
 	base.method->OnUserUpdate = OnUserUpdate;
@@ -232,7 +230,7 @@ void* GameDemo_ctor(void* _self, va_list *ap)
 // Destructor
 void* GameDemo_dtor(void* self)
 {
-	struct GameDemo* this = ((struct Class*)olcGameEngine)->dtor(self);
+	struct c_class* this = ((struct Class*)olcGameEngine)->dtor(self);
 
 	delete(this->maze);
 	return this;
@@ -240,7 +238,7 @@ void* GameDemo_dtor(void* self)
 
 static const struct Class _GameDemo =
 {
-	sizeof(struct GameDemo),
+	sizeof(struct c_class),
 	GameDemo_ctor, GameDemo_dtor,0,0
 };
 

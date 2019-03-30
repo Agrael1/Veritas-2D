@@ -15,13 +15,9 @@ typedef unsigned short Word;
 #define M_PI 3.14159265358979323846
 #define true 1
 #define false 0
-#endif
 
-#undef vftb
-#undef c_class
-#undef private
-
-// Easy mangling for method and private tables 
+#pragma region Automation
+// Easy mangling for method and private tables
 #define __xvftb(x) x ## _vftb
 #define __rvftb(x) __xvftb(x)
 #define vftb __rvftb(c_class)
@@ -30,7 +26,25 @@ typedef unsigned short Word;
 #define __rprivate(x) __xprivate(x)
 #define _private __rprivate(c_class)
 
-#define privatev(...) Byte __internal_prtb[ sizeof( struct _private{ __VA_ARGS__ } )]
+#define __xmeth(x) x ## _method
+#define __rmeth(x) __xmeth(x)
+#define meth __rmeth(c_class)
 
+#define __rclass(x) extern const void* x; struct x
+#define class __rclass(c_class)
+#pragma endregion
+// Private Handling
+#define privatev(...) Byte __internal_prtb[ sizeof( struct _private{ __VA_ARGS__ } )]
 #define private (*(struct _private*)(this->__internal_prtb))
+// Method Handling
+#define methods(...) struct vftb { __VA_ARGS__ }*method
+#define constructMethodTable(...) struct vftb meth = { __VA_ARGS__ }
+#define assignMethodTable(x) (x)->method = &meth
+#endif
+
+#undef c_class
+
+ 
+
+
 

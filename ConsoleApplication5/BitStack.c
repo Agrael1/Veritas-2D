@@ -9,7 +9,7 @@
 
 int bPush(void* self, Byte value, Byte length)
 {
-	struct Stack* this = self;
+	struct c_class* this = self;
 
 	if (this->bitctr+length <= NREG)
 	{
@@ -32,7 +32,7 @@ int bPush(void* self, Byte value, Byte length)
 
 short bPop(void* self, Byte length)
 {
-	struct Stack* this = self;
+	struct c_class* this = self;
 	short a;
 
 	if (this->bitctr > 0)
@@ -57,19 +57,19 @@ short bPop(void* self, Byte length)
 	}
 }
 
-const vftb method = { bPush,bPop };
+constructMethodTable(bPush,.bPop = bPop);
 
 // Constructor (must be last)
 void* stack_ctor(void* self, va_list *ap)
 {
-	struct Stack* this = self;
+	struct c_class* this = self;
+	assignMethodTable(this);
 
 	this->bitctr = 0;
 	this->head = 0;
-	this->method = &method;
-
+	
 	return this;
 }
 
-const struct Class _stack = {.size = sizeof(struct Stack),.ctor = stack_ctor};
-const void* Stack = &_stack;
+const struct Class _stack = {.size = sizeof(struct c_class),.ctor = stack_ctor};
+const void* c_class = &_stack;

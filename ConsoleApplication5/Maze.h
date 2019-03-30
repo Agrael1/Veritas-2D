@@ -8,31 +8,25 @@
 #include "BitStack.h"
 #include "EngineCommons.h"
 
-#pragma region Bindings
-
 #define c_class Maze
 
-typedef struct {
-	int(*MazeNext)(void* self, unsigned char *nx, unsigned char *ny);
-	void(*generateComplete)(void* self);
-}vftb;
-#pragma endregion
-
-extern const void* Maze;
-
-struct Maze
+class
 {
 	const void* _class;
+
 	privatev(
 		Byte* matrix;		// Matrix of 0 and 1 for path checking
-		struct Stack* S;	// BitStack for vector saving
+		struct BitStack* S;	// BitStack for vector saving
 		Byte ByteX;			// Parameter for Matrix (Matrix length)
 		Byte vector;
 		_Bool flag;
 		);
 
+	methods(
+		int(*MazeNext)(void* self, unsigned char *nx, unsigned char *ny);
+		void(*generateComplete)(void* self);
+	);
 // Public:
-	const vftb* method;
 	Byte* MazeRep;
 	Byte DimX, DimY;
 	Byte startx, starty;

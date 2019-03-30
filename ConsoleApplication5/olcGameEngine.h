@@ -21,8 +21,6 @@ struct sKeyState
 	bool bHeld:1;
 };
 
-extern const void* olcGameEngine;
-
 typedef struct
 {
 	// Virtual functions 
@@ -66,9 +64,9 @@ typedef struct
 
 }vftb;
 
-struct olcGameEngine 
+class 
 {
-	const void* class;
+	const void* _class;
 	vftb* method;
 
 	int m_nScreenWidth;
