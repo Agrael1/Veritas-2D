@@ -1,5 +1,6 @@
 #include <math.h>
 #include "Class.h"
+
 #include "New.h"
 #include "Maze.h"
 #include "GameDemo.h"
@@ -81,7 +82,7 @@ void Test(void* self)
 
 	base.method->Compose(this, this->localFrame, 0, 0);
 
-	base.method->PrintChar(this, (int)private.m_fPlayerX,((int)private.m_fPlayerY),  ' ', BG_CYAN);
+	base.method->PrintChar(this, (int)private.m_fPlayerX,((int)private.m_fPlayerY),  ' ', BG_MAGENTA);
 }
 
 void AnimateMaze(void* self)
@@ -144,14 +145,13 @@ bool OnUserCreate(void* self)
 {
 	struct c_class* this = self;
 
-	this->cellsY = 8;
-	this->cellsX = 8;
+	this->cellsY = 10;
+	this->cellsX = 10;
 
 	this->localFrame = new(Frame, (this->cellsX*this->CellL + 1), (this->cellsY*this->CellL + 1));
 
 	this->maze = new(Maze, this->cellsX, this->cellsY);
 		
-
 	this->fDepth = 16;
 	private.current.X = this->maze->startx;
 	private.current.Y = this->maze->starty;
@@ -159,7 +159,6 @@ bool OnUserCreate(void* self)
 
 	DrawBackground(this);
 	DrawMaze(this);
-
 
 	// Player and game stuff
 
@@ -180,6 +179,10 @@ bool OnUserUpdate(void* self, float fElapsedTime)
 		private.m_fPlayerA -= (1.0f)*fElapsedTime;
 	if (base.m_keys['D'].bHeld)
 		private.m_fPlayerA += (1.0f)*fElapsedTime;
+
+
+	private.m_fPlayerA += (base.m_mousePosX-base.m_nScreenWidth/2)*fElapsedTime*0.02;
+
 	if (base.m_keys['W'].bHeld)
 	{
 		private.m_fPlayerX += sinf(private.m_fPlayerA)*(5.0f)*fElapsedTime;
@@ -202,6 +205,7 @@ bool OnUserUpdate(void* self, float fElapsedTime)
 			private.m_fPlayerY += cosf(private.m_fPlayerA)*(5.0f)*fElapsedTime;
 		}
 	}
+
 	if (base.m_keys[27].bHeld)
 		return false;
 #pragma endregion
@@ -212,6 +216,8 @@ bool OnUserUpdate(void* self, float fElapsedTime)
 
 	base.method->Fill(this, this->maze->startx*this->CellL+1, this->maze->starty*this->CellL + 1, this->maze->startx*this->CellL + this->CellL, this->maze->starty*this->CellL + this->CellL, L' ', BG_RED);
 
+	if((int)private.m_fPlayerX == this->maze->startx*this->CellL + 1 &&(int)private.m_fPlayerY == this->maze->starty*this->CellL+1)
+		return false;
 	return true;
 }
 // Constructor (must be last)

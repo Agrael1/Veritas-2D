@@ -8,9 +8,13 @@
 // Usage: include last to every class declaration header.
 #ifndef ENGINECOMMONS_H
 #define ENGINECOMMONS_H
+
+#include "New.h"
+
 typedef unsigned char Byte;
 typedef _Bool bool;
 typedef unsigned short Word;
+typedef unsigned int DWord;
 
 #define M_PI 3.14159265358979323846
 #define true 1
@@ -32,6 +36,19 @@ typedef unsigned short Word;
 
 #define __rclass(x) extern const void* x; struct x
 #define class __rclass(c_class)
+
+#define __xctor(x) x ## _ctor
+#define __rctor(x) __xctor(x)
+#define Constructor void* __rctor(c_class)
+
+#define __xdtor(x) x ## _dtor
+#define __rdtor(x) __xdtor(x)
+#define Destructor void* __rdtor(c_class)
+
+#define __xctab(x) _ ## x
+#define __rctab(x) __xctab(x)
+#define ctab __rctab(c_class)
+
 #pragma endregion
 // Private Handling
 #define privatev(...) Byte __internal_prtb[ sizeof( struct _private{ __VA_ARGS__ } )]
@@ -40,6 +57,10 @@ typedef unsigned short Word;
 #define methods(...) struct vftb { __VA_ARGS__ }*method
 #define constructMethodTable(...) struct vftb meth = { __VA_ARGS__ }
 #define assignMethodTable(x) (x)->method = &meth
+
+// Class construction handling
+#define ENDCLASSDESC const struct Class ctab = { sizeof(struct c_class),.ctor = __rctor(c_class),.dtor = __rdtor(c_class) }; \
+const void* c_class = &ctab;
 #endif
 
 #undef c_class

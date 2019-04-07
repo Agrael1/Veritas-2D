@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include "Class.h"
 
+
+
 // Internal functions. Paste functions here:
 // Clipping wrap
 void Clip(void* self, int *x, int *y)
@@ -13,7 +15,6 @@ void Clip(void* self, int *x, int *y)
 	if (*y < 0) *y = 0;
 	if (*y >= this->m_nScreenHeight) *y = this->m_nScreenHeight;
 }
-
 
 #pragma region Internal Functions
 // Fill function
@@ -75,6 +76,55 @@ DWORD _stdcall GameThread(void* _self)
 			}
 			this->m_keyOldState[i] = this->m_keyNewState[i];
 		}
+
+		INPUT_RECORD inBuf[32];
+		DWORD events = 0;
+		GetNumberOfConsoleInputEvents(this->m_hConsoleIn, &events);
+
+		if (events > 0)
+			ReadConsoleInput(this->m_hConsoleIn, inBuf, events, &events);
+
+		for (DWORD i = 0; i < events; i++)
+		{
+			switch (inBuf[i].EventType)
+			{
+			case FOCUS_EVENT:
+			{
+				this->m_bConsoleInFocus = inBuf[i].Event.FocusEvent.bSetFocus;
+			}
+			break;
+
+			case MOUSE_EVENT:
+			{
+				switch (inBuf[i].Event.MouseEvent.dwEventFlags)
+				{
+				case MOUSE_MOVED:
+				{
+					this->m_mousePosX = inBuf[i].Event.MouseEvent.dwMousePosition.X;
+					this->m_mousePosY = inBuf[i].Event.MouseEvent.dwMousePosition.Y;
+				}
+				break;
+
+				case 0:
+				{
+					for (int m = 0; m < 5; m++)
+						this->m_mouseNewState[m] = (inBuf[i].Event.MouseEvent.dwButtonState & (1 << m)) > 0;
+
+				}
+				break;
+
+				default:
+					break;
+				}
+			}
+			break;
+
+			default:
+				break;
+				// We don't care just at the moment
+			}
+		}
+
 		// Handle frame update
 		if (!this->method->OnUserUpdate(this,fElapsedTime))
 			this->m_bAtomActive = false;
@@ -129,9 +179,15 @@ int ConstructConsole(void* _self, int width, int heigh, int fontw, int fonth)
 	if ((*this).m_bufScreen)
 		Fill(this, 0, 0, this->m_nScreenWidth, this->m_nScreenHeight, L' ', BG_BLACK);
 
+	if (!SetConsoleMode(this->m_hConsoleIn, ENABLE_EXTENDED_FLAGS | ENABLE_MOUSE_INPUT | ENABLE_WINDOW_INPUT))
+		return -6;
+
 	// set window as not resizeable
 	HWND consoleWindow = GetConsoleWindow();
 	SetWindowLong(consoleWindow, GWL_STYLE, GetWindowLong(consoleWindow, GWL_STYLE) & ~WS_MAXIMIZEBOX & ~WS_SIZEBOX );
+
+	// For mouse to be captured after leaving the screen
+	SetCapture(consoleWindow);
 
 	return 0;
 }
@@ -207,7 +263,7 @@ void FillCenter(void* _self, int DimX, int DimY, wchar_t sym, short color)
 #pragma region Draw Functions
 void DrawRectangle(void* self, unsigned x1, unsigned y1, unsigned x2, unsigned y2, unsigned short color)
 {
-	struct olcGameEngine *this = self;
+	struct c_class *this = self;
 	if ((x2 <= x1) && (y2 >= y1))
 		this->method->Fill(this, x2, y1, x1, y2, L' ', color);
 	else if ((x2 >= x1) && (y2 <= y1))
@@ -258,6 +314,7 @@ void* olcGameEngine_ctor(void* _self, va_list *app)
 	this->m_keys = (struct sKeyState*)calloc(256, sizeof(struct sKeyState));
 	this->method = &_method;
 	this->m_bEnableSound = false;
+	this->m_bConsoleInFocus = true;
 	return this;
 }
 // Destructor
