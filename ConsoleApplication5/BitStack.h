@@ -30,13 +30,13 @@ class
 
 	methods(
 		// Pushes bits into the stack and automatically pushes complete 32/64 bits to the big one
-		// self - pointer to the current class pointer (this)
-		// value - value to push from 0 to 255
-		// length - length in bits to push < 9
+		// @self - pointer to the current class pointer (this)
+		// @value - value to push from 0 to 255
+		// @length - length in bits to push < 9
 		const void(*bPush)(void* self, unsigned char value, unsigned char length);
-		// Pops bits from the stack and automatically pops complete 32/64 bits from the big one
-		// self - pointer to the current class pointer (this)
-		// length - length in bits to pop < 9
+		// @Pops bits from the stack and automatically pops complete 32/64 bits from the big one
+		// @self - pointer to the current class pointer (this)
+		// @length - length in bits to pop < 9
 		short(*bPop)(void* self, unsigned char length);
 	);
 };

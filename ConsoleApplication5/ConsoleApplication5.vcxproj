@@ -147,6 +147,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -157,7 +158,7 @@
     <ClCompile Include="main.c" />
     <ClCompile Include="MazeGen.c" />
     <ClCompile Include="olcGameEngine.c" />
-    <ClCompile Include="Source.c" />
+    <ClCompile Include="VeritasEngine.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Class.h" />
@@ -168,6 +169,7 @@
     <ClInclude Include="Maze.h" />
     <ClInclude Include="New.h" />
     <ClInclude Include="olcGameEngine.h" />
+    <ClInclude Include="VeritasEngine.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

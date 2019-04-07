@@ -81,11 +81,20 @@ class
 	SMALL_RECT m_rectWindow;
 	short m_keyOldState[256];
 	short m_keyNewState[256];
+	struct sKeyState *m_keys;
+
+	struct sKeyState m_mouse[5];
+
+	bool m_mouseOldState[5];
+	bool m_mouseNewState[5];
+
+	int m_mousePosX;
+	int m_mousePosY;
+
 	bool m_bConsoleInFocus:1;
 	bool m_bEnableSound:1;
 	bool m_bAtomActive:1;
 
-	struct sKeyState *m_keys;
 };
 #endif // !OLCGAMEENGINE
 

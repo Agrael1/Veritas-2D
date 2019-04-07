@@ -1,6 +1,7 @@
 #ifndef Gamedemo_h
 #define Gamedemo_h
 
+
 #include "olcGameEngine.h"
 #include "EngineCommons.h"
 
@@ -25,6 +26,8 @@ class
 	Byte fDepth;
 	Byte cellsX, cellsY;
 	Byte CellL;
+
+
 
 	struct Frame *localFrame;
 	struct Maze* maze;
