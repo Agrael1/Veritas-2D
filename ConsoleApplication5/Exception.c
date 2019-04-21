@@ -3,13 +3,14 @@
 #include "Exception.h"
 #include <malloc.h>
 
+setupException
 
 const char* virtual(GetType)() 
 {
 	return "Veritas Exception\n\r";
 }
 
-char* GetOriginString(const void* self)
+char* _GetOriginString(const void* self)
 {
 	const struct c_class* this = self;
 	struct StringStream *oss = new(StringStream);
@@ -22,7 +23,7 @@ char* virtual(what) (void* self)
 {
 	struct c_class* this = self;
 	struct StringStream *oss = new(StringStream);
-	char* _proxy = GetOriginString(this);
+	char* _proxy = _GetOriginString(this);
 	oss->method->Append(oss,this->method->GetType())->method->Append(oss, _proxy);
 
 	this->whatBuffer = oss->method->EndStr(oss);
@@ -33,7 +34,8 @@ char* virtual(what) (void* self)
 
 constructMethodTable(
 	.GetType = virtual(GetType),
-	.what = virtual(what)
+	.what = virtual(what),
+	.GetOriginString = _GetOriginString
 );
 
 Constructor(void* self, va_list* ap)
@@ -42,12 +44,15 @@ Constructor(void* self, va_list* ap)
 	assignMethodTable(this);
 	this->line = __crt_va_arg(*ap, Word);
 	this->file = __crt_va_arg(*ap, const char*);
-
+	this->whatBuffer = NULL;
 	return this;
 }
 Destructor(void* self)
 {
-	return self;
+	struct c_class* this = self;
+	if (this->whatBuffer)
+		free(this->whatBuffer);
+	return this;
 }
 
 ENDCLASSDESC

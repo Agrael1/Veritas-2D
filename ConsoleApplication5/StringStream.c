@@ -23,7 +23,7 @@ inline int get_len(const int n)
 	return  (int)log10(n) + 1;
 }
 
-inline void itoa_s(char* const buffer, const int n, const Word len)
+inline void itoa_s(char* const buffer, const long n, const Word len)
 {
 	register a = n;
 	buffer[len - 1] = '\0';
@@ -54,7 +54,7 @@ struct c_class* _Append(void* self, const char* str)
 	return this;
 }
 
-struct c_class* _AppendI(void* self, const int num)
+struct c_class* _AppendI(void* self, const long num)
 {
 	struct c_class* this = self;
 	// loading buffer length of a number

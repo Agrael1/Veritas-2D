@@ -56,11 +56,12 @@ typedef unsingned int MaxInt;
 #define ctab __rctab(c_class)
 
 #define __xconcat(x,y) x##y
+#define __rconcat(x,y) __xconcat(x,y)
 
 
 #pragma endregion
 
-#define virtual(x) __xconcat( x, ctab)
+#define virtual(x) __rconcat( x, __rctab(c_class))
 // Private Handling
 #define privatev(...) Byte __internal_prtb[ sizeof( struct _private{ __VA_ARGS__ } )]
 #define private (*(struct _private*)(this->__internal_prtb))
