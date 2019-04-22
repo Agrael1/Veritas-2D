@@ -1,7 +1,7 @@
 #include "Class.h"
 #include "StringStream.h"
 #include "Window.h"
-#include <stdio.h>
+#include <malloc.h>
 
 // namespace ConsoleWindow
 #define c_class ConsoleWindow
@@ -98,11 +98,17 @@ bool _CreateConsole(void* self, Word width, Word height, const Byte fontw, const
 
 	return true;
 }
+void _OutputToScreen(void* self, CHAR_INFO* buffer)
+{
+	struct c_class *this = self;
+	WriteConsoleOutputW(this->hOut, buffer, (COORD) { (short)this->Width, (short)this->Height}, (COORD) { 0, 0 }, &this->rWindowRect);
+}
 
 constructMethodTable(
 	.CreateConsole = _CreateConsole,
 	.SetCursor = _SetCursor,
-	.Restore = _Restore
+	.Restore = _Restore,
+	.OutputToScreen = _OutputToScreen
 );
 
 Constructor(void* self, va_list* ap)
@@ -138,7 +144,7 @@ char* TranslateErrorCode(HRESULT hr)
 {
 	char* pMsgBuf = NULL;
 	DWORD nMsgLen = FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM |
-		FORMAT_MESSAGE_IGNORE_INSERTS, NULL, hr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), &pMsgBuf,
+		FORMAT_MESSAGE_IGNORE_INSERTS, NULL, hr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR)&pMsgBuf,
 		0, NULL);
 
 	if (nMsgLen == 0)

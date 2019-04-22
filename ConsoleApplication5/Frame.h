@@ -1,5 +1,5 @@
 #pragma once
-#include <windows.h>
+#include "WinSetup.h"
 #include "EngineCommons.h"
 
 enum COLOUR
@@ -49,9 +49,9 @@ class
 	Word nFrameHeight;
 
 	methods(
-		void (*PrintFrameW)(void* _self, int x, int y, wchar_t character, short color);
-		void (*DrawRectangle)(void* self, Word x1, Word y1, Word x2, Word y2, unsigned short color);
+		void (*PrintFrame)(void* _self, Word x, Word y, wchar_t character, Word color);
+		void (*DrawRectangle)(void* self, Word x1, Word y1, Word x2, Word y2, Word color);
+		void (*Compose)(void* self, struct Frame* localBuffer, Word offsetX, Word offsetY);
 	);
 };
-
 

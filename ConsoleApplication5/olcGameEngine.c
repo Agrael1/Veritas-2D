@@ -2,6 +2,7 @@
 #include "olcGameEngine.h"
 #include <time.h>
 #include <stdio.h>
+#include <malloc.h>
 #include "Class.h"
 
 // Internal functions. Paste functions here:

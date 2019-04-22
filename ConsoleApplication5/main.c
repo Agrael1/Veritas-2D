@@ -9,7 +9,9 @@ int main(void)
 	try
 	{
 		VE = new(VeritasEngine);
-		VE->method->SetupScreen(VE, 320, 160, 8, 8);
+		if (VE->method->SetupScreen(VE, 320, 160, 8, 8))
+			VE->method->Start(VE);
+
 	}
 	catch (Exception, e)
 	{
@@ -22,22 +24,22 @@ int main(void)
 
 	return 0;
 
-	/*struct GameDemo *GD;
-	try 
-	{
-		GD = new(GameDemo);
+	//struct GameDemo *GD;
+	//try 
+	//{
+	//	GD = new(GameDemo);
 
-		if(GD->_.method->ConstructConsole(GD, 320, 200, 4, 4))
-			GD->_.method->Start(GD);
-	}
-	catch (Exception, e)
-	{
-		e->method->what(e);
-		printf("%s", e->whatBuffer);
-	}
-	endtry
+	//	if(GD->_.method->ConstructConsole(GD, 320, 200, 4, 4))
+	//		GD->_.method->Start(GD);
+	//}
+	//catch (Exception, e)
+	//{
+	//	e->method->what(e);
+	//	printf("%s", e->whatBuffer);
+	//}
+	//endtry
 
-	if (GD)
-		delete(GD);*/
+	//if (GD)
+	//	delete(GD);
 
 }

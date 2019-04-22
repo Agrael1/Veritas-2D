@@ -47,6 +47,7 @@ class
 		bool(*CreateConsole)(void* self, Word width, Word height, const Byte fontw, const Byte fonth);
 		bool(*SetCursor)(void* self, bool value);
 		bool(*Restore)(const void* self);
+		void(*OutputToScreen)(void* self, CHAR_INFO* buffer);
 	);
 };
 
