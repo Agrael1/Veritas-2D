@@ -3,6 +3,7 @@
 #include "Exception.h"
 #include "EngineCommons.h"
 
+
 #define c_class ConsoleWindow
 
 extern const void* WindowException;

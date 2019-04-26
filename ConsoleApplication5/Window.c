@@ -46,6 +46,10 @@ bool _CreateConsole(void* self, Word width, Word height, const Byte fontw, const
 {
 	struct c_class *this = self;
 
+	SetWindowLongPtr(this->consoleWindow, GWL_STYLE,
+		GetWindowLong(this->consoleWindow, GWL_STYLE)
+		& ~WS_SIZEBOX & ~WS_SYSMENU & ~WS_MINIMIZEBOX);
+
 	this->Height = height;
 	this->Width = width;
 
@@ -116,6 +120,7 @@ Constructor(void* self, va_list* ap)
 	struct c_class *this = self;
 	assignMethodTable(this);
 
+	this->consoleWindow = GetConsoleWindow();
 	this->hIn = GetStdHandle(STD_INPUT_HANDLE);
 	this->hOriginalConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	this->hOut = this->hOriginalConsole;

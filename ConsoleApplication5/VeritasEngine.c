@@ -16,9 +16,10 @@ bool _SetupScreen(void* self, Word width, Word height, Byte fontw, Byte fonth)
 	if (this->Window->method->CreateConsole(this->Window, width, height, fontw, fonth)
 		&& this->Window->method->SetCursor(this->Window, false))
 	{
-		this->Output = new(Frame, width, height); 
-		_Show(this);
+		this->Output = new(Frame, width, height);
 		SetConsoleTitleA(this->AppName);
+		_Show(this);
+		ShowCursor(false);
 		return true;
 	}
 		
@@ -29,21 +30,27 @@ bool _SetupScreen(void* self, Word width, Word height, Byte fontw, Byte fonth)
 DWORD _stdcall _GameThread(void* _self)
 {
 	struct c_class* this = _self;
+	this->Control = new(MessageWindow, this->Window->consoleWindow);
+	int gResult;
 
-	while (1)
+	// Game Loop
+	while (true)
 	{
-
+		if (gResult = ProcessMessages() != 0)
+			return gResult;
 	}
 
 	return 0;
 }
+
 void _Start(void* _self)
 {
 	DWORD dwThreadID;
 	HANDLE hThread;
 
 	struct c_class* this = _self;
-	bActive = true;
+	bActive = true;		
+
 
 	hThread = CreateThread(
 		NULL,
@@ -75,6 +82,7 @@ Destructor(void* self)
 {
 	struct c_class* this = self;
 	delete(this->Window);
+	delete(this->Control);
 	if (this->Output)
 		delete(this->Output);
 	return this;

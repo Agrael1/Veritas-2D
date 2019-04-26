@@ -188,7 +188,7 @@ bool ConstructConsole(void* _self, int width, int heigh, int fontw, int fonth)
 
 	// set window as not resizeable
 	HWND consoleWindow = GetConsoleWindow();
-	SetWindowLong(consoleWindow, GWL_STYLE, GetWindowLong(consoleWindow, GWL_STYLE) & ~WS_MAXIMIZEBOX & ~WS_SIZEBOX );
+	SetWindowLong(consoleWindow, GWL_STYLE, GetWindowLong(consoleWindow, GWL_STYLE) & ~WS_MAXIMIZEBOX & ~WS_SIZEBOX & ~WS_SYSMENU);
 
 	// For mouse to be captured after leaving the screen
 	SetCapture(consoleWindow);

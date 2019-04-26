@@ -57,6 +57,9 @@
     <ClCompile Include="StringStream.c">
       <Filter>Файлы исходного кода\Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Control.c">
+      <Filter>Файлы исходного кода\Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="olcGameEngine.h">
@@ -99,6 +102,9 @@
       <Filter>Заголовочные файлы\Engine</Filter>
     </ClInclude>
     <ClInclude Include="StringStream.h">
+      <Filter>Заголовочные файлы\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Control.h">
       <Filter>Заголовочные файлы\Engine</Filter>
     </ClInclude>
   </ItemGroup>
