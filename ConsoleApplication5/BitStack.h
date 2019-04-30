@@ -33,11 +33,11 @@ class
 		// @self - pointer to the current class pointer (this)
 		// @value - value to push from 0 to 255
 		// @length - length in bits to push < 9
-		const void(*bPush)(void* self, unsigned char value, unsigned char length);
-		// @Pops bits from the stack and automatically pops complete 32/64 bits from the big one
+		const void(*bPush)(void* self, Byte value, Byte length);
+		// Pops bits from the stack and automatically pops complete 32/64 bits from the big one
 		// @self - pointer to the current class pointer (this)
 		// @length - length in bits to pop < 9
-		short(*bPop)(void* self, unsigned char length);
+		short(*bPop)(void* self, Byte length);
 	);
 };
 #endif // !BitStack

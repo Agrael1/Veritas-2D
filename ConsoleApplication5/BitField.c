@@ -1,5 +1,4 @@
 #include "BitField.h"
-#include <stdarg.h>
 #include <malloc.h>
 #include "Class.h"
 
@@ -59,7 +58,7 @@ bool _FullReset(void* self)
 	struct c_class *this = self;
 	if (this->Positions > 0)
 	{
-		Byte num = (this->Positions % 8) > 0 ? this->Positions / 8 + 1 : this->Positions / 8;
+		Byte num = (this->Positions % BLOCKSZ) > 0 ? this->Positions / BLOCKSZ + 1 : this->Positions / BLOCKSZ;
 		for (int i = 0; i < num; i++)
 			this->BitArray[i] = 0;
 		return true;
@@ -71,15 +70,14 @@ constructMethodTable(.Any = _Any,.IsSet = _IsSet,.Set = _Set,.Reset = _Reset,.Fu
 
 Constructor(void* self, va_list* ap)
 {
-	struct c_class *this = self;
+	account(self);
 	assignMethodTable(this);
 
 	if (ap != NULL)
 	{
-		
 		this->Positions =  va_arg(*ap, DWord);
-		Byte num = (this->Positions % 8) > 0 ? this->Positions / 8 + 1 : this->Positions / 8;
-		this->BitArray = malloc(num); //Because we allocate bytes
+		Byte num = (this->Positions % BLOCKSZ) > 0 ? this->Positions / BLOCKSZ + 1 : this->Positions / BLOCKSZ;
+		this->BitArray = malloc(num*BLOCKSZ); //Because we allocate MaxInt
 		if (!_FullReset(this)) return NULL;
 	}
 	else
@@ -90,12 +88,10 @@ Constructor(void* self, va_list* ap)
 	}
 	return this;
 }
-
 Destructor(void* self)
 {
 	struct c_class *this = self;
 	free(this->BitArray);
 	return this;
 }
-
 ENDCLASSDESC

@@ -2,9 +2,29 @@
 #include "GameDemo.h"
 #include "VeritasEngine.h"
 #include "Exception.h"
+#include "Queue.h"
 
 int main(void)
 {
+	//int x = 123;
+	//int* ff = &x;
+	//struct Queue* q = new(Queue, sizeof(int*), 2);
+
+	//q->method->push(q, x);
+	//q->method->push(q, x+2);
+	//q->method->push(q, x + 10);
+
+	//q->method->pop(q, &x);
+
+	//printf("popped: %d",x);
+
+	//q->method->clear(q);
+
+	//q->method->push(q, x + 10);
+
+	//q->method->pop(q, &x);
+	//printf("popped: %d", x );
+
 	struct VeritasEngine *VE;
 	try
 	{
@@ -24,22 +44,24 @@ int main(void)
 
 	return 0;
 
-	//struct GameDemo *GD;
-	//try 
-	//{
-	//	GD = new(GameDemo);
 
-	//	if(GD->_.method->ConstructConsole(GD, 320, 200, 4, 4))
-	//		GD->_.method->Start(GD);
-	//}
-	//catch (Exception, e)
-	//{
-	//	e->method->what(e);
-	//	printf("%s", e->whatBuffer);
-	//}
-	//endtry
+	
+	/*struct GameDemo *GD;
+	try 
+	{
+		GD = new(GameDemo);
 
-	//if (GD)
-	//	delete(GD);
+		if(GD->_.method->ConstructConsole(GD, 320, 200, 4, 4))
+			GD->_.method->Start(GD);
+	}
+	catch (Exception, e)
+	{
+		e->method->what(e);
+		printf("%s", e->whatBuffer);
+	}
+	endtry
+
+	if (GD)
+		delete(GD);*/
 
 }

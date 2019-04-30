@@ -2,16 +2,24 @@
 #include "Class.h"
 
 LRESULT _HandleMsg(void* self, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-	struct c_class* this = self;
-	if (msg == 8)
+{	account(self);
+
+	switch (msg)
 	{
+	case WM_KILLFOCUS:
 		SetFocus(hWnd);
-	}
-	if (msg == WM_KEYDOWN)
-	{
-		PostQuitMessage(33);
-		return 0;
+		break;
+	case WM_KEYDOWN:
+	case WM_SYSKEYDOWN:
+		if (!(lParam & 0x40000000))
+		{
+			this->kbd->method->OnKeyPressed(this->kbd,(Byte)(wParam));
+		}
+		break;
+	case WM_KEYUP:
+	case WM_SYSKEYUP:
+		this->kbd->method->OnKeyReleased(this->kbd, (Byte)(wParam));
+		break;
 	}
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
@@ -81,10 +89,10 @@ Constructor(void* self, va_list *ap)
 	this->hInst = GetModuleHandle(NULL);
 	
 	_CreateControl(this, va_arg(*ap, HWND));
+	this->kbd = new(Keyboard);
 
 	return this;
 }
-
 Destructor(void* self)
 {
 	struct c_class* this = self;

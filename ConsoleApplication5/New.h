@@ -12,5 +12,6 @@ void* new (const void* type, ...);
 // deletes a class instance
 void delete(void* item);
 unsigned int sizeOf(const void* _self);
+const char* stringOf(const void* _self);
 #endif // !New
 

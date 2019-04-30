@@ -143,7 +143,7 @@ void DrawMaze(void* self)
 // Creation handling override
 bool OnUserCreate(void* self)
 {
-	struct c_class* this = self;
+	account(self);
 
 	this->cellsY = 10;
 	this->cellsX = 10;
@@ -241,11 +241,4 @@ void* GameDemo_dtor(void* self)
 	delete(this->maze);
 	return this;
 }
-
-static const struct Class _GameDemo =
-{
-	sizeof(struct c_class),
-	GameDemo_ctor, GameDemo_dtor,0,0
-};
-
-const void* GameDemo = &_GameDemo;
+ENDCLASSDESC

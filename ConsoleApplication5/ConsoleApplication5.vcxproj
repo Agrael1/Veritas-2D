@@ -158,9 +158,11 @@
     <ClCompile Include="Exception.c" />
     <ClCompile Include="Frame.c" />
     <ClCompile Include="Gamedemo.c" />
+    <ClCompile Include="Keyboard.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="MazeGen.c" />
     <ClCompile Include="olcGameEngine.c" />
+    <ClCompile Include="Queue.c" />
     <ClCompile Include="StringStream.c" />
     <ClCompile Include="VeritasEngine.c" />
     <ClCompile Include="Window.c" />
@@ -174,9 +176,11 @@
     <ClInclude Include="Frame.h" />
     <ClInclude Include="GameDemo.h" />
     <ClInclude Include="BitStack.h" />
+    <ClInclude Include="Keyboard.h" />
     <ClInclude Include="Maze.h" />
     <ClInclude Include="New.h" />
     <ClInclude Include="olcGameEngine.h" />
+    <ClInclude Include="Queue.h" />
     <ClInclude Include="StringStream.h" />
     <ClInclude Include="VeritasEngine.h" />
     <ClInclude Include="Window.h" />

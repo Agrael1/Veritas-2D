@@ -1,5 +1,6 @@
 #pragma once
 #include "WinSetup.h"
+#include "Keyboard.h"
 #include "EngineCommons.h"
 
 #define c_class MessageWindow
@@ -9,19 +10,21 @@ class
 	LPCWSTR wndClassName;
 	HINSTANCE hInst;
 
+	struct Keyboard* kbd;
+
 	methods(
 		LRESULT(*HandleMsg)(void* self, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	);
 };
 
-static unsigned int ProcessMessages()
+static DWord ProcessMessages()
 {
 	MSG msg;
-	if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
+	while (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
 	{
 		if (msg.message == WM_QUIT)
 		{
-			return msg.wParam;
+			return (unsigned int)msg.wParam;
 		}
 
 		TranslateMessage(&msg);

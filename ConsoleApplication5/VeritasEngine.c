@@ -1,7 +1,32 @@
 #include "Class.h"
 #include "VeritasEngine.h"
 
+#define EMPTYQUEUE this->Control->kbd->method->KeyIsEmpty(this->Control->kbd)
+#define ReadEventQueue() this->Control->kbd->method->ReadKey(this->Control->kbd)
+
 volatile bActive = false;
+
+
+bool _OnUserUpdate(void* self)
+{
+	account(self);
+	while (!EMPTYQUEUE)
+	{
+		// get an event from the queue
+		const struct KeyboardEvent* e = ReadEventQueue();
+		// check if it is a release event
+		if (e->method->IsPress(e))
+		{
+			// check if the event was for the space key
+			if (e->method->GetCode(e) == VK_ESCAPE)
+			{
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
 
 void _Show(void* self)
 {
@@ -19,27 +44,32 @@ bool _SetupScreen(void* self, Word width, Word height, Byte fontw, Byte fonth)
 		this->Output = new(Frame, width, height);
 		SetConsoleTitleA(this->AppName);
 		_Show(this);
-		ShowCursor(false);
 		return true;
 	}
 		
 	else
 		return false;
 }
-
 DWORD _stdcall _GameThread(void* _self)
 {
-	struct c_class* this = _self;
+	account(_self);
 	this->Control = new(MessageWindow, this->Window->consoleWindow);
 	int gResult;
+	ShowCursor(false);
 
 	// Game Loop
 	while (true)
 	{
 		if (gResult = ProcessMessages() != 0)
 			return gResult;
+		
+		// Process queue
+		if (!_OnUserUpdate(this))
+		{
+			return 1;
+		}
+		// render frame
 	}
-
 	return 0;
 }
 
@@ -61,6 +91,7 @@ void _Start(void* _self)
 		&dwThreadID);
 
 	WaitForSingleObject(hThread, INFINITE);
+	CloseHandle(hThread);
 }
 
 constructMethodTable(
@@ -82,7 +113,8 @@ Destructor(void* self)
 {
 	struct c_class* this = self;
 	delete(this->Window);
-	delete(this->Control);
+	if(this->Control)
+		delete(this->Control);
 	if (this->Output)
 		delete(this->Output);
 	return this;

@@ -28,50 +28,44 @@ typedef unsingned int MaxInt;
 
 #pragma region Automation
 // Easy mangling for method and private tables
-#define __xvftb(x) x ## _vftb
-#define __rvftb(x) __xvftb(x)
-#define vftb __rvftb(c_class)
-
-#define __xprivate(x) x ## _private
-#define __rprivate(x) __xprivate(x)
-#define _private __rprivate(c_class)
-
-#define __xmeth(x) x ## _method
-#define __rmeth(x) __xmeth(x)
-#define meth __rmeth(c_class)
-
 #define __rclass(x) extern const void* x; struct x
 #define class __rclass(c_class)
 
-#define __xctor(x) x ## _ctor
-#define __rctor(x) __xctor(x)
-#define Constructor void* __rctor(c_class)
-
-#define __xdtor(x) x ## _dtor
-#define __rdtor(x) __xdtor(x)
-#define Destructor void* __rdtor(c_class)
-
 #define __xctab(x) _ ## x
 #define __rctab(x) __xctab(x)
-#define ctab __rctab(c_class)
 
 #define __xconcat(x,y) x##y
 #define __rconcat(x,y) __xconcat(x,y)
 
+#define ctab __rconcat(_, c_class)
+#define virtual(x) __rconcat( x, __rctab(c_class))
+#define Destructor void* __rconcat(c_class,_dtor)
+#define Constructor void* __rconcat(c_class,_ctor)
+#define meth __rconcat(c_class, _method)
+#define _private __rconcat(c_class,_private)
+#define vftb __rconcat(c_class,_vftb)
 
+// Type string
+#define __xtypestr(x) #x
+#define __rtypestr(x) __xtypestr(x)
 #pragma endregion
 
-#define virtual(x) __rconcat( x, __rctab(c_class))
+#define inherits(x) struct x _base_ref
+
+#define account(x) struct c_class *this = x
+#define base (this->_base_ref)
+
 // Private Handling
-#define privatev(...) Byte __internal_prtb[ sizeof( struct _private{ __VA_ARGS__ } )]
-#define private (*(struct _private*)(this->__internal_prtb))
+#define privatev(...) Byte virtual(__internal_prtb)[ sizeof( struct _private{ __VA_ARGS__ } )]
+#define private (*(struct _private*)(this->virtual(__internal_prtb)))
 // Method Handling
 #define methods(...) struct vftb { __VA_ARGS__ }*method
 #define constructMethodTable(...) struct vftb meth = { __VA_ARGS__ }
-#define assignMethodTable(x) (x)->method = &meth
+#define assignMethodTable(x) ((struct c_class *)(x))->method = &meth
 
 // Class construction handling
-#define ENDCLASSDESC const struct Class ctab = { sizeof(struct c_class),.ctor = __rctor(c_class),.dtor = __rdtor(c_class) }; \
+#define ENDCLASSDESC const struct Class ctab = { sizeof(struct c_class),\
+.ctor = __rconcat(c_class,_ctor),.dtor = __rconcat(c_class,_dtor),.typestring = __rtypestr(c_class)}; \
 const void* c_class = &ctab;
 #endif
 
