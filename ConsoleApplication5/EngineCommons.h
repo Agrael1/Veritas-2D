@@ -50,10 +50,10 @@ typedef unsingned int MaxInt;
 #define __rtypestr(x) __xtypestr(x)
 #pragma endregion
 
-#define inherits(x) struct x _base_ref
+#define inherits(x) struct x _base
 
 #define account(x) struct c_class *this = x
-#define base (this->_base_ref)
+#define base (this->_base)
 
 // Private Handling
 #define privatev(...) Byte virtual(__internal_prtb)[ sizeof( struct _private{ __VA_ARGS__ } )]

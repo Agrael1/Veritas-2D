@@ -28,6 +28,7 @@ void delete(void* self)
 	free(self);
 }
 
+
 unsigned int sizeOf(const void* _self)
 {
 	const struct Class* const * cp = _self;

@@ -84,9 +84,9 @@ struct KeyboardEvent* virtual(ReadKey)(void* self)
 
 	if (private.KeyBuffer->Contains > 0u)
 	{
-		 struct KeyboardEvent* e = NULL;
-		 private.KeyBuffer->method->pop(private.KeyBuffer, &e);
-		 return e;
+		struct KeyboardEvent *ep = NULL;
+		private.KeyBuffer->method->pop(private.KeyBuffer, &ep);
+		return ep;
 	}
 	else
 	{

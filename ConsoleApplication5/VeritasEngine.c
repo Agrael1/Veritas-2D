@@ -2,32 +2,36 @@
 #include "VeritasEngine.h"
 
 #define EMPTYQUEUE this->Control->kbd->method->KeyIsEmpty(this->Control->kbd)
-#define ReadEventQueue() this->Control->kbd->method->ReadKey(this->Control->kbd)
+#define ReadEventQueue(event) struct KeyboardEvent* __event_ptr = this->Control->kbd->method->ReadKey(this->Control->kbd);\
+event = *__event_ptr; delete(__event_ptr)
 
-volatile bActive = false;
+volatile bool bActive = false;
 
-
-bool _OnUserUpdate(void* self)
+bool virtual(HandleInput)(void* self, struct KeyboardEvent event)
 {
-	account(self);
-	while (!EMPTYQUEUE)
+	if (event.method->IsPress(&event))
 	{
-		// get an event from the queue
-		const struct KeyboardEvent* e = ReadEventQueue();
-		// check if it is a release event
-		if (e->method->IsPress(e))
+		// check if the event was for the space key
+		if (event.method->GetCode(&event) == VK_ESCAPE)
 		{
-			// check if the event was for the space key
-			if (e->method->GetCode(e) == VK_ESCAPE)
-			{
-				return false;
-			}
+			return false;
 		}
 	}
 	return true;
 }
+bool _PassEvents(void* self)
+{
+	account(self);
+	struct KeyboardEvent event;
 
-
+	while (!EMPTYQUEUE)
+	{
+		// get an event from the queue
+		ReadEventQueue(event);
+		return this->method->HandleInput(this, event);
+	}
+	return true;
+}
 void _Show(void* self)
 {
 	struct c_class* this = self;
@@ -57,31 +61,38 @@ DWORD _stdcall _GameThread(void* _self)
 	int gResult;
 	ShowCursor(false);
 
+	if (!this->method->OnUserCreate(this))
+		return 2;
+
 	// Game Loop
-	while (true)
+	while (bActive)
 	{
+		// Read Messages
 		if (gResult = ProcessMessages() != 0)
 			return gResult;
-		
+
 		// Process queue
-		if (!_OnUserUpdate(this))
-		{
+		if (!_PassEvents(this))
 			return 1;
-		}
+
 		// render frame
+		if (!this->method->OnUserUpdate(this))
+		{
+			return 3;
+		}
+		_Show(this);
 	}
 	return 0;
 }
-
 void _Start(void* _self)
 {
 	DWORD dwThreadID;
 	HANDLE hThread;
+	DWORD ExitCode;
 
 	struct c_class* this = _self;
 	bActive = true;		
-
-
+	
 	hThread = CreateThread(
 		NULL,
 		0,
@@ -90,13 +101,28 @@ void _Start(void* _self)
 		0,
 		&dwThreadID);
 
+	
+
 	WaitForSingleObject(hThread, INFINITE);
-	CloseHandle(hThread);
+	GetExitCodeThread(hThread, &ExitCode);
+
+	switch (ExitCode)
+	{
+	case 0:
+	case 1:
+		CloseHandle(hThread);
+		break;
+	case 2:
+		CloseHandle(hThread);
+		throw(new(Exception, __LINE__, __FILE__));
+	}
 }
 
 constructMethodTable(
 	.SetupScreen = _SetupScreen,
-	.Start = _Start
+	.Start = _Start,
+	.HandleInput = virtual(HandleInput),
+	.Show = _Show
 );
 
 Constructor(void* self, va_list* ap)

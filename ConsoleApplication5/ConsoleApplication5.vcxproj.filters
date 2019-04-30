@@ -66,6 +66,9 @@
     <ClCompile Include="Keyboard.c">
       <Filter>Файлы исходного кода\Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Maze3D.c">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="olcGameEngine.h">
@@ -118,6 +121,9 @@
     </ClInclude>
     <ClInclude Include="Queue.h">
       <Filter>Заголовочные файлы\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Maze3D.h">
+      <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

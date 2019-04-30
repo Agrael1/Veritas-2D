@@ -1,37 +1,14 @@
-#include <stdio.h>
-#include "GameDemo.h"
-#include "VeritasEngine.h"
+#include "Maze3D.h"
 #include "Exception.h"
-#include "Queue.h"
 
 int main(void)
 {
-	//int x = 123;
-	//int* ff = &x;
-	//struct Queue* q = new(Queue, sizeof(int*), 2);
-
-	//q->method->push(q, x);
-	//q->method->push(q, x+2);
-	//q->method->push(q, x + 10);
-
-	//q->method->pop(q, &x);
-
-	//printf("popped: %d",x);
-
-	//q->method->clear(q);
-
-	//q->method->push(q, x + 10);
-
-	//q->method->pop(q, &x);
-	//printf("popped: %d", x );
-
-	struct VeritasEngine *VE;
+	struct Maze3D *Game;
 	try
 	{
-		VE = new(VeritasEngine);
-		if (VE->method->SetupScreen(VE, 320, 160, 8, 8))
-			VE->method->Start(VE);
-
+		Game = new(Maze3D);
+		if (Game->_base.method->SetupScreen(Game, 320, 160, 4, 4))
+			Game->_base.method->Start(Game);
 	}
 	catch (Exception, e)
 	{
@@ -39,8 +16,8 @@ int main(void)
 	}
 	endtry
 
-	if(VE)
-		delete(VE);
+	if(Game)
+		delete(Game);
 
 	return 0;
 

@@ -17,7 +17,11 @@ class
 	struct MessageWindow* Control;
 
 	methods(
+		bool(*OnUserCreate)(void* self);
+		bool(*OnUserUpdate)(void* self);
+		bool(*HandleInput)(void* self, struct KeyboardEvent event);
 		bool(*SetupScreen)(void* self, Word width, Word height, Byte fontw, Byte fonth);
 		void(*Start)(void* _self);
-	);
+		void(*Show)(void* self);
+		);
 };

@@ -24,7 +24,7 @@ static DWord ProcessMessages()
 	{
 		if (msg.message == WM_QUIT)
 		{
-			return (unsigned int)msg.wParam;
+			return (DWord)msg.wParam;
 		}
 
 		TranslateMessage(&msg);

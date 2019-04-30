@@ -42,8 +42,8 @@ void _Compose(void* self, struct Frame* localBuffer, Word offsetX, Word offsetY)
 	struct c_class *this = self;
 	_Clip(this, &offsetX, &offsetY);
 
-	for (int j = offsetY; j<localBuffer->nFrameHeight; j++)
-		for (int i = offsetX; i<localBuffer->nFrameLength; i++)
+	for (int j = offsetY; j<localBuffer->nFrameHeight + offsetY; j++)
+		for (int i = offsetX; i<localBuffer->nFrameLength + offsetX; i++)
 		{
 			this->localFrame[j*this->nFrameLength + i] = localBuffer->localFrame[(j - offsetY)*(localBuffer->nFrameLength) + i - offsetX];
 		}
