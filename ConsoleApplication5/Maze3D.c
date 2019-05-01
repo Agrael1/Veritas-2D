@@ -110,15 +110,50 @@ void _RenderMap(void* self, struct Frame* to)
 	
 
 }
-bool virtual(HandleInput)(void* self, struct KeyboardEvent event)
+void virtual(HandleControls)(void* self, const struct Keyboard* kbd, const double fElapsedTime)
+{
+	account(self);
+
+	if (kbd->method->KeyPressed(kbd, 'W'))
+	{
+		fPlayerX += sinf(fPlayerA)*(3.0f)*fElapsedTime;
+		fPlayerY += cosf(fPlayerA)*(3.0f)*fElapsedTime;
+
+		if (this->MapLayer->localFrame[(int)fPlayerY*this->MapLayer->nFrameLength + (int)fPlayerX].Attributes == BG_BLACK)
+		{
+			fPlayerX -= sinf(fPlayerA)*(3.0f)*fElapsedTime;
+			fPlayerY -= cosf(fPlayerA)*(3.0f)*fElapsedTime;
+		}
+	}
+	if (kbd->method->KeyPressed(kbd, 'S'))
+	{
+		fPlayerX -= sinf(fPlayerA)*(3.0f)*fElapsedTime;
+		fPlayerY -= cosf(fPlayerA)*(3.0f)*fElapsedTime;
+
+		if (this->MapLayer->localFrame[(int)fPlayerY*this->MapLayer->nFrameLength + (int)fPlayerX].Attributes == BG_BLACK)
+		{
+			fPlayerX += sinf(fPlayerA)*(3.0f)*fElapsedTime;
+			fPlayerY += cosf(fPlayerA)*(3.0f)*fElapsedTime;
+		}
+	}
+	if (kbd->method->KeyPressed(kbd, 'A'))
+		fPlayerA -= (1.0f)*fElapsedTime;
+	if (kbd->method->KeyPressed(kbd, 'D'))
+		fPlayerA += (1.0f)*fElapsedTime;
+}
+bool virtual(HandleInputEvents)(void* self, struct KeyboardEvent event)
 {
 	account(self);
 	if (event.method->IsPress(&event))
 	{
 		// check if the event was for the space key
-		if (event.method->GetCode(&event) == VK_ESCAPE)
+		switch (event.method->GetCode(&event))
 		{
+		case VK_ESCAPE:
 			return false;
+		case 'M':
+			this->bShowMap ^= true;
+			break;
 		}
 	}
 	return true;
@@ -140,8 +175,10 @@ bool virtual(OnUserCreate)(void* self)
 	
 	_RenderMap(this, this->MapLayer);
 
-	fPlayerX = 1;
-	fPlayerY = 1;
+	this->bShowMap = false;
+
+	fPlayerX = 10;
+	fPlayerY = 10;
 	fPlayerA = 0;
 
 	return true;
@@ -151,10 +188,16 @@ bool virtual(OnUserUpdate)(void* self)
 	account(self);
 	// Render Maze
 	_RenderMaze(this, base.Output);
-	// Emplace Map 
-	base.Output->method->Compose(base.Output, this->MapLayer, 5, 5);
-	// Player position
-	base.Output->method->PrintFrame(base.Output, (int)fPlayerX + 5, ((int)fPlayerY) + 5, ' ', BG_MAGENTA);
+
+	// 'M' toggles the map
+	if (this->bShowMap)
+	{
+		// Emplace Map 
+		base.Output->method->Compose(base.Output, this->MapLayer, 5, 5);
+		// Player position
+		base.Output->method->PrintFrame(base.Output, (int)fPlayerX + 5, ((int)fPlayerY) + 5, ' ', BG_MAGENTA);
+	}
+
 	return true;
 }
 
@@ -164,7 +207,8 @@ Constructor(void* self, va_list *ap)
 	base.AppName = stringOf(self);
 	base.method->OnUserCreate = virtual(OnUserCreate);
 	base.method->OnUserUpdate = virtual(OnUserUpdate);
-	base.method->HandleInput = virtual(HandleInput);
+	base.method->HandleInputEvents = virtual(HandleInputEvents);
+	base.method->HandleControls = virtual(HandleControls);
 
 	return this;
 }

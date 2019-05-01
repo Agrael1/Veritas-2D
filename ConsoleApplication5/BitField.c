@@ -47,7 +47,7 @@ bool _Reset(void* self, DWord pos)
 	struct c_class *this = self;
 	if (pos <= this->Positions)
 	{
-		this->BitArray[CalcrPos(pos)] &= CalcdPos(pos);
+		this->BitArray[CalcrPos(pos)] &= ~CalcdPos(pos);
 		return true;
 	}
 	else

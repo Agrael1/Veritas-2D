@@ -13,6 +13,8 @@ class
 	float fDepth;
 	float fFOV;
 
+	bool bShowMap;
+
 	struct Frame* MapLayer;
 	struct Maze* maze;
 };

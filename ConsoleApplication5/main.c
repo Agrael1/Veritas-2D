@@ -7,7 +7,7 @@ int main(void)
 	try
 	{
 		Game = new(Maze3D);
-		if (Game->_base.method->SetupScreen(Game, 320, 160, 4, 4))
+		if (Game->_base.method->SetupScreen(Game, 320, 180, 4, 4))
 			Game->_base.method->Start(Game);
 	}
 	catch (Exception, e)

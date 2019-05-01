@@ -20,6 +20,7 @@ LRESULT _HandleMsg(void* self, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 	case WM_SYSKEYUP:
 		this->kbd->method->OnKeyReleased(this->kbd, (Byte)(wParam));
 		break;
+
 	}
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }

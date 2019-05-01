@@ -7,7 +7,7 @@ event = *__event_ptr; delete(__event_ptr)
 
 volatile bool bActive = false;
 
-bool virtual(HandleInput)(void* self, struct KeyboardEvent event)
+bool virtual(HandleInputEvents)(void* self,struct KeyboardEvent event)
 {
 	if (event.method->IsPress(&event))
 	{
@@ -28,7 +28,7 @@ bool _PassEvents(void* self)
 	{
 		// get an event from the queue
 		ReadEventQueue(event);
-		return this->method->HandleInput(this, event);
+		return this->method->HandleInputEvents(this, event);
 	}
 	return true;
 }
@@ -64,9 +64,21 @@ DWORD _stdcall _GameThread(void* _self)
 	if (!this->method->OnUserCreate(this))
 		return 2;
 
+	// Time counting
+	LARGE_INTEGER StartingTime, EndingTime;
+	LARGE_INTEGER Frequency;
+	double fElapsedSeconds;
+
+	QueryPerformanceFrequency(&Frequency);
+	QueryPerformanceCounter(&StartingTime);
+
 	// Game Loop
 	while (bActive)
 	{
+		QueryPerformanceCounter(&EndingTime);
+		fElapsedSeconds = (double)(EndingTime.QuadPart - StartingTime.QuadPart) / (double)Frequency.QuadPart;
+		StartingTime = EndingTime;
+
 		// Read Messages
 		if (gResult = ProcessMessages() != 0)
 			return gResult;
@@ -75,11 +87,14 @@ DWORD _stdcall _GameThread(void* _self)
 		if (!_PassEvents(this))
 			return 1;
 
+		// Process continuous input
+		if(this->method->HandleControls)
+			this->method->HandleControls(this, this->Control->kbd, fElapsedSeconds);
+
 		// render frame
 		if (!this->method->OnUserUpdate(this))
-		{
-			return 3;
-		}
+			return 0;
+
 		_Show(this);
 	}
 	return 0;
@@ -121,7 +136,7 @@ void _Start(void* _self)
 constructMethodTable(
 	.SetupScreen = _SetupScreen,
 	.Start = _Start,
-	.HandleInput = virtual(HandleInput),
+	.HandleInputEvents = virtual(HandleInputEvents),
 	.Show = _Show
 );
 
