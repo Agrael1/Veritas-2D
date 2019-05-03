@@ -1,6 +1,7 @@
 #pragma once
 #include "WinSetup.h"
 #include "Keyboard.h"
+#include "Mouse.h"
 #include "EngineCommons.h"
 
 #define c_class MessageWindow
@@ -9,8 +10,10 @@ class
 	const void* _class;
 	LPCWSTR wndClassName;
 	HINSTANCE hInst;
+	HWND Window;
 
 	struct Keyboard* kbd;
+	struct Mouse* mouse;
 
 	methods(
 		LRESULT(*HandleMsg)(void* self, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);

@@ -2,10 +2,11 @@
 #include "Class.h"
 #include <math.h>
 
+
 #define CellL 3
 // Player statics
 float fPlayerX, fPlayerY;
-float fPlayerA;
+double fPlayerA;
 
 
 void _RenderMaze(void* self, struct Frame* to)
@@ -46,7 +47,7 @@ void _RenderMaze(void* self, struct Frame* to)
 		}
 
 		//Calculate perspective
-		int nCeiling = (int)((float)(to->nFrameHeight / 2.0) - to->nFrameHeight / ((float)fDistancetoWall));
+		int nCeiling = (int)((float)(to->nFrameHeight / 2.0) - to->nFrameHeight / fDistancetoWall);
 		int nFloor = to->nFrameHeight - nCeiling;
 
 		short nShade = ' ';
@@ -110,6 +111,12 @@ void _RenderMap(void* self, struct Frame* to)
 	
 
 }
+void virtual(HandleMouse)(void* self, struct Mouse* mouse, const double fElapsedTime)
+{
+	int X;
+	mouse->method->ReadMouseMovement(mouse, &X, NULL);
+	fPlayerA += X*fElapsedTime;
+}
 void virtual(HandleControls)(void* self, const struct Keyboard* kbd, const double fElapsedTime)
 {
 	account(self);
@@ -137,9 +144,29 @@ void virtual(HandleControls)(void* self, const struct Keyboard* kbd, const doubl
 		}
 	}
 	if (kbd->method->KeyPressed(kbd, 'A'))
-		fPlayerA -= (1.0f)*fElapsedTime;
+	{
+		fPlayerY += sinf(fPlayerA)*(3.0f)*fElapsedTime;
+		fPlayerX -= cosf(fPlayerA)*(3.0f)*fElapsedTime;
+
+		if (this->MapLayer->localFrame[(int)fPlayerY*this->MapLayer->nFrameLength + (int)fPlayerX].Attributes == BG_BLACK)
+		{
+			fPlayerY -= sinf(fPlayerA)*(3.0f)*fElapsedTime;
+			fPlayerX += cosf(fPlayerA)*(3.0f)*fElapsedTime;
+		}
+	}
 	if (kbd->method->KeyPressed(kbd, 'D'))
-		fPlayerA += (1.0f)*fElapsedTime;
+	{
+		{
+			fPlayerY -= sinf(fPlayerA)*(2.0f)*fElapsedTime;
+			fPlayerX += cosf(fPlayerA)*(2.0f)*fElapsedTime;
+
+			if (this->MapLayer->localFrame[(int)fPlayerY*this->MapLayer->nFrameLength + (int)fPlayerX].Attributes == BG_BLACK)
+			{
+				fPlayerY += sinf(fPlayerA)*(2.0f)*fElapsedTime;
+				fPlayerX -= cosf(fPlayerA)*(2.0f)*fElapsedTime;
+			}
+		}
+	}
 }
 bool virtual(HandleInputEvents)(void* self, struct KeyboardEvent event)
 {
@@ -209,12 +236,17 @@ Constructor(void* self, va_list *ap)
 	base.method->OnUserUpdate = virtual(OnUserUpdate);
 	base.method->HandleInputEvents = virtual(HandleInputEvents);
 	base.method->HandleControls = virtual(HandleControls);
+	base.method->HandleMouse = virtual(HandleMouse);
 
 	return this;
 }
 Destructor(void* self)
 {
 	struct c_class *this = ((struct Class*)VeritasEngine)->dtor(self);
+	if (this->MapLayer)
+		delete(this->MapLayer);
+	if (this->maze)
+		delete(this->maze);
 	return this;
 }
 ENDCLASSDESC

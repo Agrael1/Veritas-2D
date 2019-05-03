@@ -19,7 +19,7 @@ class
 
 	struct c_class
 	{
-		struct Exception _;
+		inherits(Exception);
 
 		privatev(
 			HRESULT hr;

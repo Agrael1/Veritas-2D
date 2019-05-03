@@ -7,7 +7,7 @@ event = *__event_ptr; delete(__event_ptr)
 
 volatile bool bActive = false;
 
-bool virtual(HandleInputEvents)(void* self,struct KeyboardEvent event)
+bool virtual(HandleInputEvents)(void* self, struct KeyboardEvent event)
 {
 	if (event.method->IsPress(&event))
 	{
@@ -45,9 +45,15 @@ bool _SetupScreen(void* self, Word width, Word height, Byte fontw, Byte fonth)
 	if (this->Window->method->CreateConsole(this->Window, width, height, fontw, fonth)
 		&& this->Window->method->SetCursor(this->Window, false))
 	{
+		// Clip cursor
+		RECT rekt;
+		GetWindowRect(this->Window->consoleWindow, &rekt);
+		ClipCursor(&rekt);
+
 		this->Output = new(Frame, width, height);
 		SetConsoleTitleA(this->AppName);
 		_Show(this);
+
 		return true;
 	}
 		
@@ -86,6 +92,10 @@ DWORD _stdcall _GameThread(void* _self)
 		// Process queue
 		if (!_PassEvents(this))
 			return 1;
+
+		// Process mouse
+		if (this->method->HandleMouse)
+			this->method->HandleMouse(this, this->Control->mouse, fElapsedSeconds);
 
 		// Process continuous input
 		if(this->method->HandleControls)

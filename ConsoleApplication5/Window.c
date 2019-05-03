@@ -139,7 +139,6 @@ ENDCLASSDESC
 // namespace WindowException
 #undef c_class
 #define c_class WindowException
-#define base (this->_)
 
 const char* virtual(GetType)()
 {

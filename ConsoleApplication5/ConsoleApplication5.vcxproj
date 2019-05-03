@@ -162,6 +162,7 @@
     <ClCompile Include="main.c" />
     <ClCompile Include="Maze3D.c" />
     <ClCompile Include="MazeGen.c" />
+    <ClCompile Include="Mouse.c" />
     <ClCompile Include="olcGameEngine.c" />
     <ClCompile Include="Queue.c" />
     <ClCompile Include="StringStream.c" />
@@ -180,6 +181,7 @@
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="Maze.h" />
     <ClInclude Include="Maze3D.h" />
+    <ClInclude Include="Mouse.h" />
     <ClInclude Include="New.h" />
     <ClInclude Include="olcGameEngine.h" />
     <ClInclude Include="Queue.h" />

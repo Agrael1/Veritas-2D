@@ -149,6 +149,7 @@ void* Maze_dtor(void* self)
 {
 	struct Maze* this = self;
 	delete(private.S);
+	free(this->MazeRep);
 	return this;
 }
 
