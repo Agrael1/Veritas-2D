@@ -6,7 +6,6 @@
 // Maze generation algorithm, handle with care
 #include "Maze.h"
 #include "Class.h"
-#include "New.h"
 #include <stdlib.h>
 #include <time.h>
 
@@ -15,8 +14,9 @@
 #define vectorSave(x,y) (this->MazeRep[(((y) * this->DimX) >> 1) + ((x) >> 1)] |= 1 << private.vector)
 
 // Gets random start point values
-void GetStart(struct Maze* this)
+void _GetStart(void* self)
 {
+	account(self);
 	switch (rand() % 4) {
 	case 0:
 	{
@@ -46,10 +46,9 @@ void GetStart(struct Maze* this)
 	bitSet(this->startx, this->starty);	
 	private.flag = this->startx & 1 ? (this->starty & 1)^1 : this->starty & 1;
 }
-
-int MazeNext(void* self, Byte *nx, Byte *ny)
+bool MazeNext(void* self, Byte *nx, Byte *ny)
 {
-	struct c_class* this = self;
+	account(self);
 	Byte rotct = 0, retcond = 0; // debuggers
 	
 	// represent a vector rotation
@@ -86,8 +85,8 @@ errhand2:// this is the part in which we are taken over direction control manual
 		else
 		{
 			register short EResult;
-			if ((EResult = private.S->method->bPop(private.S, 2)) == -1)
-				return 0;
+			if ((EResult = private.S->method->Pop(private.S, 2)) == -1)
+				return false;
 			else
 			{
 				private.vector = (Byte)(EResult) ^ 2;
@@ -99,17 +98,16 @@ errhand2:// this is the part in which we are taken over direction control manual
 	}	// end of switch
 	if (!retcond)
 	{
-		private.S->method->bPush(private.S, private.vector, 2);			// if everything's ok push to the stack and return to your business
+		private.S->method->Push(private.S, private.vector, 2);			// if everything's ok push to the stack and return to your business
 		bitSet(*nx, *ny);
 	}
 	private.flag ^= 1;
 
-	return 1;
+	return true;
 }
-
-void generateComplete(void* self)
+void _Generate(void* self)
 {
-	struct Maze* this = self;
+	account(self);
 
 	Byte x = this->startx;
 	Byte y = this->starty;
@@ -117,12 +115,14 @@ void generateComplete(void* self)
 	while (MazeNext(this, &x, &y));
 }
 
-constructMethodTable( MazeNext ,generateComplete );
+constructMethodTable( 
+	.MazeNext = MazeNext,
+	.Generate = _Generate
+);
 
-void* Maze_ctor(void* self, va_list *ap)
+Constructor(void* self, va_list *ap)
 {
-	struct c_class* this = self;
-
+	account(self);
 	assignMethodTable(this);
 
 	this->DimX = va_arg(*ap, Byte);
@@ -130,8 +130,7 @@ void* Maze_ctor(void* self, va_list *ap)
 
 	private.S = new(BitStack);
 	private.ByteX = this->DimX % 8 > 0 ? this->DimX / 8 + 1 : this->DimX / 8;
-	private.matrix = (Byte*)malloc(private.ByteX*this->DimY);
-
+	private.matrix = malloc(private.ByteX*this->DimY);
 	this->MazeRep = malloc(this->DimX*this->DimY>>1);
 
 	for (int i = 0; i < this->DimX*this->DimY >> 1; i++)
@@ -140,18 +139,15 @@ void* Maze_ctor(void* self, va_list *ap)
 	for (int i = 0; i < private.ByteX*this->DimY; i++)
 		*(private.matrix + i) = 0;
 
-	srand((unsigned int)time(NULL));
-	GetStart(this);
+	srand((DWord)time(NULL));
+	_GetStart(this);
 	return this;
 }
-
-void* Maze_dtor(void* self)
+Destructor(void* self)
 {
-	struct Maze* this = self;
+	account(self);
 	delete(private.S);
 	free(this->MazeRep);
 	return this;
 }
-
-const struct Class _Maze = { sizeof(struct c_class) ,.ctor = Maze_ctor, .dtor = Maze_dtor};
-const void* Maze = &_Maze;
+ENDCLASSDESC

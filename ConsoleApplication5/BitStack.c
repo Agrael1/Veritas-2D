@@ -7,15 +7,15 @@
 #include "BitStack.h"
 #include "Class.h"
 
-int bPush(void* self, Byte value, Byte length)
+bool virtual(Push)(void* self, Byte value, Byte length)
 {
-	struct c_class* this = self;
+	account(self);
 
 	if (this->bitctr+length <= NREG)
 	{
 		private.data[this->head] = ((private.data[this->head]) << length) | value;
 		this->bitctr+=length;
-		return 0;
+		return true;
 	}
 	else
 	{
@@ -24,15 +24,14 @@ int bPush(void* self, Byte value, Byte length)
 			this->head++;
 			this->bitctr = length;
 			private.data[this->head] = value;
-			return 0;
+			return true;
 		}
-		else return -1;	
+		else return false;	
 	}
 }
-
-short bPop(void* self, Byte length)
+short virtual(Pop)(void* self, Byte length)
 {
-	struct c_class* this = self;
+	account(self);
 	short a;
 
 	if (this->bitctr > 0)
@@ -48,7 +47,7 @@ short bPop(void* self, Byte length)
 		{
 			this->head--;
 			this->bitctr = NREG;
-			bPop(this, length);
+			virtual(Pop)(this, length);
 		}
 		else
 		{
@@ -56,13 +55,23 @@ short bPop(void* self, Byte length)
 		}
 	}
 }
+void virtual(Reset)(void* self)
+{
+	account(self);
+	for (int i = 0; i < DST; i++)
+		private.data[i] = 0;
+}
 
-constructMethodTable(bPush,.bPop = bPop);
+constructMethodTable(
+	.Push = virtual(Push),
+	.Pop = virtual(Pop),
+	.Reset = virtual(Reset)
+);
 
 // Constructor (must be last)
-void* stack_ctor(void* self, va_list *ap)
+Constructor(void* self, va_list *ap)
 {
-	struct c_class* this = self;
+	account(self);
 	assignMethodTable(this);
 
 	this->bitctr = 0;
@@ -70,6 +79,8 @@ void* stack_ctor(void* self, va_list *ap)
 	
 	return this;
 }
-
-const struct Class _stack = {.size = sizeof(struct c_class),.ctor = stack_ctor};
-const void* c_class = &_stack;
+Destructor(void* self)
+{
+	return self;
+}
+ENDCLASSDESC

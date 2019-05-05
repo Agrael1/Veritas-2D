@@ -19,117 +19,129 @@
     <Filter Include="Файлы исходного кода\Engine">
       <UniqueIdentifier>{5111f1b0-c3d6-4b87-8d15-05b2667b29af}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Заголовочные файлы\Engine\Containers">
+      <UniqueIdentifier>{67329047-506c-46b1-9351-be6d7ee2d725}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Заголовочные файлы\Engine\Framework">
+      <UniqueIdentifier>{b6d2c2ef-bc61-4f80-8d16-6ae2b6213a0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Заголовочные файлы\Engine\Input">
+      <UniqueIdentifier>{6e1acdf1-ea0a-451f-8519-5c3b72eced9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Заголовочные файлы\Engine\Console">
+      <UniqueIdentifier>{21b6d209-ada9-41a5-89f7-2f2af4900d9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\Engine\Console">
+      <UniqueIdentifier>{bfa89c91-29da-4316-b0d9-e3a027804a11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\Engine\Containers">
+      <UniqueIdentifier>{40131b22-f686-4905-a16e-aab712463813}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\Engine\Framework">
+      <UniqueIdentifier>{d0db9896-f2f1-49fc-9d1e-427a00b73e62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\Engine\Input">
+      <UniqueIdentifier>{46c6ccda-a6b2-4a96-aecc-35ad480aa22d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.c">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
-    <ClCompile Include="olcGameEngine.c">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
-    <ClCompile Include="Class.c">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
-    <ClCompile Include="Gamedemo.c">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
     <ClCompile Include="MazeGen.c">
       <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
-    <ClCompile Include="BitStack.c">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
-    <ClCompile Include="VeritasEngine.c">
-      <Filter>Файлы исходного кода\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Frame.c">
-      <Filter>Файлы исходного кода\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="BitField.c">
-      <Filter>Файлы исходного кода\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Exception.c">
-      <Filter>Файлы исходного кода\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Window.c">
-      <Filter>Файлы исходного кода\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="StringStream.c">
-      <Filter>Файлы исходного кода\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Control.c">
-      <Filter>Файлы исходного кода\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Queue.c">
-      <Filter>Файлы исходного кода\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Keyboard.c">
-      <Filter>Файлы исходного кода\Engine</Filter>
     </ClCompile>
     <ClCompile Include="Maze3D.c">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
+    <ClCompile Include="Frame.c">
+      <Filter>Файлы исходного кода\Engine\Console</Filter>
+    </ClCompile>
+    <ClCompile Include="VeritasEngine.c">
+      <Filter>Файлы исходного кода\Engine\Console</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.c">
+      <Filter>Файлы исходного кода\Engine\Console</Filter>
+    </ClCompile>
+    <ClCompile Include="BitField.c">
+      <Filter>Файлы исходного кода\Engine\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="BitStack.c">
+      <Filter>Файлы исходного кода\Engine\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="StringStream.c">
+      <Filter>Файлы исходного кода\Engine\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="Queue.c">
+      <Filter>Файлы исходного кода\Engine\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception.c">
+      <Filter>Файлы исходного кода\Engine\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Class.c">
+      <Filter>Файлы исходного кода\Engine\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Control.c">
+      <Filter>Файлы исходного кода\Engine\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Keyboard.c">
+      <Filter>Файлы исходного кода\Engine\Input</Filter>
+    </ClCompile>
     <ClCompile Include="Mouse.c">
-      <Filter>Файлы исходного кода\Engine</Filter>
+      <Filter>Файлы исходного кода\Engine\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="EntryMain.c">
+      <Filter>Файлы исходного кода</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="olcGameEngine.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
-    <ClInclude Include="New.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
-    <ClInclude Include="Class.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
-    <ClInclude Include="GameDemo.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
-    <ClInclude Include="BitStack.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="Maze.h">
       <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
-    <ClInclude Include="EngineCommons.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
-    <ClInclude Include="VeritasEngine.h">
-      <Filter>Заголовочные файлы\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Frame.h">
-      <Filter>Заголовочные файлы\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="BitField.h">
-      <Filter>Заголовочные файлы\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="WinSetup.h">
-      <Filter>Заголовочные файлы\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Window.h">
-      <Filter>Заголовочные файлы\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Exception.h">
-      <Filter>Заголовочные файлы\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="StringStream.h">
-      <Filter>Заголовочные файлы\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Control.h">
-      <Filter>Заголовочные файлы\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Keyboard.h">
-      <Filter>Заголовочные файлы\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Queue.h">
-      <Filter>Заголовочные файлы\Engine</Filter>
     </ClInclude>
     <ClInclude Include="Maze3D.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="Queue.h">
+      <Filter>Заголовочные файлы\Engine\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="BitField.h">
+      <Filter>Заголовочные файлы\Engine\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="BitStack.h">
+      <Filter>Заголовочные файлы\Engine\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Class.h">
+      <Filter>Заголовочные файлы\Engine\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="New.h">
+      <Filter>Заголовочные файлы\Engine\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception.h">
+      <Filter>Заголовочные файлы\Engine\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="StringStream.h">
+      <Filter>Заголовочные файлы\Engine\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineCommons.h">
+      <Filter>Заголовочные файлы\Engine\Framework</Filter>
+    </ClInclude>
     <ClInclude Include="Mouse.h">
-      <Filter>Заголовочные файлы\Engine</Filter>
+      <Filter>Заголовочные файлы\Engine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Keyboard.h">
+      <Filter>Заголовочные файлы\Engine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Control.h">
+      <Filter>Заголовочные файлы\Engine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Frame.h">
+      <Filter>Заголовочные файлы\Engine\Console</Filter>
+    </ClInclude>
+    <ClInclude Include="VeritasEngine.h">
+      <Filter>Заголовочные файлы\Engine\Console</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>Заголовочные файлы\Engine\Console</Filter>
+    </ClInclude>
+    <ClInclude Include="WinSetup.h">
+      <Filter>Заголовочные файлы\Engine\Framework</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

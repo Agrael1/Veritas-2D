@@ -23,7 +23,7 @@ class
 {
 	const void* _class;							// class description goes here
 	privatev(
-		unsigned long long data[DST];			// storage for stack values
+		MaxInt data[DST];			// storage for stack values
 	);
 	Word head;							// pointer to the last element of big stack
 	Byte bitctr;								// pointer to the last element of bits
@@ -33,11 +33,13 @@ class
 		// @self - pointer to the current class pointer (this)
 		// @value - value to push from 0 to 255
 		// @length - length in bits to push < 9
-		const void(*bPush)(void* self, Byte value, Byte length);
+		bool(*Push)(void* self, Byte value, Byte length);
 		// Pops bits from the stack and automatically pops complete 32/64 bits from the big one
 		// @self - pointer to the current class pointer (this)
 		// @length - length in bits to pop < 9
-		short(*bPop)(void* self, Byte length);
+		short(*Pop)(void* self, Byte length);
+		//Resets the bit stack
+		void(*Reset)(void* self);
 	);
 };
 #endif // !BitStack

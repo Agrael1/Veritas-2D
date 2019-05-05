@@ -20,25 +20,4 @@ int main(void)
 		delete(Game);
 
 	return 0;
-
-
-	
-	/*struct GameDemo *GD;
-	try 
-	{
-		GD = new(GameDemo);
-
-		if(GD->_.method->ConstructConsole(GD, 320, 200, 4, 4))
-			GD->_.method->Start(GD);
-	}
-	catch (Exception, e)
-	{
-		e->method->what(e);
-		printf("%s", e->whatBuffer);
-	}
-	endtry
-
-	if (GD)
-		delete(GD);*/
-
 }

@@ -198,7 +198,7 @@ bool virtual(OnUserCreate)(void* self)
 
 	this->MapLayer = new(Frame, MapLength, MapHeight);
 	this->maze = new(Maze, this->MazeLength, this->MazeWidth);
-	this->maze->method->generateComplete(this->maze);
+	this->maze->method->Generate(this->maze);
 	
 	_RenderMap(this, this->MapLayer);
 

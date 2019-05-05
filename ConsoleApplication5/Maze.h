@@ -19,12 +19,13 @@ class
 		struct BitStack* S;	// BitStack for vector saving
 		Byte ByteX;			// Parameter for Matrix (Matrix length)
 		Byte vector;
-		_Bool flag;
+		bool flag;			
 		);
 
 	methods(
-		int(*MazeNext)(void* self, unsigned char *nx, unsigned char *ny);
-		void(*generateComplete)(void* self);
+		// Makes the next step in 
+		bool(*MazeNext)(void* self, Byte *nx, Byte *ny);
+		void(*Generate)(void* self);
 	);
 // Public:
 	Byte* MazeRep;
