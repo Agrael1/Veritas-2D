@@ -67,6 +67,7 @@ typedef unsingned int MaxInt;
 #define ENDCLASSDESC const struct Class ctab = { sizeof(struct c_class),\
 .ctor = __rconcat(c_class,_ctor),.dtor = __rconcat(c_class,_dtor),.typestring = __rtypestr(c_class)}; \
 const void* c_class = &ctab;
+#define selfptr struct c_class* self
 #endif
 
 #undef c_class

@@ -13,34 +13,56 @@
 #define c_class MouseEvent
 
 // Set for future releases
-bool virtual(IsPress)(struct c_class* self)
+enum virtual(Type) virtual(GetType)(const selfptr)
 {
-	account(self);
-	return private.type == MPress;
+	const account(self);
+	return private.type;
 }
-bool virtual(IsRelease)(struct c_class* self)
+bool virtual(IsInvalid)(const selfptr)
 {
-	account(self);
-	return private.type == MRelease;
-}
-bool virtual(IsInvalid)(struct c_class* self)
-{
-	account(self);
+	const account(self);
 	return private.type == MInvalid;
 }
-Byte virtual(GetCode)(void* self)
+int virtual(GetX)(const selfptr)
 {
-	account(self);
-	return private.code;
+	const account(self);
+	return private.x;
 }
+int virtual(GetY)(const selfptr)
+{
+	const account(self);
+	return private.y;
+}
+bool _RightIsPressed(const selfptr)
+{
+	const account(self);
+	return private.rightIsPressed;
+}
+bool _LeftIsPressed(const selfptr)
+{
+	const account(self);
+	return private.leftIsPressed;
+}
+bool _MidIsPressed(const selfptr)
+{
+	const account(self);
+	return private.midIsPressed;
+}
+
+constructMethodTable(
+	.GetType = virtual(GetType),
+	.IsInvalid = virtual(IsInvalid),
+	.GetX = virtual(GetX),
+	.GetY = virtual(GetY),
+	.RightIsPressed = _RightIsPressed,
+	.LeftIsPressed = _LeftIsPressed,
+	.MidIsPressed = _MidIsPressed
+);
 
 Constructor(void* self, va_list* ap)
 {
 	account(self);
-
-	private.type = va_arg(*ap, enum virtual(Type));
-	private.code = va_arg(*ap, Byte);
-
+	assignMethodTable(this);
 	return this;
 }
 Destructor(void* self)
@@ -48,6 +70,8 @@ Destructor(void* self)
 	return self;
 }
 ENDCLASSDESC
+
+
 
 #undef c_class
 #define c_class Mouse
@@ -92,10 +116,13 @@ Constructor(void* self, va_list* ap)
 {
 	account(self);
 	assignMethodTable(this);
+	private.MouseBuffer = new(Queue, sizeof(void*), 16);
 	return this;
 }
 Destructor(void* self)
 {
+	account(self);
+	delete(private.MouseBuffer);
 	return self;
 }
 ENDCLASSDESC

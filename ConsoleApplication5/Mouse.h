@@ -1,5 +1,6 @@
 #pragma once
 #include "WinSetup.h"
+#include "Queue.h"
 #include "EngineCommons.h"
 
 #define c_class MouseEvent
@@ -10,18 +11,31 @@ class
 
 	enum virtual(Type)
 	{
+			LPress,
+			LRelease,
+			RPress,
+			RRelease,
 			MPress,
 			MRelease,
+			MWUp,
+			MWDown,
 			MInvalid
 	}type;
-	Byte code;
+	bool leftIsPressed;
+	bool rightIsPressed;
+	bool midIsPressed;
+	int x;
+	int y;
 	);
 
 	methods(
-	bool(*IsPress)(struct c_class* self);
-	bool(*IsRelease)(struct c_class* self);
-	bool(*IsInvalid)(struct c_class* self);
-	Byte(*GetCode)(struct c_class* self);
+		enum virtual(Type) (*GetType)(const selfptr);
+		bool(*IsInvalid)(const selfptr);
+		int(*GetX)(const selfptr);
+		int(*GetY)(const selfptr);
+		bool(*RightIsPressed)(const selfptr);
+		bool(*LeftIsPressed)(const selfptr);
+		bool(*MidIsPressed)(const selfptr);
 	);
 };
 
@@ -31,14 +45,16 @@ class
 class
 {
 	const void* _class;
-	privatev(
-		RAWINPUTDEVICE Rid;
-	);
 	methods(
-		void(*InitializeMouse)(void* self, HWND hWnd);
-		void(*OnMouseMoved)(void* self, RAWMOUSE* mouse);
-		void (*ReadMouseMovement)(void* self, int* X, int* Y);
+		void(*InitializeMouse)(selfptr, HWND hWnd);
+		void(*OnMouseMoved)(selfptr, RAWMOUSE* mouse);
+		void (*ReadMouseMovement)(selfptr, int* X, int* Y);
 	);
 
+	privatev(
+		RAWINPUTDEVICE Rid;
+		struct Queue* MouseBuffer;
+	);
+	
 	int deltaX, deltaY;
 };
