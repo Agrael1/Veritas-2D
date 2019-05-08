@@ -2,8 +2,8 @@
 #include "Class.h"
 
 LRESULT _HandleMsg(void* self, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{	account(self);
-
+{	
+	account(self);
 	switch (msg)
 	{
 	case WM_KILLFOCUS:
@@ -36,7 +36,7 @@ LRESULT _HandleMsg(void* self, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 
 		break;
 	}
-
+	
 	}
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }

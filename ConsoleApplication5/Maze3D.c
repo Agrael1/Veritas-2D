@@ -113,8 +113,11 @@ void _RenderMap(void* self, struct Frame* to)
 }
 void virtual(HandleMouse)(void* self, struct Mouse* mouse, const double fElapsedTime)
 {
-	int X;
-	mouse->method->ReadMouseMovement(mouse, &X, NULL);
+
+	int X; mouse->method->ReadMouseMovement(mouse,&X, NULL);
+	if (mouse->method->ButtonPressed(mouse, LEFT_MB))
+		X = X / 4;
+
 	fPlayerA += X*fElapsedTime;
 }
 void virtual(HandleControls)(void* self, const struct Keyboard* kbd, const double fElapsedTime)

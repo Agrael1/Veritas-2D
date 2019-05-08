@@ -23,49 +23,23 @@ bool virtual(IsInvalid)(const selfptr)
 	const account(self);
 	return private.type == MInvalid;
 }
-int virtual(GetX)(const selfptr)
-{
-	const account(self);
-	return private.x;
-}
-int virtual(GetY)(const selfptr)
-{
-	const account(self);
-	return private.y;
-}
-bool _RightIsPressed(const selfptr)
-{
-	const account(self);
-	return private.rightIsPressed;
-}
-bool _LeftIsPressed(const selfptr)
-{
-	const account(self);
-	return private.leftIsPressed;
-}
-bool _MidIsPressed(const selfptr)
-{
-	const account(self);
-	return private.midIsPressed;
-}
 
 constructMethodTable(
 	.GetType = virtual(GetType),
-	.IsInvalid = virtual(IsInvalid),
-	.GetX = virtual(GetX),
-	.GetY = virtual(GetY),
-	.RightIsPressed = _RightIsPressed,
-	.LeftIsPressed = _LeftIsPressed,
-	.MidIsPressed = _MidIsPressed
+	.IsInvalid = virtual(IsInvalid)
 );
 
-Constructor(void* self, va_list* ap)
+Constructor(selfptr, va_list* ap)
 {
 	account(self);
 	assignMethodTable(this);
+	
+	private.type = va_arg(*ap, enum virtual(Type));
+	private.code = va_arg(*ap, Word);
+
 	return this;
 }
-Destructor(void* self)
+Destructor(selfptr)
 {
 	return self;
 }
@@ -75,7 +49,28 @@ ENDCLASSDESC
 
 #undef c_class
 #define c_class Mouse
-void _ReadMouseMovement(void* self, int* X, int* Y)
+#define bufferSize 16
+#define nKeys 5
+
+extern void TrimBuffer(struct Queue* buffer);
+extern void ClearBuffer(struct Queue* buffer);
+
+int virtual(GetX)(const selfptr)
+{
+	return self->deltaX;
+}
+int virtual(GetY)(const selfptr)
+{
+	return self->deltaY;
+}
+
+
+bool virtual(ButtonPressed)(selfptr, MButtons BCode)
+{
+	account(self);
+	return private.MBStates->method->IsSet(private.MBStates, BCode);
+}
+void _ReadMouseMovement(selfptr, int* X, int* Y)
 {
 	account(self);
 	if (X)
@@ -85,7 +80,7 @@ void _ReadMouseMovement(void* self, int* X, int* Y)
 	
 	this->deltaX = 0; this->deltaY = 0;
 }
-void _OnMouseMoved(void* self, RAWMOUSE* mouse)
+void _TranslateMouseInput(selfptr, RAWMOUSE* mouse)
 {
 	// make Lerp
 	account(self);
@@ -93,6 +88,19 @@ void _OnMouseMoved(void* self, RAWMOUSE* mouse)
 	{
 		this->deltaX = (this->deltaX + mouse->lLastX) / 2;
 		this->deltaY = (this->deltaY + mouse->lLastY) / 2;
+	}
+	if (mouse->usButtonFlags > 0)
+	{
+		Word NANDmask = 0, ORMask = 0, result = private.MBStates->BitArray[0];
+		for (Byte i = 0, j = 0; i < 10, j < 5; j++, i += 2)
+		{
+			NANDmask |= (((1 << (i + 1))&mouse->usButtonFlags)>>(j+1));
+			ORMask |= ((1 << i)&mouse->usButtonFlags)>>j;
+		}
+			result = result
+				& 	(~NANDmask)							// NAND Mask
+				| ORMask;								// OR Mask
+			private.MBStates->BitArray[0] = result;
 	}
 }
 void _InitializeMouse(void* self, HWND hWnd)
@@ -106,9 +114,13 @@ void _InitializeMouse(void* self, HWND hWnd)
 	RegisterRawInputDevices(&private.Rid, 1, sizeof(RAWINPUTDEVICE));	
 }
 
+
 constructMethodTable(
+	.GetX = virtual(GetX),
+	.GetY = virtual(GetY),
+	.ButtonPressed = virtual(ButtonPressed),
 	.InitializeMouse = _InitializeMouse,
-	.OnMouseMoved = _OnMouseMoved,
+	.OnMouseMoved = _TranslateMouseInput,
 	.ReadMouseMovement = _ReadMouseMovement
 );
 
@@ -116,13 +128,18 @@ Constructor(void* self, va_list* ap)
 {
 	account(self);
 	assignMethodTable(this);
-	private.MouseBuffer = new(Queue, sizeof(void*), 16);
+	private.MouseBuffer = new(Queue, sizeof(void*), bufferSize);
+	private.MBStates = new(BitField, nKeys);
 	return this;
 }
 Destructor(void* self)
 {
 	account(self);
+
+	ClearBuffer(private.MouseBuffer);
 	delete(private.MouseBuffer);
-	return self;
+	delete(private.MBStates);
+
+	return this;
 }
 ENDCLASSDESC

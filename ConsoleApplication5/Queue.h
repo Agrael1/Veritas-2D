@@ -14,7 +14,7 @@ class
 
 	methods(
 		void(*push)(self, smth);
-		void(*pop)(struct c_class* self, void* to);
+		void(*pop)(selfptr, void* to);
 		bool(*empty)(struct c_class* self);
 		void(*clear)(struct c_class* self);
 	);

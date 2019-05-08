@@ -48,6 +48,7 @@ bool _SetupScreen(void* self, Word width, Word height, Byte fontw, Byte fonth)
 		// Clip cursor
 		RECT rekt;
 		GetWindowRect(this->Window->consoleWindow, &rekt);
+		rekt.right = rekt.left + 1;
 		ClipCursor(&rekt);
 
 		this->Output = new(Frame, width, height);
@@ -60,6 +61,8 @@ bool _SetupScreen(void* self, Word width, Word height, Byte fontw, Byte fonth)
 	else
 		return false;
 }
+
+
 DWORD _stdcall _GameThread(void* _self)
 {
 	account(_self);

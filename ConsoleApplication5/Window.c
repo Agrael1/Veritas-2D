@@ -49,6 +49,7 @@ bool _CreateConsole(void* self, Word width, Word height, const Byte fontw, const
 	SetWindowLongPtr(this->consoleWindow, GWL_STYLE,
 		GetWindowLong(this->consoleWindow, GWL_STYLE)
 		& ~WS_SIZEBOX & ~WS_SYSMENU & ~WS_MINIMIZEBOX);
+	
 
 	this->Height = height;
 	this->Width = width;
@@ -73,7 +74,7 @@ bool _CreateConsole(void* self, Word width, Word height, const Byte fontw, const
 	}
 
 	// Set flags to allow mouse input		
-	if (!SetConsoleMode(this->hIn, ENABLE_EXTENDED_FLAGS | ENABLE_WINDOW_INPUT | ENABLE_MOUSE_INPUT))
+	if (!SetConsoleMode(this->hIn, ENABLE_EXTENDED_FLAGS))
 	{
 		throw(WND_EXCEPT_AUTO());
 	}
