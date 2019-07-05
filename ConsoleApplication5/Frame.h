@@ -1,6 +1,7 @@
 #pragma once
 #include "WinSetup.h"
 #include "EngineCommons.h"
+#include "VTypes.h"
 
 enum COLOUR
 {
@@ -49,9 +50,13 @@ class
 	Word nFrameHeight;
 
 	methods(
+		void (*DrawTriangle)(selfptr, Word x1, Word y1, Word x2, Word y2, Word x3, Word y3, wchar_t c, Word col);
+		void (*DrawLine)(selfptr, Word x1, Word y1, Word x2, Word y2, wchar_t character, Word col);
 		void (*PrintFrame)(void* _self, Word x, Word y, wchar_t character, Word color);
 		void (*DrawRectangle)(void* self, Word x1, Word y1, Word x2, Word y2, Word color);
 		void (*Compose)(void* self, struct Frame* localBuffer, Word offsetX, Word offsetY);
 	);
+	// 3D stuff
+	VMMATRIX projection;
 };
 

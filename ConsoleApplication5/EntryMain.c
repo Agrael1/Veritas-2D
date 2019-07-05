@@ -1,14 +1,16 @@
 #include "Maze3D.h"
+#include "CubeDemo.h"
 #include "Exception.h"
 
 int main(void)
 {
-	struct Maze3D *Game;
+	//struct Maze3D *Game;
+	struct CubeDemo *Demo;
 	try
 	{
-		Game = new(Maze3D);
-		if (Game->_base.method->SetupScreen(Game, 320, 180, 4, 4))
-			Game->_base.method->Start(Game);
+		Demo = new(CubeDemo);
+		if (Demo->_base.method->SetupScreen(Demo, 320, 180, 4, 4))
+			Demo->_base.method->Start(Demo);
 	}
 	catch (Exception, e)
 	{
@@ -16,8 +18,8 @@ int main(void)
 	}
 	endtry
 
-	if(Game)
-		delete(Game);
+	if(Demo)
+		delete(Demo);
 
 	return 0;
 }

@@ -43,6 +43,9 @@
     <Filter Include="Файлы исходного кода\Engine\Input">
       <UniqueIdentifier>{46c6ccda-a6b2-4a96-aecc-35ad480aa22d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Заголовочные файлы\Engine\Graphics">
+      <UniqueIdentifier>{22374a9d-ce13-4982-9cf5-e0bca2c2308d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MazeGen.c">
@@ -88,6 +91,9 @@
       <Filter>Файлы исходного кода\Engine\Input</Filter>
     </ClCompile>
     <ClCompile Include="EntryMain.c">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="CubeDemo.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
   </ItemGroup>
@@ -142,6 +148,18 @@
     </ClInclude>
     <ClInclude Include="WinSetup.h">
       <Filter>Заголовочные файлы\Engine\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="CubeDemo.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="VTypes.h">
+      <Filter>Заголовочные файлы\Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="VeritasMath.h">
+      <Filter>Заголовочные файлы\Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="MathConstants.h">
+      <Filter>Заголовочные файлы\Engine\Graphics</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

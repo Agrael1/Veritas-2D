@@ -156,6 +156,7 @@
     <ClCompile Include="BitStack.c" />
     <ClCompile Include="Class.c" />
     <ClCompile Include="Control.c" />
+    <ClCompile Include="CubeDemo.cpp" />
     <ClCompile Include="Exception.c" />
     <ClCompile Include="Frame.c" />
     <ClCompile Include="Keyboard.c" />
@@ -172,11 +173,13 @@
     <ClInclude Include="BitField.h" />
     <ClInclude Include="Class.h" />
     <ClInclude Include="Control.h" />
+    <ClInclude Include="CubeDemo.h" />
     <ClInclude Include="EngineCommons.h" />
     <ClInclude Include="Exception.h" />
     <ClInclude Include="Frame.h" />
     <ClInclude Include="BitStack.h" />
     <ClInclude Include="Keyboard.h" />
+    <ClInclude Include="MathConstants.h" />
     <ClInclude Include="Maze.h" />
     <ClInclude Include="Maze3D.h" />
     <ClInclude Include="Mouse.h" />
@@ -184,6 +187,8 @@
     <ClInclude Include="Queue.h" />
     <ClInclude Include="StringStream.h" />
     <ClInclude Include="VeritasEngine.h" />
+    <ClInclude Include="VeritasMath.h" />
+    <ClInclude Include="VTypes.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="WinSetup.h" />
   </ItemGroup>
