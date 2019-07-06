@@ -62,20 +62,8 @@ bool virtual(OnUserUpdate)(void* self, double fElapsedSeconds)
 	VMMATRIX rotZ = { 0 }, rotX = { 0 };
 	this->fTheta += (float)fElapsedSeconds;
 
-	rotZ.r[0].m128_f32[0] = cosf(this->fTheta);
-	rotZ.r[0].m128_f32[1] = sinf(this->fTheta);
-	rotZ.r[1].m128_f32[0] = -sinf(this->fTheta);
-	rotZ.r[1].m128_f32[1] = cosf(this->fTheta);
-	rotZ.r[2].m128_f32[2] = 1.0f;
-	rotZ.r[3].m128_f32[3] = 1.0f;
-
-	rotX.r[0].m128_f32[0] = 1.0f; 
-	rotX.r[1].m128_f32[1] = cosf(this->fTheta);
-	rotX.r[1].m128_f32[2] = -sinf(this->fTheta);
-	rotX.r[2].m128_f32[1] = sinf(this->fTheta);
-	rotX.r[2].m128_f32[2] = cosf(this->fTheta);
-	rotX.r[3].m128_f32[3] = 1.0f;
-	
+	// Calculate rotation matrix
+	rotZ = VMMatrixRotationRollPitchYaw(-this->fTheta, 0, this->fTheta);
 
 	for (UINT i = 0; i < 12; i++)
 	{
@@ -83,23 +71,12 @@ bool virtual(OnUserUpdate)(void* self, double fElapsedSeconds)
 		VMVECTOR b = VMLoadFloat3(&this->meshCube.p[i].p[1]);
 		VMVECTOR c = VMLoadFloat3(&this->meshCube.p[i].p[2]);
 
-		VMVECTOR a2 = { 0,0,0,0 };
-		VMVECTOR b2 = { 0,0,0,0 };
-		VMVECTOR c2 = { 0,0,0,0 };
+		VMMATRIX proj = VMMatrixMultiply(VMMatrixMultiply(rotZ, &base.Output->camera),&base.Output->projection);
 
-		VMMATRIX proj = VMMatrixMultiply(rotZ, &rotX);
-
-		// Rotate in Z-Axis
-		MultiplyMatrixVector(&a, &a2, &proj);
-		MultiplyMatrixVector(&b, &b2, &proj);
-		MultiplyMatrixVector(&c, &c2, &proj);
-
-		proj = VMMatrixMultiply(base.Output->camera, &base.Output->projection );
-
-		// Project triangles from 3D --> 2D
-		MultiplyMatrixVector(&a2, &a, &proj);
-		MultiplyMatrixVector(&b2, &b, &proj);
-		MultiplyMatrixVector(&c2, &c, &proj);
+		// Rotate in Z-Axis and project
+		a = VMVector3TransformCoord(a, proj);
+		b = VMVector3TransformCoord(b, proj);
+		c = VMVector3TransformCoord(c, proj);
 
 		// Scale into view
 		a.m128_f32[0] += 1.0f; a.m128_f32[1] += 1.0f;

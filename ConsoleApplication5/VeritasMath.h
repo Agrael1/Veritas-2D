@@ -18,55 +18,7 @@ inline bool XMScalarNearEqual
 	return (fabsf(Delta) <= Epsilon);
 }
 
-#pragma region Vector
-inline VMVECTOR __vectorcall VMVector3Transform
-(
-	FVMVECTOR V,
-	FXMMATRIX M
-)
-{
-	VMVECTOR vResult = XM_PERMUTE_PS(V, _MM_SHUFFLE(0, 0, 0, 0));
-	vResult = _mm_mul_ps(vResult, M.r[0]);
-	VMVECTOR vTemp = XM_PERMUTE_PS(V, _MM_SHUFFLE(1, 1, 1, 1));
-	vTemp = _mm_mul_ps(vTemp, M.r[1]);
-	vResult = _mm_add_ps(vResult, vTemp);
-	vTemp = XM_PERMUTE_PS(V, _MM_SHUFFLE(2, 2, 2, 2));
-	vTemp = _mm_mul_ps(vTemp, M.r[2]);
-	vResult = _mm_add_ps(vResult, vTemp);
-	vResult = _mm_add_ps(vResult, M.r[3]);
-	return vResult;
-}
-inline VMVECTOR __vectorcall VMLoadFloat3
-(
-	const VMFLOAT3* pSource
-)
-{
-	assert(pSource);
-	__m128 x = _mm_load_ss(&pSource->x);
-	__m128 y = _mm_load_ss(&pSource->y);
-	__m128 z = _mm_load_ss(&pSource->z);
-	__m128 xy = _mm_unpacklo_ps(x, y);
-	return _mm_movelh_ps(xy, z);
-}
-inline VMVECTOR __vectorcall VMVectorSet
-(
-	float x,
-	float y,
-	float z,
-	float w
-)
-{
-	return _mm_set_ps(w, z, y, x);
-}
-inline VMVECTOR __vectorcall VMVectorMultiply
-(
-	FVMVECTOR V1,
-	FVMVECTOR V2
-)
-{
-	return _mm_mul_ps(V1, V2);
-}
-#pragma endregion
+#include "VMVector.h"
 
 #pragma region Matrix
 inline VMMATRIX __vectorcall VMMatrixPerspectiveLH
@@ -193,6 +145,99 @@ inline VMMATRIX __vectorcall VMMatrixTranslation
 	M.r[2] = g_XMIdentityR2.v;
 	M.r[3] = VMVectorSet(OffsetX, OffsetY, OffsetZ, 1.f);
 	return M;
+}
+inline VMVECTOR __vectorcall VMQuaternionRotationRollPitchYawFromVector
+(
+	FVMVECTOR Angles // <Pitch, Yaw, Roll, 0>
+)
+{
+	static const XMVECTORF32  Sign = { 1.0f, -1.0f, -1.0f, 1.0f };
+
+	VMVECTOR HalfAngles = VMVectorMultiply(Angles, g_XMOneHalf.v);
+
+	VMVECTOR SinAngles, CosAngles;
+	VMVectorSinCos(&SinAngles, &CosAngles, HalfAngles);
+
+	VMVECTOR P0 = VMVectorPermute(SinAngles, CosAngles,XM_PERMUTE_0X, XM_PERMUTE_1X, XM_PERMUTE_1X, XM_PERMUTE_1X);
+	VMVECTOR Y0 = VMVectorPermute(SinAngles, CosAngles,XM_PERMUTE_1Y, XM_PERMUTE_0Y, XM_PERMUTE_1Y, XM_PERMUTE_1Y);
+	VMVECTOR R0 = VMVectorPermute(SinAngles, CosAngles,XM_PERMUTE_1Z, XM_PERMUTE_1Z, XM_PERMUTE_0Z, XM_PERMUTE_1Z);
+	VMVECTOR P1 = VMVectorPermute(CosAngles, SinAngles,XM_PERMUTE_0X, XM_PERMUTE_1X, XM_PERMUTE_1X, XM_PERMUTE_1X);
+	VMVECTOR Y1 = VMVectorPermute(CosAngles, SinAngles,XM_PERMUTE_1Y, XM_PERMUTE_0Y, XM_PERMUTE_1Y, XM_PERMUTE_1Y);
+	VMVECTOR R1 = VMVectorPermute(CosAngles, SinAngles,XM_PERMUTE_1Z, XM_PERMUTE_1Z, XM_PERMUTE_0Z, XM_PERMUTE_1Z);
+
+	VMVECTOR Q1 = VMVectorMultiply(P1, Sign.v);
+	VMVECTOR Q0 = VMVectorMultiply(P0, Y0);
+	Q1 = VMVectorMultiply(Q1, Y1);
+	Q0 = VMVectorMultiply(Q0, R0);
+	VMVECTOR Q = VMVectorMultiplyAdd(Q1, R1, Q0);
+
+	return Q;
+}
+inline VMMATRIX __vectorcall VMMatrixRotationQuaternion
+(
+	FVMVECTOR Quaternion
+)
+{
+	static const XMVECTORF32  Constant1110 = { 1.0f, 1.0f, 1.0f, 0.0f };
+
+	VMVECTOR Q0 = _mm_add_ps(Quaternion, Quaternion);
+	VMVECTOR Q1 = _mm_mul_ps(Quaternion, Q0);
+
+	VMVECTOR V0 = XM_PERMUTE_PS(Q1, _MM_SHUFFLE(3, 0, 0, 1));
+	V0 = _mm_and_ps(V0, g_XMMask3.v);
+	VMVECTOR V1 = XM_PERMUTE_PS(Q1, _MM_SHUFFLE(3, 1, 2, 2));
+	V1 = _mm_and_ps(V1, g_XMMask3.v);
+	VMVECTOR R0 = _mm_sub_ps(Constant1110.v, V0);
+	R0 = _mm_sub_ps(R0, V1);
+
+	V0 = XM_PERMUTE_PS(Quaternion, _MM_SHUFFLE(3, 1, 0, 0));
+	V1 = XM_PERMUTE_PS(Q0, _MM_SHUFFLE(3, 2, 1, 2));
+	V0 = _mm_mul_ps(V0, V1);
+
+	V1 = XM_PERMUTE_PS(Quaternion, _MM_SHUFFLE(3, 3, 3, 3));
+	VMVECTOR V2 = XM_PERMUTE_PS(Q0, _MM_SHUFFLE(3, 0, 2, 1));
+	V1 = _mm_mul_ps(V1, V2);
+
+	VMVECTOR R1 = _mm_add_ps(V0, V1);
+	VMVECTOR R2 = _mm_sub_ps(V0, V1);
+
+	V0 = _mm_shuffle_ps(R1, R2, _MM_SHUFFLE(1, 0, 2, 1));
+	V0 = XM_PERMUTE_PS(V0, _MM_SHUFFLE(1, 3, 2, 0));
+	V1 = _mm_shuffle_ps(R1, R2, _MM_SHUFFLE(2, 2, 0, 0));
+	V1 = XM_PERMUTE_PS(V1, _MM_SHUFFLE(2, 0, 2, 0));
+
+	Q1 = _mm_shuffle_ps(R0, V0, _MM_SHUFFLE(1, 0, 3, 0));
+	Q1 = XM_PERMUTE_PS(Q1, _MM_SHUFFLE(1, 3, 2, 0));
+
+	VMMATRIX M;
+	M.r[0] = Q1;
+
+	Q1 = _mm_shuffle_ps(R0, V0, _MM_SHUFFLE(3, 2, 3, 1));
+	Q1 = XM_PERMUTE_PS(Q1, _MM_SHUFFLE(1, 3, 0, 2));
+	M.r[1] = Q1;
+
+	Q1 = _mm_shuffle_ps(V1, R0, _MM_SHUFFLE(3, 2, 1, 0));
+	M.r[2] = Q1;
+	M.r[3] = g_XMIdentityR3.v;
+	return M;
+}
+inline VMMATRIX __vectorcall VMMatrixRotationRollPitchYawFromVector
+(
+	FVMVECTOR Angles // <Pitch, Yaw, Roll, undefined>
+)
+{
+	VMVECTOR Q = VMQuaternionRotationRollPitchYawFromVector(Angles);
+	return VMMatrixRotationQuaternion(Q);
+}
+inline VMMATRIX __vectorcall VMMatrixRotationRollPitchYaw
+(
+	float Pitch,
+	float Yaw,
+	float Roll
+)
+{
+	VMVECTOR Angles = VMVectorSet(Pitch, Yaw, Roll, 0.0f);
+	return VMMatrixRotationRollPitchYawFromVector(Angles);
 }
 #pragma endregion
 

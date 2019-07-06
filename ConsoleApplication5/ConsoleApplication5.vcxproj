@@ -188,6 +188,7 @@
     <ClInclude Include="StringStream.h" />
     <ClInclude Include="VeritasEngine.h" />
     <ClInclude Include="VeritasMath.h" />
+    <ClInclude Include="VMVector.h" />
     <ClInclude Include="VTypes.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="WinSetup.h" />

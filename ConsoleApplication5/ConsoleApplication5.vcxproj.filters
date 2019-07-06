@@ -164,5 +164,8 @@
     <ClInclude Include="MathConstants.h">
       <Filter>Заголовочные файлы\Engine\Math</Filter>
     </ClInclude>
+    <ClInclude Include="VMVector.h">
+      <Filter>Заголовочные файлы\Engine\Math</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
