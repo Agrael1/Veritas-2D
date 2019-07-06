@@ -50,6 +50,7 @@ class
 	Word nFrameHeight;
 
 	methods(
+		void (*ClearFrame)(selfptr, wchar_t c, Word col);
 		void (*DrawTriangle)(selfptr, Word x1, Word y1, Word x2, Word y2, Word x3, Word y3, wchar_t c, Word col);
 		void (*DrawLine)(selfptr, Word x1, Word y1, Word x2, Word y2, wchar_t character, Word col);
 		void (*PrintFrame)(void* _self, Word x, Word y, wchar_t character, Word color);
@@ -58,5 +59,6 @@ class
 	);
 	// 3D stuff
 	VMMATRIX projection;
+	VMMATRIX camera;
 };
 

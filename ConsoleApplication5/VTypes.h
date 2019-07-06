@@ -41,7 +41,6 @@ typedef __declspec(align(16)) struct _XMVECTORF32
 		VMVECTOR v;
 	};
 }XMVECTORF32;
-
 typedef __declspec(align(16)) struct _XMVECTORU32
 {
 	union
@@ -59,16 +58,22 @@ typedef __declspec(align(16)) struct _XMVECTORI32
 	};
 }XMVECTORI32;
 
-typedef struct
+typedef __declspec(align(16)) struct
 {
 	float x;
 	float y;
 	float z;
-}Vector3;
+}VMFLOAT3A;
+ typedef struct
+ {
+	 float x;
+	 float y;
+	 float z;
+ }VMFLOAT3;
 
 typedef struct
 {
-	Vector3 p[3];
+	VMFLOAT3 p[3];
 }Triangle;
 
 typedef struct

@@ -12,8 +12,11 @@ void _Clip(void* self, Word *x, Word *y)
 void _PrintFrame(selfptr, Word x, Word y, wchar_t character, Word color)
 {
 	account(self);
-	this->localFrame[y*this->nFrameLength + x].Char.UnicodeChar = character;
-	this->localFrame[y*this->nFrameLength + x].Attributes = color;
+	if (x < this->nFrameLength&&y < this->nFrameHeight)
+	{
+		this->localFrame[y*this->nFrameLength + x].Char.UnicodeChar = character;
+		this->localFrame[y*this->nFrameLength + x].Attributes = color;
+	}
 }
 void _Fill(selfptr, Word x1, Word y1, Word x2, Word y2, wchar_t sym, Word color)
 {
@@ -114,7 +117,17 @@ void _DrawTriangle(selfptr, Word x1, Word y1, Word x2, Word y2, Word x3, Word y3
 	_DrawLine(self, x2, y2, x3, y3, c, col);
 	_DrawLine(self, x3, y3, x1, y1, c, col);
 }
+void _ClearFrame(selfptr, wchar_t c, Word col)
+{
+	int value = 0;
+	value |= c<<16;
+	value |= col;
+
+	memset(self->localFrame, value, self->nFrameHeight*self->nFrameLength*sizeof(CHAR_INFO));
+}
+
 constructMethodTable( 
+	.ClearFrame = _ClearFrame,
 	.DrawTriangle = _DrawTriangle,
 	.DrawLine = _DrawLine,
 	.PrintFrame = _PrintFrame,

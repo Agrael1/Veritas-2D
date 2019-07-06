@@ -46,6 +46,9 @@
     <Filter Include="Заголовочные файлы\Engine\Graphics">
       <UniqueIdentifier>{22374a9d-ce13-4982-9cf5-e0bca2c2308d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Заголовочные файлы\Engine\Math">
+      <UniqueIdentifier>{6d6ce88f-a0b6-45b5-b867-e9baea36c1b8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MazeGen.c">
@@ -153,13 +156,13 @@
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="VTypes.h">
-      <Filter>Заголовочные файлы\Engine\Graphics</Filter>
+      <Filter>Заголовочные файлы\Engine\Math</Filter>
     </ClInclude>
     <ClInclude Include="VeritasMath.h">
-      <Filter>Заголовочные файлы\Engine\Graphics</Filter>
+      <Filter>Заголовочные файлы\Engine\Math</Filter>
     </ClInclude>
     <ClInclude Include="MathConstants.h">
-      <Filter>Заголовочные файлы\Engine\Graphics</Filter>
+      <Filter>Заголовочные файлы\Engine\Math</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

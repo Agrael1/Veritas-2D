@@ -1,4 +1,5 @@
 #include "Class.h"
+#include "StringStream.h"
 #include "VeritasEngine.h"
 
 #define EMPTYQUEUE this->Control->kbd->method->KeyIsEmpty(this->Control->kbd)
@@ -105,11 +106,24 @@ DWORD _stdcall _GameThread(void* _self)
 			this->method->HandleControls(this, this->Control->kbd, fElapsedSeconds);
 
 		// render frame
-		if (!this->method->OnUserUpdate(this))
+		if (!this->method->OnUserUpdate(this, fElapsedSeconds))
 			return 0;
 
 		_Show(this);
+
+		struct StringStream* oss = new(StringStream);
+		oss->method->AppendI(oss->method->Append(oss, "Cube Demo by Agrael FPS: "), (long)1.0/fElapsedSeconds);
+		char* _proxy = oss->method->EndStr(oss);
+
+		SetConsoleTitleA(_proxy);
+		free(_proxy);
 	}
+
+	if (this->method->OnUserDestroy&&!this->method->OnUserDestroy(this))
+	{
+		return 3;
+	}
+
 	return 0;
 }
 void _Start(void* _self)

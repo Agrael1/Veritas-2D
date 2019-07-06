@@ -8,6 +8,7 @@
 class 
 {
 	inherits(VeritasEngine);
-
+	
+	float fTheta;
 	mesh meshCube;
 };

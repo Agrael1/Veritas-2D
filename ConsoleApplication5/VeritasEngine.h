@@ -18,7 +18,8 @@ class
 
 	methods(
 		bool(*OnUserCreate)(void* self);
-		bool(*OnUserUpdate)(void* self);
+		bool(*OnUserUpdate)(void* self, double fElapsedSeconds);
+		bool(*OnUserDestroy)(void* self);
 		void(*HandleMouse)(void* self, struct Mouse* mouse, const double fElapsedTime);
 		bool(*HandleInputEvents)(void* self, struct KeyboardEvent event);
 		void(*HandleControls)(void* self, const struct Keyboard* kbd, const double fElapsedTime);

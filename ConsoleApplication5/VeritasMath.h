@@ -18,6 +18,56 @@ inline bool XMScalarNearEqual
 	return (fabsf(Delta) <= Epsilon);
 }
 
+#pragma region Vector
+inline VMVECTOR __vectorcall VMVector3Transform
+(
+	FVMVECTOR V,
+	FXMMATRIX M
+)
+{
+	VMVECTOR vResult = XM_PERMUTE_PS(V, _MM_SHUFFLE(0, 0, 0, 0));
+	vResult = _mm_mul_ps(vResult, M.r[0]);
+	VMVECTOR vTemp = XM_PERMUTE_PS(V, _MM_SHUFFLE(1, 1, 1, 1));
+	vTemp = _mm_mul_ps(vTemp, M.r[1]);
+	vResult = _mm_add_ps(vResult, vTemp);
+	vTemp = XM_PERMUTE_PS(V, _MM_SHUFFLE(2, 2, 2, 2));
+	vTemp = _mm_mul_ps(vTemp, M.r[2]);
+	vResult = _mm_add_ps(vResult, vTemp);
+	vResult = _mm_add_ps(vResult, M.r[3]);
+	return vResult;
+}
+inline VMVECTOR __vectorcall VMLoadFloat3
+(
+	const VMFLOAT3* pSource
+)
+{
+	assert(pSource);
+	__m128 x = _mm_load_ss(&pSource->x);
+	__m128 y = _mm_load_ss(&pSource->y);
+	__m128 z = _mm_load_ss(&pSource->z);
+	__m128 xy = _mm_unpacklo_ps(x, y);
+	return _mm_movelh_ps(xy, z);
+}
+inline VMVECTOR __vectorcall VMVectorSet
+(
+	float x,
+	float y,
+	float z,
+	float w
+)
+{
+	return _mm_set_ps(w, z, y, x);
+}
+inline VMVECTOR __vectorcall VMVectorMultiply
+(
+	FVMVECTOR V1,
+	FVMVECTOR V2
+)
+{
+	return _mm_mul_ps(V1, V2);
+}
+#pragma endregion
+
 #pragma region Matrix
 inline VMMATRIX __vectorcall VMMatrixPerspectiveLH
 (
@@ -64,7 +114,6 @@ inline VMMATRIX __vectorcall VMMatrixPerspectiveLH
 
 	return M;
 }
-
 inline VMMATRIX __vectorcall VMMatrixMultiply
 (
 	FXMMATRIX M1,
@@ -131,4 +180,19 @@ inline VMMATRIX __vectorcall VMMatrixMultiply
 	mResult.r[3] = vX;
 	return mResult;
 }
+inline VMMATRIX __vectorcall VMMatrixTranslation
+(
+	float OffsetX,
+	float OffsetY,
+	float OffsetZ
+)
+{
+	VMMATRIX M;
+	M.r[0] = g_XMIdentityR0.v;
+	M.r[1] = g_XMIdentityR1.v;
+	M.r[2] = g_XMIdentityR2.v;
+	M.r[3] = VMVectorSet(OffsetX, OffsetY, OffsetZ, 1.f);
+	return M;
+}
 #pragma endregion
+
