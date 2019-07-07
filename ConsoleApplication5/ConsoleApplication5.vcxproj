@@ -171,6 +171,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BitField.h" />
+    <ClInclude Include="Box.h" />
     <ClInclude Include="Class.h" />
     <ClInclude Include="Control.h" />
     <ClInclude Include="CubeDemo.h" />
@@ -178,6 +179,8 @@
     <ClInclude Include="Exception.h" />
     <ClInclude Include="Frame.h" />
     <ClInclude Include="BitStack.h" />
+    <ClInclude Include="Icosahedron.h" />
+    <ClInclude Include="IndexedTriangleList.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="MathConstants.h" />
     <ClInclude Include="Maze.h" />

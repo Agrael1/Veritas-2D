@@ -1,52 +1,13 @@
 #include "VeritasMath.h"
 #include "Class.h"
+#include "Icosahedron.h"
 #include "CubeDemo.h"
-
-void MultiplyMatrixVector(VMVECTOR *i, VMVECTOR *o, VMMATRIX *m)
-{
-	o->m128_f32[0] = i->m128_f32[0] * m->r[0].m128_f32[0] + i->m128_f32[1] * m->r[1].m128_f32[0] + i->m128_f32[2] * m->r[2].m128_f32[0] + m->r[3].m128_f32[0];
-	o->m128_f32[1] = i->m128_f32[0] * m->r[0].m128_f32[1] + i->m128_f32[1] * m->r[1].m128_f32[1] + i->m128_f32[2] * m->r[2].m128_f32[1] + m->r[3].m128_f32[1];
-	o->m128_f32[2] = i->m128_f32[0] * m->r[0].m128_f32[2] + i->m128_f32[1] * m->r[1].m128_f32[2] + i->m128_f32[2] * m->r[2].m128_f32[2] + m->r[3].m128_f32[2];
-	float w = i->m128_f32[0] * m->r[0].m128_f32[3] + i->m128_f32[1] * m->r[1].m128_f32[3] + i->m128_f32[2] * m->r[2].m128_f32[3] + m->r[3].m128_f32[3];
-
-	if (w != 0.0f)
-	{
-		o->m128_f32[0] /= w; o->m128_f32[1] /= w; o->m128_f32[2] /= w;
-	}
-}
 
 bool virtual(OnUserCreate)(void* self)
 {
 	account(self);
 	
-	this->meshCube.p = malloc(12*sizeof(Triangle)); 
-	memcpy(this->meshCube.p, (Triangle[]) {
-
-			// SOUTH
-		{ 0.0f, 0.0f, 0.0f,		0.0f, 1.0f, 0.0f,	1.0f, 1.0f, 0.0f },
-		{ 0.0f, 0.0f, 0.0f,		1.0f, 1.0f, 0.0f,   1.0f, 0.0f, 0.0f },
-
-			// EAST                                                      
-		{ 1.0f, 0.0f, 0.0f,    1.0f, 1.0f, 0.0f,    1.0f, 1.0f, 1.0f },
-		{ 1.0f, 0.0f, 0.0f,    1.0f, 1.0f, 1.0f,    1.0f, 0.0f, 1.0f },
-
-			// NORTH                                                     
-		{ 1.0f, 0.0f, 1.0f,    1.0f, 1.0f, 1.0f,    0.0f, 1.0f, 1.0f },
-		{ 1.0f, 0.0f, 1.0f,    0.0f, 1.0f, 1.0f,    0.0f, 0.0f, 1.0f },
-
-			// WEST                                                      
-		{ 0.0f, 0.0f, 1.0f,    0.0f, 1.0f, 1.0f,    0.0f, 1.0f, 0.0f },
-		{ 0.0f, 0.0f, 1.0f,    0.0f, 1.0f, 0.0f,    0.0f, 0.0f, 0.0f },
-
-			// TOP                                                       
-		{ 0.0f, 1.0f, 0.0f,    0.0f, 1.0f, 1.0f,    1.0f, 1.0f, 1.0f },
-		{ 0.0f, 1.0f, 0.0f,    1.0f, 1.0f, 1.0f,    1.0f, 1.0f, 0.0f },
-
-			// BOTTOM                                                    
-		{ 1.0f, 0.0f, 1.0f,    0.0f, 0.0f, 1.0f,    0.0f, 0.0f, 0.0f },
-		{ 1.0f, 0.0f, 1.0f,    0.0f, 0.0f, 0.0f,    1.0f, 0.0f, 0.0f },
-
-	}, 12 * sizeof(Triangle));
+	this->model = Icosahedron_Make();
 	
 	// Setting up projection matrix and camera
 	base.Output->projection = VMMatrixPerspectiveLH(1.0f, (float)base.Output->nFrameHeight / (float)base.Output->nFrameLength, 0.5f, 40.0f);
@@ -59,52 +20,65 @@ bool virtual(OnUserUpdate)(void* self, double fElapsedSeconds)
 	account(self);
 	base.Output->method->ClearFrame(base.Output, 0, BG_BLACK);
 
-	VMMATRIX rotZ = { 0 }, rotX = { 0 };
 	this->fTheta += (float)fElapsedSeconds;
 
 	// Calculate rotation matrix
-	rotZ = VMMatrixRotationRollPitchYaw(-this->fTheta, 0, this->fTheta);
+	VMMATRIX Rotation = VMMatrixRotationRollPitchYaw(-this->fTheta, 0, this->fTheta);
 
-	for (UINT i = 0; i < 12; i++)
+	for (UINT i = 0; i < this->model.numInds; i+=3)
 	{
-		VMVECTOR a = VMLoadFloat3(&this->meshCube.p[i].p[0]);
-		VMVECTOR b = VMLoadFloat3(&this->meshCube.p[i].p[1]);
-		VMVECTOR c = VMLoadFloat3(&this->meshCube.p[i].p[2]);
+		// Extract triangle
+		VMVECTOR v0 = VMLoadFloat3(&this->model.vertices[this->model.indices[i]].pos);
+		VMVECTOR v1 = VMLoadFloat3(&this->model.vertices[this->model.indices[i+1]].pos);
+		VMVECTOR v2 = VMLoadFloat3(&this->model.vertices[this->model.indices[i+2]].pos);
 
-		VMMATRIX proj = VMMatrixMultiply(VMMatrixMultiply(rotZ, &base.Output->camera),&base.Output->projection);
+		// Rotate and project to View Space
+		VMMATRIX Project = VMMatrixMultiply(Rotation, &base.Output->camera);
 
-		// Rotate in Z-Axis and project
-		a = VMVector3TransformCoord(a, proj);
-		b = VMVector3TransformCoord(b, proj);
-		c = VMVector3TransformCoord(c, proj);
+		v0 = VMVector3TransformCoord(v0, Project);
+		v1 = VMVector3TransformCoord(v1, Project);
+		v2 = VMVector3TransformCoord(v2, Project);
 
-		// Scale into view
-		a.m128_f32[0] += 1.0f; a.m128_f32[1] += 1.0f;
-		b.m128_f32[0] += 1.0f; b.m128_f32[1] += 1.0f;
-		c.m128_f32[0] += 1.0f; c.m128_f32[1] += 1.0f;
+		VMVECTOR Normal = VMVector3Dot(VMVector3Cross(VMVectorSubtract(v2, v0), VMVectorSubtract(v1, v0)), v0);
 
-		a.m128_f32[0] *= 0.5f * (float)base.Output->nFrameLength;
-		a.m128_f32[1] *= 0.5f * (float)base.Output->nFrameHeight;
-		b.m128_f32[0] *= 0.5f * (float)base.Output->nFrameLength;
-		b.m128_f32[1] *= 0.5f * (float)base.Output->nFrameHeight;
-		c.m128_f32[0] *= 0.5f * (float)base.Output->nFrameLength;
-		c.m128_f32[1] *= 0.5f * (float)base.Output->nFrameHeight;
+		// Do a culling test
+		if (Normal.m128_f32[0] >= 0.0f)
+		{
+			// Do a transformation to view
+			v0 = VMVector3TransformCoord(v0, base.Output->projection);
+			v1 = VMVector3TransformCoord(v1, base.Output->projection);
+			v2 = VMVector3TransformCoord(v2, base.Output->projection);
 
-		// Rasterize triangle
-		base.Output->method->DrawTriangle(base.Output,
-			a.m128_f32[0], a.m128_f32[1],
-			b.m128_f32[0], b.m128_f32[1],
-			c.m128_f32[0], c.m128_f32[1],
-			0x2588, FG_WHITE);
+			// Scale into view
+			v0.m128_f32[0] += 1.0f; v0.m128_f32[1] += 1.0f;
+			v1.m128_f32[0] += 1.0f; v1.m128_f32[1] += 1.0f;
+			v2.m128_f32[0] += 1.0f; v2.m128_f32[1] += 1.0f;
+
+			v0.m128_f32[0] *= 0.5f * (float)base.Output->nFrameLength;
+			v0.m128_f32[1] *= 0.5f * (float)base.Output->nFrameHeight;
+			v1.m128_f32[0] *= 0.5f * (float)base.Output->nFrameLength;
+			v1.m128_f32[1] *= 0.5f * (float)base.Output->nFrameHeight;
+			v2.m128_f32[0] *= 0.5f * (float)base.Output->nFrameLength;
+			v2.m128_f32[1] *= 0.5f * (float)base.Output->nFrameHeight;
+
+
+			// Rasterize triangle
+			base.Output->method->DrawTriangle(base.Output,
+				(Word)v0.m128_f32[0], (Word)v0.m128_f32[1],
+				(Word)v1.m128_f32[0], (Word)v1.m128_f32[1],
+				(Word)v2.m128_f32[0], (Word)v2.m128_f32[1],
+				0x2588, FG_WHITE);
+		}	
 	}
 	return true;
 }
 bool virtual(OnUserDestroy)(void* self)
 {
 	account(self);
-	if (this->meshCube.p)
-		free(this->meshCube.p);
-
+	if (this->model.indices)
+		free(this->model.indices);
+	if (this->model.vertices)
+		free(this->model.vertices);
 	return true;
 }
 
