@@ -24,27 +24,27 @@
 #define XM_SELECT_0 0x00000000
 #define XM_SELECT_1 0xFFFFFFFF
 
-const uint32_t XM_PERMUTE_0X = 0;
-const uint32_t XM_PERMUTE_0Y = 1;
-const uint32_t XM_PERMUTE_0Z = 2;
-const uint32_t XM_PERMUTE_0W = 3;
-const uint32_t XM_PERMUTE_1X = 4;
-const uint32_t XM_PERMUTE_1Y = 5;
-const uint32_t XM_PERMUTE_1Z = 6;
-const uint32_t XM_PERMUTE_1W = 7;
+#define XM_PERMUTE_0X 0u
+#define XM_PERMUTE_0Y 1u
+#define XM_PERMUTE_0Z 2u
+#define XM_PERMUTE_0W 3u
+#define XM_PERMUTE_1X 4u
+#define XM_PERMUTE_1Y 5u
+#define XM_PERMUTE_1Z 6u
+#define XM_PERMUTE_1W 7u
 
-const uint32_t XM_SWIZZLE_X = 0;
-const uint32_t XM_SWIZZLE_Y = 1;
-const uint32_t XM_SWIZZLE_Z = 2;
-const uint32_t XM_SWIZZLE_W = 3;
+#define XM_SWIZZLE_X 0u
+#define XM_SWIZZLE_Y 1u
+#define XM_SWIZZLE_Z 2u
+#define XM_SWIZZLE_W 3u
 
-const uint32_t XM_CRMASK_CR6 = 0x000000F0;
-const uint32_t XM_CRMASK_CR6TRUE = 0x00000080;
-#define XM_CRMASK_CR6FALSE 0x00000020;
-const uint32_t XM_CRMASK_CR6BOUNDS = XM_CRMASK_CR6FALSE;
+#define XM_CRMASK_CR6 0x000000F0u
+#define XM_CRMASK_CR6TRUE 0x00000080u
+#define XM_CRMASK_CR6FALSE 0x00000020u
+#define XM_CRMASK_CR6BOUNDS XM_CRMASK_CR6FALSE
 
 
-const size_t XM_CACHE_LINE_SIZE = 64;
+#define XM_CACHE_LINE_SIZE 64u
 
 
 #ifndef XMGLOBALCONST

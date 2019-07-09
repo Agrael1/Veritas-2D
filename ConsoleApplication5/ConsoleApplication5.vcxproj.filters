@@ -49,6 +49,9 @@
     <Filter Include="Заголовочные файлы\Engine\Math">
       <UniqueIdentifier>{6d6ce88f-a0b6-45b5-b867-e9baea36c1b8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Заголовочные файлы\Engine\Misc">
+      <UniqueIdentifier>{b56e2b58-79df-4d1b-968e-b6f9591997a7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MazeGen.c">
@@ -175,6 +178,9 @@
     </ClInclude>
     <ClInclude Include="Icosahedron.h">
       <Filter>Заголовочные файлы\Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Standard.h">
+      <Filter>Заголовочные файлы\Engine\Misc</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

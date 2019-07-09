@@ -102,6 +102,28 @@ inline VMVECTOR __vectorcall VMVectorSubtract
 	return _mm_sub_ps(V1, V2);
 }
 
+// Scales a vector by a scalar
+inline VMVECTOR __vectorcall VMVectorScale
+(
+	FVMVECTOR V,
+	float    ScaleFactor
+)
+{
+	VMVECTOR vResult = _mm_set_ps1(ScaleFactor);
+	return _mm_mul_ps(vResult, V);
+}
+
+// Computes sum of 2 vectors
+inline VMVECTOR __vectorcall VMVectorAdd
+(
+	FVMVECTOR V1,
+	FVMVECTOR V2
+)
+{
+	return _mm_add_ps(V1, V2);
+}
+
+
 // Computes the product of the first two vectors added to the third vector.
 inline VMVECTOR __vectorcall VMVectorMultiplyAdd
 (

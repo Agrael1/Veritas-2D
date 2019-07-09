@@ -11,5 +11,10 @@ class
 	inherits(VeritasEngine);
 	
 	float fTheta;
+
+	VMVECTOR ScreenOffset;
+	VMVECTOR ScreenResolution;
+	
+	bool bStop;
 	struct IndexedTriangleList model;
 };

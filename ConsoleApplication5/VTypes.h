@@ -64,12 +64,18 @@ typedef __declspec(align(16)) struct
 	float y;
 	float z;
 }VMFLOAT3A;
- typedef struct
+typedef struct
  {
 	 float x;
 	 float y;
 	 float z;
  }VMFLOAT3;
+
+typedef struct 
+{
+	unsigned short x;
+	unsigned short y;
+}Vec2us;
 
 typedef struct
 {

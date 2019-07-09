@@ -112,7 +112,7 @@ DWORD _stdcall _GameThread(void* _self)
 		_Show(this);
 
 		struct StringStream* oss = new(StringStream);
-		oss->method->AppendI(oss->method->Append(oss, "Cube Demo by Agrael FPS: "), (long)1.0/fElapsedSeconds);
+		oss->method->AppendI(oss->method->Append(oss, "Cube Demo by Agrael FPS: "), (long)(1.0/fElapsedSeconds));
 		char* _proxy = oss->method->EndStr(oss);
 
 		SetConsoleTitleA(_proxy);

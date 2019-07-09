@@ -1,13 +1,15 @@
+#include "VeritasMath.h"
 #include "Frame.h"
 #include "Class.h"
 #include <math.h>
 #include <malloc.h>
+#include "Standard.h"
 
-void _Clip(void* self, Word *x, Word *y)
+
+void _Clip(selfptr, Word *x, Word *y)
 {
-	struct c_class* this = self;
-	if (*x > this->nFrameLength) *x = this->nFrameLength;
-	if (*y > this->nFrameHeight) *y = this->nFrameHeight;
+	if (*x > self->nFrameLength) *x = self->nFrameLength;
+	if (*y > self->nFrameHeight) *y = self->nFrameHeight;
 }
 void _PrintFrame(selfptr, Word x, Word y, wchar_t character, Word color)
 {
@@ -111,11 +113,104 @@ void _DrawLine(selfptr, Word x1, Word y1, Word x2, Word y2, wchar_t character, W
 		}
 	}
 }
-void _DrawTriangle(selfptr, Word x1, Word y1, Word x2, Word y2, Word x3, Word y3, wchar_t c, Word col)
+void _DrawTriangleWireframe(selfptr, Word x1, Word y1, Word x2, Word y2, Word x3, Word y3, wchar_t c, Word col)
 {
 	_DrawLine(self, x1, y1, x2, y2, c, col);
 	_DrawLine(self, x2, y2, x3, y3, c, col);
 	_DrawLine(self, x3, y3, x1, y1, c, col);
+}
+
+// inlines for fast render (scanlines, 0.5 is for pixel centers)
+inline void DrawFlatTopTriangle(selfptr, const VMVECTOR* v0, const VMVECTOR* v1, const VMVECTOR* v2, wchar_t c, Word col)
+{
+	// calculate slopes in screen space
+	VMVECTOR res = VMVectorSubtract(*v2, *v0);
+	const float m0 = res.m128_f32[0] / res.m128_f32[1];
+	res = VMVectorSubtract(*v2, *v1);
+	const float m1 = res.m128_f32[0] / res.m128_f32[1];
+
+	// calculate start and end scanlines
+	const int yStart = (int)ceilf(v0->m128_f32[1] - 0.5f);
+	const int yEnd = (int)ceilf(v2->m128_f32[1] - 0.5f);
+
+	for (int y = yStart; y < yEnd; y++)
+	{
+		// calculate start and end points(x coord)
+		const float px0 = m0*((float)y + 0.5f - v0->m128_f32[1]) + v0->m128_f32[0];
+		const float px1 = m1*((float)y + 0.5f - v1->m128_f32[1]) + v1->m128_f32[0];
+
+		// start and end pixels
+		const int xStart = (int)ceil(px0 - 0.5f);
+		const int xEnd = (int)ceil(px1 - 0.5f);
+
+		for (int x = xStart; x < xEnd; x++)
+		{
+			_PrintFrame(self, x, y, c, col);
+		}
+	}
+}
+inline void DrawFlatBottomTriangle(selfptr, const VMVECTOR* v0, const VMVECTOR* v1, const VMVECTOR* v2, wchar_t c, Word col)
+{
+	// calculate slopes in screen space
+	VMVECTOR res = VMVectorSubtract(*v1, *v0);
+	const float m0 = res.m128_f32[0] / res.m128_f32[1];
+	res = VMVectorSubtract(*v2, *v0);
+	const float m1 = res.m128_f32[0] / res.m128_f32[1];
+
+	// calculate start and end scanlines
+	const int yStart = (int)ceilf(v0->m128_f32[1] - 0.5f);
+	const int yEnd = (int)ceilf(v2->m128_f32[1] - 0.5f);
+
+	for (int y = yStart; y < yEnd; y++)
+	{
+		// calculate start and end points(x coord)
+		const float px0 = m0*((float)y + 0.5f - v0->m128_f32[1]) + v0->m128_f32[0];
+		const float px1 = m1*((float)y + 0.5f - v0->m128_f32[1]) + v0->m128_f32[0];
+
+		// start and end pixels
+		const int xStart = (int)ceil(px0 - 0.5f);
+		const int xEnd = (int)ceil(px1 - 0.5f);
+
+		for (int x = xStart; x < xEnd; x++)
+		{
+			_PrintFrame(self, x, y, c, col);
+		}
+	}
+}
+void _DrawTriangle(selfptr, VMVECTOR* v0, VMVECTOR* v1, VMVECTOR* v2, wchar_t c, Word col)
+{
+	if (v1->m128_f32[1] < v0->m128_f32[1]) swapptr(&v0, &v1);
+	if (v2->m128_f32[1] < v1->m128_f32[1]) swapptr(&v1, &v2);
+	if (v1->m128_f32[1] < v0->m128_f32[1]) swapptr(&v0, &v1);
+
+	if (v0->m128_f32[1] == v1->m128_f32[1])	// Flat Top
+	{
+		if (v1->m128_f32[0] < v0->m128_f32[0]) swapptr(&v0, &v1);
+		DrawFlatTopTriangle(self, v0, v1, v2, c, col);
+	}
+	if (v1->m128_f32[1] == v2->m128_f32[1])	// Flat Bottom
+	{
+		if (v2->m128_f32[0] < v1->m128_f32[0]) swapptr(&v1, &v2);
+		DrawFlatBottomTriangle(self, v0, v1, v2, c, col);
+	}
+	else // General
+	{
+		const float alphaSplit =
+			(v1->m128_f32[1] - v0->m128_f32[1]) / (v2->m128_f32[1] - v0->m128_f32[1]);
+
+		const VMVECTOR vi = VMVectorAdd(*v0, VMVectorScale(VMVectorSubtract(*v2, *v0), alphaSplit));
+
+		if (v1->m128_f32[0] < vi.m128_f32[0])
+		{
+			DrawFlatBottomTriangle(self, v0, v1, &vi, c, col);
+			DrawFlatTopTriangle(self, v1, &vi, v2, c, col);
+		}
+		else
+		{
+			DrawFlatBottomTriangle(self, v0, &vi, v1, c, col);
+			DrawFlatTopTriangle(self, &vi, v1, v2, c, col);
+		}
+	}
 }
 void _ClearFrame(selfptr, wchar_t c, Word col)
 {
@@ -128,6 +223,7 @@ void _ClearFrame(selfptr, wchar_t c, Word col)
 
 constructMethodTable( 
 	.ClearFrame = _ClearFrame,
+	.DrawTriangleWireframe = _DrawTriangleWireframe,
 	.DrawTriangle = _DrawTriangle,
 	.DrawLine = _DrawLine,
 	.PrintFrame = _PrintFrame,

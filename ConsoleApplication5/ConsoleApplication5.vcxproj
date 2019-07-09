@@ -188,6 +188,7 @@
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="New.h" />
     <ClInclude Include="Queue.h" />
+    <ClInclude Include="Standard.h" />
     <ClInclude Include="StringStream.h" />
     <ClInclude Include="VeritasEngine.h" />
     <ClInclude Include="VeritasMath.h" />
