@@ -14,7 +14,7 @@ bool virtual(HandleInputEvents)(void* self, struct KeyboardEvent event)
 		{
 		case VK_ESCAPE:
 			return false;
-		case 'M':
+		case VK_SPACE:
 			this->bStop ^= true;
 			break;
 		}
@@ -44,7 +44,7 @@ bool virtual(OnUserUpdate)(void* self, double fElapsedSeconds)
 	if (this->bStop)
 		return true;
 
-	base.Output->method->ClearFrame(base.Output, 0, BG_BLACK);
+	base.Output->method->ClearFrame(base.Output, PIXEL_QUARTER, FG_GREEN|BG_DARK_RED);
 
 	this->fTheta += (float)fElapsedSeconds;
 
@@ -85,12 +85,12 @@ bool virtual(OnUserUpdate)(void* self, double fElapsedSeconds)
 				&v1,
 				&v2,
 				0x2588, FG_WHITE);
-
-			base.Output->method->DrawTriangleWireframe(base.Output,
+		
+			/*base.Output->method->DrawTriangleWireframe(base.Output,
 				(Word)v0.m128_f32[0], (Word)v0.m128_f32[1],
 				(Word)v1.m128_f32[0], (Word)v1.m128_f32[1],
 				(Word)v2.m128_f32[0], (Word)v2.m128_f32[1],
-				0x2588, FG_BLUE);
+				0x2588, FG_BLUE);*/
 		}	
 	}
 	return true;

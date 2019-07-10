@@ -52,6 +52,15 @@
     <Filter Include="Заголовочные файлы\Engine\Misc">
       <UniqueIdentifier>{b56e2b58-79df-4d1b-968e-b6f9591997a7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Заголовочные файлы\Engine\Graphics\Primitives">
+      <UniqueIdentifier>{e86c07a3-114b-43d1-8517-547c9977c67f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Заголовочные файлы\Engine\Graphics\Pipeline">
+      <UniqueIdentifier>{74ec8121-dcfb-4274-8724-5a118b6b1309}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\asm">
+      <UniqueIdentifier>{18a2de8d-282b-4471-8a14-b058cda34bac}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MazeGen.c">
@@ -173,14 +182,25 @@
     <ClInclude Include="IndexedTriangleList.h">
       <Filter>Заголовочные файлы\Engine\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="Box.h">
-      <Filter>Заголовочные файлы\Engine\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Icosahedron.h">
-      <Filter>Заголовочные файлы\Engine\Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="Standard.h">
       <Filter>Заголовочные файлы\Engine\Misc</Filter>
     </ClInclude>
+    <ClInclude Include="Box.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="Icosahedron.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="Pipeline.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Color.h">
+      <Filter>Заголовочные файлы\Engine\Graphics</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="memset32.asm">
+      <Filter>Файлы исходного кода\asm</Filter>
+    </MASM>
   </ItemGroup>
 </Project>

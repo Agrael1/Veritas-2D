@@ -143,10 +143,13 @@ inline void DrawFlatTopTriangle(selfptr, const VMVECTOR* v0, const VMVECTOR* v1,
 		const int xStart = (int)ceil(px0 - 0.5f);
 		const int xEnd = (int)ceil(px1 - 0.5f);
 
-		for (int x = xStart; x < xEnd; x++)
-		{
-			_PrintFrame(self, x, y, c, col);
-		}
+		CHAR_INFO r;
+		r.Attributes = col;
+		r.Char.UnicodeChar = c;
+		DWord value = *(DWord*)&r;
+
+		if (xEnd - xStart)
+			memset32(self->localFrame + y*self->nFrameLength + xStart, value, xEnd - xStart);
 	}
 }
 inline void DrawFlatBottomTriangle(selfptr, const VMVECTOR* v0, const VMVECTOR* v1, const VMVECTOR* v2, wchar_t c, Word col)
@@ -171,10 +174,13 @@ inline void DrawFlatBottomTriangle(selfptr, const VMVECTOR* v0, const VMVECTOR* 
 		const int xStart = (int)ceil(px0 - 0.5f);
 		const int xEnd = (int)ceil(px1 - 0.5f);
 
-		for (int x = xStart; x < xEnd; x++)
-		{
-			_PrintFrame(self, x, y, c, col);
-		}
+		CHAR_INFO r;
+		r.Attributes = col;
+		r.Char.UnicodeChar = c;
+		DWord value = *(DWord*)&r;
+
+		if(xEnd - xStart)
+			memset32(self->localFrame+y*self->nFrameLength + xStart, value, xEnd - xStart);
 	}
 }
 void _DrawTriangle(selfptr, VMVECTOR* v0, VMVECTOR* v1, VMVECTOR* v2, wchar_t c, Word col)
@@ -186,7 +192,7 @@ void _DrawTriangle(selfptr, VMVECTOR* v0, VMVECTOR* v1, VMVECTOR* v2, wchar_t c,
 	if (v0->m128_f32[1] == v1->m128_f32[1])	// Flat Top
 	{
 		if (v1->m128_f32[0] < v0->m128_f32[0]) swapptr(&v0, &v1);
-		DrawFlatTopTriangle(self, v0, v1, v2, c, col);
+		//DrawFlatTopTriangle(self, v0, v1, v2, c, col);
 	}
 	if (v1->m128_f32[1] == v2->m128_f32[1])	// Flat Bottom
 	{
@@ -214,11 +220,12 @@ void _DrawTriangle(selfptr, VMVECTOR* v0, VMVECTOR* v1, VMVECTOR* v2, wchar_t c,
 }
 void _ClearFrame(selfptr, wchar_t c, Word col)
 {
-	int value = 0;
-	value |= c<<16;
-	value |= col;
-
-	memset(self->localFrame, value, self->nFrameHeight*self->nFrameLength*sizeof(CHAR_INFO));
+	CHAR_INFO r;
+	r.Attributes = col;
+	r.Char.UnicodeChar = c;
+	
+	DWord value = *(DWord*)&r;
+	memset32(self->localFrame, value, self->nFrameHeight*self->nFrameLength);
 }
 
 constructMethodTable( 
