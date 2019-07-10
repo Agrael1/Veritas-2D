@@ -3,32 +3,23 @@
 #include "Exception.h"
 #include "EngineCommons.h"
 
+#define c_class WindowException
 
+class
+{
+	inherits(Exception);
+
+	privatev(
+		HRESULT hr;
+	);
+};
+
+#undef c_class
 #define c_class ConsoleWindow
-
-extern const void* WindowException;
 
 class 
 {
 	const void* _class;
-
-	// Exceptions //
-#pragma region Exceptions
-#undef c_class
-#define c_class WindowException
-
-	struct c_class
-	{
-		inherits(Exception);
-
-		privatev(
-			HRESULT hr;
-		);
-	};
-	// End Exception //
-#undef c_class
-#define c_class ConsoleWindow
-#pragma endregion
 
 	HANDLE hOut;	// for output
 	HANDLE hIn;		// for mouse
@@ -45,10 +36,11 @@ class
 	bool bCursor;
 
 	methods(
-		bool(*CreateConsole)(void* self, Word width, Word height, const Byte fontw, const Byte fonth);
-		bool(*SetCursor)(void* self, bool value);
-		bool(*Restore)(const void* self);
-		void(*OutputToScreen)(void* self, CHAR_INFO* buffer);
+		bool(*CreateConsole)(selfptr, Word width, Word height, Byte fontw, Byte fonth);
+		bool(*SetCursor)(selfptr, bool value);
+		bool(*Restore)(const selfptr);
+		void(*OutputToScreen)(selfptr, CHAR_INFO* buffer);
+		void(*BlockCursor)(selfptr, bool blocked);
 	);
 };
 

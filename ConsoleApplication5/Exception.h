@@ -7,11 +7,11 @@
 class
 {
 	const void* _class;
-	int line;
+	unsigned int line;
 	const char* file;
 	
 	methods(
-		char* (*GetType)();
+		const char* (*GetType)();
 		char* (*what)(void* self);
 		char* (*GetOriginString)(const void* self);
 	);

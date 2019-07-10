@@ -4,6 +4,13 @@
 #include "BitField.h"
 #include "EngineCommons.h"
 
+typedef enum
+{
+	LEFT_MB,
+	RIGHT_MB,
+	MID_MB
+}MButtons;
+
 #define c_class MouseEvent
 class 
 {
@@ -39,7 +46,7 @@ class
 		void (*ReadMouseMovement)(selfptr, int* X, int* Y);
 		void(*InitializeMouse)(selfptr, HWND hWnd);
 		void(*OnMouseMoved)(selfptr, RAWMOUSE* mouse);
-		bool(*ButtonPressed)(selfptr, Byte BCode);
+		bool(*ButtonPressed)(selfptr, MButtons BCode);
 	);
 
 	privatev(
@@ -51,9 +58,3 @@ class
 	int deltaX, deltaY;
 };
 
-typedef enum
-{
-	LEFT_MB,
-	RIGHT_MB,
-	MID_MB
-}MButtons;

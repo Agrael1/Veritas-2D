@@ -17,14 +17,17 @@ class
 	struct MessageWindow* Control;
 
 	methods(
+		// Pure Virtuals
 		bool(*OnUserCreate)(void* self);
 		bool(*OnUserUpdate)(void* self, double fElapsedSeconds);
 		bool(*OnUserDestroy)(void* self);
 		void(*HandleMouse)(void* self, struct Mouse* mouse, const double fElapsedTime);
 		bool(*HandleInputEvents)(void* self, struct KeyboardEvent event);
 		void(*HandleControls)(void* self, const struct Keyboard* kbd, const double fElapsedTime);
-		bool(*SetupScreen)(void* self, Word width, Word height, Byte fontw, Byte fonth);
-		void(*Start)(void* _self);
-		void(*Show)(void* self);
+
+		// Internals
+		bool(*SetupScreen)(selfptr, Word width, Word height, Byte fontw, Byte fonth);
+		void(*Start)(selfptr);
+		void(*Show)(selfptr);
 		);
 };

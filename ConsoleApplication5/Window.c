@@ -6,16 +6,16 @@
 // namespace ConsoleWindow
 #define c_class ConsoleWindow
 
-bool _Restore(const void* self)
+bool _Restore(const selfptr)
 {
-	const struct c_class *this = self;
+	const account(self);
 	if (!SetConsoleActiveScreenBuffer(this->hOriginalConsole))
 		return false;
 	return true;
 }
-bool _SetFont(const void* self, const Byte fontw, const Byte fonth)
+bool _SetFont(const selfptr, Byte fontw, Byte fonth)
 {
-	const struct c_class *this = self;
+	const account(self);
 
 	CONSOLE_FONT_INFOEX cfi;
 	cfi.cbSize = sizeof(cfi);
@@ -32,19 +32,18 @@ bool _SetFont(const void* self, const Byte fontw, const Byte fonth)
 
 	return 1;
 }
-bool _SetCursor(void* self, bool value)
+bool _SetCursor(selfptr, bool value)
 {
-	struct c_class *this = self;
 	CONSOLE_CURSOR_INFO info;
 	info.dwSize = 100;
 	info.bVisible = value;
-	if (!SetConsoleCursorInfo(this->hOut, &info))
+	if (!SetConsoleCursorInfo(self->hOut, &info))
 		return false;
 	return true;
 }
-bool _CreateConsole(void* self, Word width, Word height, const Byte fontw, const Byte fonth)
+bool _CreateConsole(selfptr, Word width, Word height, Byte fontw, Byte fonth)
 {
-	struct c_class *this = self;
+	account(self);
 
 	SetWindowLongPtr(this->consoleWindow, GWL_STYLE,
 		GetWindowLong(this->consoleWindow, GWL_STYLE)
@@ -103,22 +102,36 @@ bool _CreateConsole(void* self, Word width, Word height, const Byte fontw, const
 
 	return true;
 }
-void _OutputToScreen(void* self, CHAR_INFO* buffer)
+void _BlockCursor(selfptr, bool blocked)
 {
-	struct c_class *this = self;
-	WriteConsoleOutputW(this->hOut, buffer, (COORD) { (short)this->Width, (short)this->Height}, (COORD) { 0, 0 }, &this->rWindowRect);
+	if (blocked)
+	{
+		RECT rekt;
+		GetWindowRect(self->consoleWindow, &rekt);
+		rekt.right = rekt.left + 1;
+		ClipCursor(&rekt);
+	}
+	else
+	{
+		ClipCursor(NULL);
+	}
+}
+void _OutputToScreen(selfptr, CHAR_INFO* buffer)
+{
+	WriteConsoleOutputW(self->hOut, buffer, (COORD) { (short)self->Width, (short)self->Height}, (COORD) { 0, 0 }, &self->rWindowRect);
 }
 
 constructMethodTable(
 	.CreateConsole = _CreateConsole,
 	.SetCursor = _SetCursor,
 	.Restore = _Restore,
-	.OutputToScreen = _OutputToScreen
+	.OutputToScreen = _OutputToScreen,
+	.BlockCursor = _BlockCursor
 );
 
-Constructor(void* self, va_list* ap)
+Constructor(selfptr, va_list* ap)
 {
-	struct c_class *this = self;
+	account(self);
 	assignMethodTable(this);
 
 	this->consoleWindow = GetConsoleWindow();
@@ -130,7 +143,7 @@ Constructor(void* self, va_list* ap)
 
 	return this;
 }
-Destructor(void* self)
+Destructor(selfptr)
 {
 	_Restore(self);
 	return self;
@@ -158,14 +171,14 @@ char* TranslateErrorCode(HRESULT hr)
 	}
 	return pMsgBuf;
 }
-char* GetErrorString(void* self)
+char* GetErrorString(selfptr)
 {
-	struct c_class* this = self;
+	account(self);
 	return TranslateErrorCode(private.hr);
 }
-char* virtual(what)(void* self)
+char* virtual(what)(selfptr)
 {
-	struct c_class* this = self;
+	account(self);
 	struct StringStream *oss = new(StringStream);
 	char* _proxy = GetErrorString(this);
 	char* _origin = base.method->GetOriginString(this);
@@ -181,7 +194,7 @@ char* virtual(what)(void* self)
 	base.whatBuffer = oss->method->EndStr(oss);
 	return base.whatBuffer;
 }
-Constructor(void* self, va_list* ap)
+Constructor(selfptr, va_list* ap)
 {
 	struct c_class *this = ((struct Class*)Exception)->ctor(self,ap);
 	private.hr = va_arg(*ap, HRESULT);
@@ -191,7 +204,7 @@ Constructor(void* self, va_list* ap)
 
 	return this;
 }
-Destructor(void* self)
+Destructor(selfptr)
 {
 	struct c_class *this = ((struct Class*)Exception)->dtor(self);
 	return this;

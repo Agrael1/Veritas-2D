@@ -9,17 +9,17 @@ const char* virtual(GetType)()
 {
 	return "Veritas Exception\n\r";
 }
-char* _GetOriginString(const void* self)
+char* _GetOriginString(const selfptr)
 {
-	const struct c_class* this = self;
+	const account(self);
 	struct StringStream *oss = new(StringStream);
 	oss->method->Append(oss, "[File]: ")->method->Append(oss,this->file)
 		->method->Append(oss,"\n\r[Line]: ")->method->AppendI(oss,this->line);
 	return oss->method->EndStr(oss);
 }
-char* virtual(what) (void* self)
+char* virtual(what) (selfptr)
 {
-	struct c_class* this = self;
+	account(self);
 	struct StringStream *oss = new(StringStream);
 	char* _proxy = _GetOriginString(this);
 	oss->method->Append(oss,this->method->GetType())->method->Append(oss, _proxy);
@@ -38,7 +38,7 @@ constructMethodTable(
 
 Constructor(void* self, va_list* ap)
 {
-	struct c_class* this = self;
+	account(self);
 	assignMethodTable(this);
 	this->line = va_arg(*ap, Word);
 	this->file = va_arg(*ap, const char*);
@@ -47,10 +47,9 @@ Constructor(void* self, va_list* ap)
 }
 Destructor(void* self)
 {
-	struct c_class* this = self;
+	account(self);
 	if (this->whatBuffer)
 		free(this->whatBuffer);
 	return this;
 }
-
 ENDCLASSDESC

@@ -91,7 +91,7 @@ void _TranslateMouseInput(selfptr, RAWMOUSE* mouse)
 	}
 	if (mouse->usButtonFlags > 0)
 	{
-		Word NANDmask = 0, ORMask = 0, result = private.MBStates->BitArray[0];
+		Word NANDmask = 0, ORMask = 0, result = (Word)private.MBStates->BitArray[0];
 		for (Byte i = 0, j = 0; i < 10, j < 5; j++, i += 2)
 		{
 			NANDmask |= (((1 << (i + 1))&mouse->usButtonFlags)>>(j+1));

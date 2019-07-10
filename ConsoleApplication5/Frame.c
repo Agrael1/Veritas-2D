@@ -11,6 +11,7 @@ void _Clip(selfptr, Word *x, Word *y)
 	if (*x > self->nFrameLength) *x = self->nFrameLength;
 	if (*y > self->nFrameHeight) *y = self->nFrameHeight;
 }
+// Deprecated
 void _PrintFrame(selfptr, Word x, Word y, wchar_t character, Word color)
 {
 	account(self);
@@ -20,38 +21,30 @@ void _PrintFrame(selfptr, Word x, Word y, wchar_t character, Word color)
 		this->localFrame[y*this->nFrameLength + x].Attributes = color;
 	}
 }
-void _Fill(selfptr, Word x1, Word y1, Word x2, Word y2, wchar_t sym, Word color)
+void _FillRegion(selfptr, Word x1, Word y1, Word x2, Word y2, wchar_t c, Word col)
 {
-	account(self);
-	_Clip(this, &x1, &y1);
-	_Clip(this, &x2, &y2);
+	_Clip(self, &x1, &y1);
+	_Clip(self, &x2, &y2);
 
-	for (int x = x1; x < x2; x++)
-		for (int y = y1; y < y2; y++)
-			_PrintFrame(this, x, y, sym, color);
+	CHAR_INFO r;
+	r.Attributes = col;
+	r.Char.UnicodeChar = c;
+
+	DWord value = *(DWord*)&r;
+
+	for (int y = y1; y < y2; y++)
+		memset32(self->localFrame + y*self->nFrameLength + x1, value, x2 - x1);
 }
-void _DrawRectangle(void* self, Word x1, Word y1, Word x2, Word y2, Word color)
+void _DrawRectangle(selfptr, Word x1, Word y1, Word x2, Word y2, Word color)
 {
-	struct c_class *this = self;
 	if ((x2 <= x1) && (y2 >= y1))
-		_Fill(this, x2, y1, x1, y2, L' ', color);
+		_FillRegion(self, x2, y1, x1, y2, L' ', color);
 	else if ((x2 >= x1) && (y2 <= y1))
-		_Fill(this, x1, y2, x2, y1, L' ', color);
+		_FillRegion(self, x1, y2, x2, y1, L' ', color);
 	else if ((x2 <= x1) && (y2 <= y1))
-		_Fill(this, x2, y2, x1, y1, L' ', color);
+		_FillRegion(self, x2, y2, x1, y1, L' ', color);
 	else
-		_Fill(this, x1, y1, x2, y2, L' ', color);
-}
-void _Compose(void* self, struct Frame* localBuffer, Word offsetX, Word offsetY)
-{
-	struct c_class *this = self;
-	_Clip(this, &offsetX, &offsetY);
-
-	for (int j = offsetY; j<localBuffer->nFrameHeight + offsetY; j++)
-		for (int i = offsetX; i<localBuffer->nFrameLength + offsetX; i++)
-		{
-			this->localFrame[j*this->nFrameLength + i] = localBuffer->localFrame[(j - offsetY)*(localBuffer->nFrameLength) + i - offsetX];
-		}
+		_FillRegion(self, x1, y1, x2, y2, L' ', color);
 }
 void _DrawLine(selfptr, Word x1, Word y1, Word x2, Word y2, wchar_t character, Word color)
 {
@@ -235,27 +228,26 @@ constructMethodTable(
 	.DrawLine = _DrawLine,
 	.PrintFrame = _PrintFrame,
 	.DrawRectangle = _DrawRectangle,
-	.Compose = _Compose
 );
 
-Constructor(void* self, va_list *ap)
+Constructor(selfptr, va_list *ap)
 {
-	struct c_class* this = self;
+	account(self);
 	assignMethodTable(this);
 
 	this->nFrameLength = va_arg(*ap, Word);
 	this->nFrameHeight = va_arg(*ap, Word);
 
-	this->localFrame = malloc(this->nFrameLength*this->nFrameHeight * sizeof(CHAR_INFO));
+	this->localFrame = malloc(this->nFrameLength * this->nFrameHeight * sizeof(CHAR_INFO));
 
 	if (this->localFrame)
-		_DrawRectangle(this, 0, 0, this->nFrameLength, this->nFrameHeight, BG_BLACK);
+		_ClearFrame(this, L' ', BG_BLACK);
 
 	return this;
 }
-Destructor(void* self)
+Destructor(selfptr)
 {
-	struct c_class* this = self;
+	account(self);
 	free(this->localFrame);
 	return this;
 }

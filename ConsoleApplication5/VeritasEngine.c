@@ -33,43 +33,31 @@ bool _PassEvents(void* self)
 	}
 	return true;
 }
-void _Show(void* self)
+
+void _Show(selfptr)
 {
-	struct c_class* this = self;
-	this->Window->method->OutputToScreen(this->Window, this->Output->localFrame);
+	self->Window->method->OutputToScreen(self->Window, self->Output->localFrame);
 }
-bool _SetupScreen(void* self, Word width, Word height, Byte fontw, Byte fonth)
+bool _SetupScreen(selfptr, Word width, Word height, Byte fontw, Byte fonth)
 {
-	struct c_class* this = self;
+	account(self);
 
 	// default setup for fast access
-	if (this->Window->method->CreateConsole(this->Window, width, height, fontw, fonth)
-		&& this->Window->method->SetCursor(this->Window, false))
+	if (this->Window->method->CreateConsole(this->Window, width, height, fontw, fonth))
 	{
-		// Clip cursor
-		RECT rekt;
-		GetWindowRect(this->Window->consoleWindow, &rekt);
-		rekt.right = rekt.left + 1;
-		ClipCursor(&rekt);
-
 		this->Output = new(Frame, width, height);
 		SetConsoleTitleA(this->AppName);
 		_Show(this);
 
 		return true;
 	}
-		
-	else
-		return false;
+	return false;
 }
-
-
-DWORD _stdcall _GameThread(void* _self)
+DWORD _stdcall _GameThread(selfptr)
 {
-	account(_self);
+	account(self);
 	this->Control = new(MessageWindow, this->Window->consoleWindow);
 	int gResult;
-	ShowCursor(false);
 
 	if (!this->method->OnUserCreate(this))
 		return 2;
@@ -126,25 +114,23 @@ DWORD _stdcall _GameThread(void* _self)
 
 	return 0;
 }
-void _Start(void* _self)
+void _Start(selfptr)
 {
 	DWORD dwThreadID;
 	HANDLE hThread;
 	DWORD ExitCode;
 
-	struct c_class* this = _self;
 	bActive = true;		
-	
+	// start a game thread
 	hThread = CreateThread(
 		NULL,
 		0,
 		&_GameThread,
-		_self,
+		self,
 		0,
 		&dwThreadID);
 
 	
-
 	WaitForSingleObject(hThread, INFINITE);
 	GetExitCodeThread(hThread, &ExitCode);
 
@@ -154,7 +140,7 @@ void _Start(void* _self)
 	case 1:
 		CloseHandle(hThread);
 		break;
-	case 2:
+	default:
 		CloseHandle(hThread);
 		throw(new(Exception, __LINE__, __FILE__));
 	}
@@ -167,9 +153,9 @@ constructMethodTable(
 	.Show = _Show
 );
 
-Constructor(void* self, va_list* ap)
+Constructor(selfptr, va_list* ap)
 {
-	struct c_class* this = self;
+	account(self);
 	assignMethodTable(this);
 
 	this->AppName = "Veritas Engine Test";
@@ -177,9 +163,9 @@ Constructor(void* self, va_list* ap)
 
 	return this;
 }
-Destructor(void* self)
+Destructor(selfptr)
 {
-	struct c_class* this = self;
+	account(self);
 	delete(this->Window);
 	if(this->Control)
 		delete(this->Control);

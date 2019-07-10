@@ -223,7 +223,7 @@ bool virtual(OnUserUpdate)(void* self)
 	if (this->bShowMap)
 	{
 		// Emplace Map 
-		base.Output->method->Compose(base.Output, this->MapLayer, 5, 5);
+		//base.Output->method->Compose(base.Output, this->MapLayer, 5, 5);
 		// Player position
 		base.Output->method->PrintFrame(base.Output, (int)fPlayerX + 5, ((int)fPlayerY) + 5, ' ', BG_MAGENTA);
 	}
