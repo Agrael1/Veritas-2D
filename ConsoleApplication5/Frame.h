@@ -2,7 +2,6 @@
 #include "WinSetup.h"
 #include "EngineCommons.h"
 #include "VTypes.h"
-#include "Color.h"
 
 #define c_class Frame
 

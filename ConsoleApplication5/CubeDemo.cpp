@@ -1,7 +1,9 @@
+#include "StringStream.h"
 #include "VeritasMath.h"
 #include "Class.h"
 #include "Icosahedron.h"
 #include "CubeDemo.h"
+#include "Color.scheme"
 
 
 bool virtual(HandleInputEvents)(void* self, struct KeyboardEvent event)
@@ -17,6 +19,15 @@ bool virtual(HandleInputEvents)(void* self, struct KeyboardEvent event)
 		case VK_SPACE:
 			this->bStop ^= true;
 			break;
+		case VK_TAB:
+			this->cycle = (this->cycle + 1) % 3;
+			break;
+		case 'O':
+			this->back = (this->back + 0x10) % 0x100;
+			break;
+		case 'P':
+			this->fore = (this->fore + 0x1) % 18;
+			break;
 		}
 	}
 	return true;
@@ -24,7 +35,32 @@ bool virtual(HandleInputEvents)(void* self, struct KeyboardEvent event)
 bool virtual(OnUserCreate)(void* self)
 {
 	account(self);
+
+	// using DB16 - DawnBringer's 16 Col Palette v1.0
+	// http://pixeljoint.com/forum/forum_posts.asp?TID=12795
+	COLORREF palette[16] = {
+	RGB(20, 12, 28),		// Black
+	RGB(68, 36, 52),		// Dark Magenta
+	RGB(48, 52, 109),		// Dark Blue
+	RGB(78, 74, 78),		// Grey
+	RGB(133, 76, 48),		// Light Brown
+	RGB(52, 101, 36),		// Grass Green
+	RGB(208, 70, 72),		// Red
+	RGB(117, 113, 97),		// Ditry Gray
+	RGB(89, 125, 206),		// Blue
+	RGB(10, 125, 44),		// Light Green
+	RGB(133, 149, 161),		// Metal
+	RGB(109, 170, 44),		// Acid Green
+	RGB(210, 170, 153),		// Skin
+	RGB(109, 194, 202),		// Sky
+	RGB(218, 212, 94),		// Honey
+	RGB(222, 238, 214)		// Moon White
+	};
+
+	base.Window->method->SetPalette(base.Window, palette);
+
 	this->bStop = false;
+	this->cycle = this->back = this->fore = 0;
 	this->model = Icosahedron_Make();
 	
 	// Setting up projection matrix and camera
@@ -44,7 +80,7 @@ bool virtual(OnUserUpdate)(void* self, double fElapsedSeconds)
 	if (this->bStop)
 		return true;
 
-	base.Output->method->ClearFrame(base.Output, PIXEL_QUARTER, FG_GREEN|BG_DARK_RED);
+	base.Output->method->ClearFrame(base.Output, ' ', BG_Sky);
 
 	this->fTheta += (float)fElapsedSeconds;
 
@@ -84,13 +120,13 @@ bool virtual(OnUserUpdate)(void* self, double fElapsedSeconds)
 				&v0,
 				&v1,
 				&v2,
-				0x2588, FG_WHITE);
+				' ', BG_Dark_Magenta);
 		
-			/*base.Output->method->DrawTriangleWireframe(base.Output,
+			base.Output->method->DrawTriangleWireframe(base.Output,
 				(Word)v0.m128_f32[0], (Word)v0.m128_f32[1],
 				(Word)v1.m128_f32[0], (Word)v1.m128_f32[1],
 				(Word)v2.m128_f32[0], (Word)v2.m128_f32[1],
-				0x2588, FG_BLUE);*/
+				' ', BG_Ditry_Gray);
 		}	
 	}
 	return true;

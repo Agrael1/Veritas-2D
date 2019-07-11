@@ -16,5 +16,6 @@ class
 	VMVECTOR ScreenResolution;
 	
 	bool bStop;
+	UINT cycle, back, fore;
 	struct IndexedTriangleList model;
 };

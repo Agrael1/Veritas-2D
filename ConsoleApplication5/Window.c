@@ -120,13 +120,22 @@ void _OutputToScreen(selfptr, CHAR_INFO* buffer)
 {
 	WriteConsoleOutputW(self->hOut, buffer, (COORD) { (short)self->Width, (short)self->Height}, (COORD) { 0, 0 }, &self->rWindowRect);
 }
+void _SetPalette(selfptr, COLORREF palette[16])
+{
+	CONSOLE_SCREEN_BUFFER_INFOEX *csbiex = malloc(sizeof(CONSOLE_SCREEN_BUFFER_INFOEX));
+	csbiex->cbSize = sizeof(CONSOLE_SCREEN_BUFFER_INFOEX);
+	GetConsoleScreenBufferInfoEx(self->hOut, csbiex);
+	memcpy(csbiex->ColorTable, palette, 16 * sizeof(COLORREF));
+	SetConsoleScreenBufferInfoEx(self->hOut, csbiex);
+}
 
 constructMethodTable(
 	.CreateConsole = _CreateConsole,
 	.SetCursor = _SetCursor,
 	.Restore = _Restore,
 	.OutputToScreen = _OutputToScreen,
-	.BlockCursor = _BlockCursor
+	.BlockCursor = _BlockCursor,
+	.SetPalette = _SetPalette
 );
 
 Constructor(selfptr, va_list* ap)

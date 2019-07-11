@@ -41,6 +41,7 @@ class
 		bool(*Restore)(const selfptr);
 		void(*OutputToScreen)(selfptr, CHAR_INFO* buffer);
 		void(*BlockCursor)(selfptr, bool blocked);
+		void(*SetPalette)(selfptr, COLORREF palette[16]);
 	);
 };
 

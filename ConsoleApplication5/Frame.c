@@ -241,7 +241,7 @@ Constructor(selfptr, va_list *ap)
 	this->localFrame = malloc(this->nFrameLength * this->nFrameHeight * sizeof(CHAR_INFO));
 
 	if (this->localFrame)
-		_ClearFrame(this, L' ', BG_BLACK);
+		_ClearFrame(this, L' ', 0);
 
 	return this;
 }

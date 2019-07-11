@@ -1,6 +1,7 @@
 #include "Maze3D.h"
 #include "Class.h"
 #include <math.h>
+#include "color.scheme"
 
 
 #define CellL 3
@@ -39,7 +40,7 @@ void _RenderMaze(void* self, struct Frame* to)
 			else
 			{
 				//Raytest
-				if (this->MapLayer->localFrame[nTestY*this->MapLayer->nFrameLength + nTestX].Attributes == BG_BLACK)
+				if (this->MapLayer->localFrame[nTestY*this->MapLayer->nFrameLength + nTestX].Attributes == DBG_BLACK)
 				{
 					bHitWall = true;
 				}
@@ -63,11 +64,11 @@ void _RenderMaze(void* self, struct Frame* to)
 		{
 			if (y < nCeiling)
 			{
-				to->method->PrintFrame(to, x, y, L' ', FG_WHITE);
+				to->method->PrintFrame(to, x, y, L' ', DFG_WHITE);
 			}
 			else if (y > nCeiling&&y <= nFloor)
 			{
-				to->method->PrintFrame(to, x, y, nShade, FG_DARK_CYAN);
+				to->method->PrintFrame(to, x, y, nShade, DFG_DARK_CYAN);
 			}
 			else
 			{
@@ -78,7 +79,7 @@ void _RenderMaze(void* self, struct Frame* to)
 				else if (b < 0.75)		nFloorShade = '.';
 				else if (b < 0.9)		nFloorShade = '-';
 				else					nFloorShade = ' ';
-				to->method->PrintFrame(to, x, y, nFloorShade, FG_BLACK + BG_DARK_RED);
+				to->method->PrintFrame(to, x, y, nFloorShade, DFG_BLACK + DBG_DARK_RED);
 			}
 		}
 	}
@@ -90,7 +91,7 @@ void _RenderMap(void* self, struct Frame* to)
 	// Labyrinth cells
 	for (Byte j = 0; j<this->MazeWidth; j++)
 		for (Byte i = 0; i < this->MazeLength; i++)
-			to->method->DrawRectangle(to, i*CellL + 1, j*CellL + 1, (i+1)*CellL, (j+1)*CellL, BG_WHITE);
+			to->method->DrawRectangle(to, i*CellL + 1, j*CellL + 1, (i+1)*CellL, (j+1)*CellL, DBG_WHITE);
 
 	// Break generated walls
 	short elctr = 0;
@@ -98,16 +99,16 @@ void _RenderMap(void* self, struct Frame* to)
 		for (int i = !(j & 1); i < this->MazeLength; i += 2, elctr++)
 		{
 			if (this->maze->MazeRep[elctr] & 1)
-				to->method->DrawRectangle(to, (i+1)*CellL, j*CellL + 1, (i+1)*CellL + 1, (j+1)*CellL, BG_WHITE);
+				to->method->DrawRectangle(to, (i+1)*CellL, j*CellL + 1, (i+1)*CellL + 1, (j+1)*CellL, DBG_WHITE);
 			if (this->maze->MazeRep[elctr] & 2)
-				to->method->DrawRectangle(to, (i+1)*CellL, (j+1)*CellL + 1, i*CellL + 1, (j+1)*CellL, BG_WHITE);
+				to->method->DrawRectangle(to, (i+1)*CellL, (j+1)*CellL + 1, i*CellL + 1, (j+1)*CellL, DBG_WHITE);
 			if (this->maze->MazeRep[elctr] & 4)
-				to->method->DrawRectangle(to, i*CellL, j*CellL + 1, i*CellL + 1, (j+1)*CellL, BG_WHITE);
+				to->method->DrawRectangle(to, i*CellL, j*CellL + 1, i*CellL + 1, (j+1)*CellL, DBG_WHITE);
 			if (this->maze->MazeRep[elctr] & 8)
-				to->method->DrawRectangle(to, i*CellL + 1, j*CellL, (i+1)*CellL, j*CellL + 1, BG_WHITE);
+				to->method->DrawRectangle(to, i*CellL + 1, j*CellL, (i+1)*CellL, j*CellL + 1, DBG_WHITE);
 		}
 	//Finish position
-	to->method->DrawRectangle(to, this->maze->startx*CellL + 1, this->maze->starty*CellL + 1, (this->maze->startx+1)*CellL, (this->maze->starty+1)*CellL, BG_RED);
+	to->method->DrawRectangle(to, this->maze->startx*CellL + 1, this->maze->starty*CellL + 1, (this->maze->startx+1)*CellL, (this->maze->starty+1)*CellL, DBG_RED);
 	
 
 }
@@ -129,7 +130,7 @@ void virtual(HandleControls)(void* self, const struct Keyboard* kbd, const doubl
 		fPlayerX += sinf(fPlayerA)*(3.0f)*fElapsedTime;
 		fPlayerY += cosf(fPlayerA)*(3.0f)*fElapsedTime;
 
-		if (this->MapLayer->localFrame[(int)fPlayerY*this->MapLayer->nFrameLength + (int)fPlayerX].Attributes == BG_BLACK)
+		if (this->MapLayer->localFrame[(int)fPlayerY*this->MapLayer->nFrameLength + (int)fPlayerX].Attributes == DBG_BLACK)
 		{
 			fPlayerX -= sinf(fPlayerA)*(3.0f)*fElapsedTime;
 			fPlayerY -= cosf(fPlayerA)*(3.0f)*fElapsedTime;
@@ -140,7 +141,7 @@ void virtual(HandleControls)(void* self, const struct Keyboard* kbd, const doubl
 		fPlayerX -= sinf(fPlayerA)*(3.0f)*fElapsedTime;
 		fPlayerY -= cosf(fPlayerA)*(3.0f)*fElapsedTime;
 
-		if (this->MapLayer->localFrame[(int)fPlayerY*this->MapLayer->nFrameLength + (int)fPlayerX].Attributes == BG_BLACK)
+		if (this->MapLayer->localFrame[(int)fPlayerY*this->MapLayer->nFrameLength + (int)fPlayerX].Attributes == DBG_BLACK)
 		{
 			fPlayerX += sinf(fPlayerA)*(3.0f)*fElapsedTime;
 			fPlayerY += cosf(fPlayerA)*(3.0f)*fElapsedTime;
@@ -151,7 +152,7 @@ void virtual(HandleControls)(void* self, const struct Keyboard* kbd, const doubl
 		fPlayerY += sinf(fPlayerA)*(3.0f)*fElapsedTime;
 		fPlayerX -= cosf(fPlayerA)*(3.0f)*fElapsedTime;
 
-		if (this->MapLayer->localFrame[(int)fPlayerY*this->MapLayer->nFrameLength + (int)fPlayerX].Attributes == BG_BLACK)
+		if (this->MapLayer->localFrame[(int)fPlayerY*this->MapLayer->nFrameLength + (int)fPlayerX].Attributes == DBG_BLACK)
 		{
 			fPlayerY -= sinf(fPlayerA)*(3.0f)*fElapsedTime;
 			fPlayerX += cosf(fPlayerA)*(3.0f)*fElapsedTime;
@@ -163,7 +164,7 @@ void virtual(HandleControls)(void* self, const struct Keyboard* kbd, const doubl
 			fPlayerY -= sinf(fPlayerA)*(2.0f)*fElapsedTime;
 			fPlayerX += cosf(fPlayerA)*(2.0f)*fElapsedTime;
 
-			if (this->MapLayer->localFrame[(int)fPlayerY*this->MapLayer->nFrameLength + (int)fPlayerX].Attributes == BG_BLACK)
+			if (this->MapLayer->localFrame[(int)fPlayerY*this->MapLayer->nFrameLength + (int)fPlayerX].Attributes == DBG_BLACK)
 			{
 				fPlayerY += sinf(fPlayerA)*(2.0f)*fElapsedTime;
 				fPlayerX -= cosf(fPlayerA)*(2.0f)*fElapsedTime;
@@ -225,7 +226,7 @@ bool virtual(OnUserUpdate)(void* self)
 		// Emplace Map 
 		//base.Output->method->Compose(base.Output, this->MapLayer, 5, 5);
 		// Player position
-		base.Output->method->PrintFrame(base.Output, (int)fPlayerX + 5, ((int)fPlayerY) + 5, ' ', BG_MAGENTA);
+		base.Output->method->PrintFrame(base.Output, (int)fPlayerX + 5, ((int)fPlayerY) + 5, ' ', DBG_MAGENTA);
 	}
 
 	return true;

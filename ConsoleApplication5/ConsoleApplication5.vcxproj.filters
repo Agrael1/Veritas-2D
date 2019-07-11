@@ -194,7 +194,7 @@
     <ClInclude Include="Pipeline.h">
       <Filter>Заголовочные файлы\Engine\Graphics\Pipeline</Filter>
     </ClInclude>
-    <ClInclude Include="Color.h">
+    <ClInclude Include="Color.scheme">
       <Filter>Заголовочные файлы\Engine\Graphics</Filter>
     </ClInclude>
   </ItemGroup>

@@ -173,7 +173,7 @@
     <ClInclude Include="BitField.h" />
     <ClInclude Include="Box.h" />
     <ClInclude Include="Class.h" />
-    <ClInclude Include="Color.h" />
+    <ClInclude Include="Color.scheme" />
     <ClInclude Include="Control.h" />
     <ClInclude Include="CubeDemo.h" />
     <ClInclude Include="EngineCommons.h" />
