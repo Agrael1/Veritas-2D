@@ -5,8 +5,6 @@
 #include "MathConstants.h"
 #include "EngineCommons.h"
 
-#define XM_PERMUTE_PS( v, c ) _mm_shuffle_ps( v, v, c )
-
 inline bool XMScalarNearEqual
 (
 	float S1,
@@ -18,7 +16,7 @@ inline bool XMScalarNearEqual
 	return (fabsf(Delta) <= Epsilon);
 }
 
-#include "VMVector.h"
+#include "VMVector3.h"
 
 #pragma region Matrix
 inline VMMATRIX __vectorcall VMMatrixPerspectiveLH
@@ -146,6 +144,33 @@ inline VMMATRIX __vectorcall VMMatrixTranslation
 	M.r[3] = VMVectorSet(OffsetX, OffsetY, OffsetZ, 1.f);
 	return M;
 }
+inline VMMATRIX __vectorcall VMMatrixTranspose
+(
+	FXMMATRIX M
+)
+{
+	// x.x,x.y,y.x,y.y
+	VMVECTOR vTemp1 = _mm_shuffle_ps(M.r[0], M.r[1], _MM_SHUFFLE(1, 0, 1, 0));
+	// x.z,x.w,y.z,y.w
+	VMVECTOR vTemp3 = _mm_shuffle_ps(M.r[0], M.r[1], _MM_SHUFFLE(3, 2, 3, 2));
+	// z.x,z.y,w.x,w.y
+	VMVECTOR vTemp2 = _mm_shuffle_ps(M.r[2], M.r[3], _MM_SHUFFLE(1, 0, 1, 0));
+	// z.z,z.w,w.z,w.w
+	VMVECTOR vTemp4 = _mm_shuffle_ps(M.r[2], M.r[3], _MM_SHUFFLE(3, 2, 3, 2));
+	VMMATRIX mResult;
+
+	// x.x,y.x,z.x,w.x
+	mResult.r[0] = _mm_shuffle_ps(vTemp1, vTemp2, _MM_SHUFFLE(2, 0, 2, 0));
+	// x.y,y.y,z.y,w.y
+	mResult.r[1] = _mm_shuffle_ps(vTemp1, vTemp2, _MM_SHUFFLE(3, 1, 3, 1));
+	// x.z,y.z,z.z,w.z
+	mResult.r[2] = _mm_shuffle_ps(vTemp3, vTemp4, _MM_SHUFFLE(2, 0, 2, 0));
+	// x.w,y.w,z.w,w.w
+	mResult.r[3] = _mm_shuffle_ps(vTemp3, vTemp4, _MM_SHUFFLE(3, 1, 3, 1));
+	return mResult;
+}
+
+
 inline VMVECTOR __vectorcall VMQuaternionRotationRollPitchYawFromVector
 (
 	FVMVECTOR Angles // <Pitch, Yaw, Roll, 0>
@@ -238,6 +263,51 @@ inline VMMATRIX __vectorcall VMMatrixRotationRollPitchYaw
 {
 	VMVECTOR Angles = VMVectorSet(Pitch, Yaw, Roll, 0.0f);
 	return VMMatrixRotationRollPitchYawFromVector(Angles);
+}
+inline VMMATRIX __vectorcall VMMatrixLookToLH
+(
+	FVMVECTOR EyePosition,
+	FVMVECTOR EyeDirection,
+	FVMVECTOR UpDirection
+)
+{
+	assert(!VMVector3Equal(EyeDirection, VMVectorZero()));
+	assert(!VMVector3IsInfinite(EyeDirection));
+	assert(!VMVector3Equal(UpDirection, VMVectorZero()));
+	assert(!VMVector3IsInfinite(UpDirection));
+
+	VMVECTOR R2 = VMVector3Normalize(EyeDirection);
+
+	VMVECTOR R0 = VMVector3Cross(UpDirection, R2);
+	R0 = VMVector3Normalize(R0);
+
+	VMVECTOR R1 = VMVector3Cross(R2, R0);
+
+	VMVECTOR NegEyePosition = VMVectorNegate(EyePosition);
+	
+	VMVECTOR D0 = VMVector3Dot(R0, NegEyePosition);
+	VMVECTOR D1 = VMVector3Dot(R1, NegEyePosition);
+	VMVECTOR D2 = VMVector3Dot(R2, NegEyePosition);
+	
+	VMMATRIX M;
+	M.r[0] = VMVectorSelect(D0, R0, g_XMSelect1110.v);
+	M.r[1] = VMVectorSelect(D1, R1, g_XMSelect1110.v);
+	M.r[2] = VMVectorSelect(D2, R2, g_XMSelect1110.v);
+	M.r[3] = g_XMIdentityR3.v;
+
+	M = VMMatrixTranspose(M);
+
+	return M;
+}
+inline VMMATRIX __vectorcall VMMatrixLookAtLH
+(
+	FVMVECTOR EyePosition,
+	FVMVECTOR FocusPosition,
+	FVMVECTOR UpDirection
+)
+{
+	VMVECTOR EyeDirection = VMVectorSubtract(FocusPosition, EyePosition);
+	return VMMatrixLookToLH(EyePosition, EyeDirection, UpDirection);
 }
 #pragma endregion
 

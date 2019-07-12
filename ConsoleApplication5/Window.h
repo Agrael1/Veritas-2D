@@ -46,3 +46,4 @@ class
 };
 
 #define WND_EXCEPT_AUTO() new(WindowException,__LINE__, __FILE__, GetLastError())
+#define WND_CALL_INFO(call) if(!(call)) throw(WND_EXCEPT_AUTO())

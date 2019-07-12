@@ -19,9 +19,6 @@
     <Filter Include="Файлы исходного кода\Engine">
       <UniqueIdentifier>{5111f1b0-c3d6-4b87-8d15-05b2667b29af}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Заголовочные файлы\Engine\Containers">
-      <UniqueIdentifier>{67329047-506c-46b1-9351-be6d7ee2d725}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Заголовочные файлы\Engine\Framework">
       <UniqueIdentifier>{b6d2c2ef-bc61-4f80-8d16-6ae2b6213a0b}</UniqueIdentifier>
     </Filter>
@@ -33,9 +30,6 @@
     </Filter>
     <Filter Include="Файлы исходного кода\Engine\Console">
       <UniqueIdentifier>{bfa89c91-29da-4316-b0d9-e3a027804a11}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Файлы исходного кода\Engine\Containers">
-      <UniqueIdentifier>{40131b22-f686-4905-a16e-aab712463813}</UniqueIdentifier>
     </Filter>
     <Filter Include="Файлы исходного кода\Engine\Framework">
       <UniqueIdentifier>{d0db9896-f2f1-49fc-9d1e-427a00b73e62}</UniqueIdentifier>
@@ -49,9 +43,6 @@
     <Filter Include="Заголовочные файлы\Engine\Math">
       <UniqueIdentifier>{6d6ce88f-a0b6-45b5-b867-e9baea36c1b8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Заголовочные файлы\Engine\Misc">
-      <UniqueIdentifier>{b56e2b58-79df-4d1b-968e-b6f9591997a7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Заголовочные файлы\Engine\Graphics\Primitives">
       <UniqueIdentifier>{e86c07a3-114b-43d1-8517-547c9977c67f}</UniqueIdentifier>
     </Filter>
@@ -60,6 +51,30 @@
     </Filter>
     <Filter Include="Файлы исходного кода\asm">
       <UniqueIdentifier>{18a2de8d-282b-4471-8a14-b058cda34bac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Заголовочные файлы\Engine\Graphics\Shading">
+      <UniqueIdentifier>{16c8482a-c9eb-4848-bd0c-65f02c93f7af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Заголовочные файлы\Demo">
+      <UniqueIdentifier>{2d7dbdf6-3781-49ea-8362-629cf313894e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Заголовочные файлы\Engine\Framework\Containers">
+      <UniqueIdentifier>{67329047-506c-46b1-9351-be6d7ee2d725}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Заголовочные файлы\Engine\Framework\Misc">
+      <UniqueIdentifier>{b56e2b58-79df-4d1b-968e-b6f9591997a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\Engine\Framework\Containers">
+      <UniqueIdentifier>{40131b22-f686-4905-a16e-aab712463813}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Заголовочные файлы\Engine\Graphics\VObjects">
+      <UniqueIdentifier>{febd7de4-9776-4c8c-a2de-28e8f87e1c29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\Engine\Graphics">
+      <UniqueIdentifier>{7626ae30-4323-4fac-987d-f58341eb0ae8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\Engine\Graphics\VObjects">
+      <UniqueIdentifier>{c0bd522c-3697-421f-b6d5-123e79afaadb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -79,16 +94,16 @@
       <Filter>Файлы исходного кода\Engine\Console</Filter>
     </ClCompile>
     <ClCompile Include="BitField.c">
-      <Filter>Файлы исходного кода\Engine\Containers</Filter>
+      <Filter>Файлы исходного кода\Engine\Framework\Containers</Filter>
     </ClCompile>
     <ClCompile Include="BitStack.c">
-      <Filter>Файлы исходного кода\Engine\Containers</Filter>
+      <Filter>Файлы исходного кода\Engine\Framework\Containers</Filter>
     </ClCompile>
     <ClCompile Include="StringStream.c">
-      <Filter>Файлы исходного кода\Engine\Containers</Filter>
+      <Filter>Файлы исходного кода\Engine\Framework\Containers</Filter>
     </ClCompile>
     <ClCompile Include="Queue.c">
-      <Filter>Файлы исходного кода\Engine\Containers</Filter>
+      <Filter>Файлы исходного кода\Engine\Framework\Containers</Filter>
     </ClCompile>
     <ClCompile Include="Exception.c">
       <Filter>Файлы исходного кода\Engine\Framework</Filter>
@@ -111,22 +126,19 @@
     <ClCompile Include="CubeDemo.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
+    <ClCompile Include="Camera.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\VObjects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Maze.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
-    <ClInclude Include="Maze3D.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="Queue.h">
-      <Filter>Заголовочные файлы\Engine\Containers</Filter>
+      <Filter>Заголовочные файлы\Engine\Framework\Containers</Filter>
     </ClInclude>
     <ClInclude Include="BitField.h">
-      <Filter>Заголовочные файлы\Engine\Containers</Filter>
+      <Filter>Заголовочные файлы\Engine\Framework\Containers</Filter>
     </ClInclude>
     <ClInclude Include="BitStack.h">
-      <Filter>Заголовочные файлы\Engine\Containers</Filter>
+      <Filter>Заголовочные файлы\Engine\Framework\Containers</Filter>
     </ClInclude>
     <ClInclude Include="Class.h">
       <Filter>Заголовочные файлы\Engine\Framework</Filter>
@@ -138,7 +150,7 @@
       <Filter>Заголовочные файлы\Engine\Framework</Filter>
     </ClInclude>
     <ClInclude Include="StringStream.h">
-      <Filter>Заголовочные файлы\Engine\Containers</Filter>
+      <Filter>Заголовочные файлы\Engine\Framework\Containers</Filter>
     </ClInclude>
     <ClInclude Include="EngineCommons.h">
       <Filter>Заголовочные файлы\Engine\Framework</Filter>
@@ -164,9 +176,6 @@
     <ClInclude Include="WinSetup.h">
       <Filter>Заголовочные файлы\Engine\Framework</Filter>
     </ClInclude>
-    <ClInclude Include="CubeDemo.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="VTypes.h">
       <Filter>Заголовочные файлы\Engine\Math</Filter>
     </ClInclude>
@@ -183,7 +192,7 @@
       <Filter>Заголовочные файлы\Engine\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Standard.h">
-      <Filter>Заголовочные файлы\Engine\Misc</Filter>
+      <Filter>Заголовочные файлы\Engine\Framework\Misc</Filter>
     </ClInclude>
     <ClInclude Include="Box.h">
       <Filter>Заголовочные файлы\Engine\Graphics\Primitives</Filter>
@@ -196,6 +205,27 @@
     </ClInclude>
     <ClInclude Include="Color.scheme">
       <Filter>Заголовочные файлы\Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="PhongPS.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Shading</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Shading</Filter>
+    </ClInclude>
+    <ClInclude Include="CubeDemo.h">
+      <Filter>Заголовочные файлы\Demo</Filter>
+    </ClInclude>
+    <ClInclude Include="Maze3D.h">
+      <Filter>Заголовочные файлы\Demo</Filter>
+    </ClInclude>
+    <ClInclude Include="Maze.h">
+      <Filter>Заголовочные файлы\Demo</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\VObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="VMVector3.h">
+      <Filter>Заголовочные файлы\Engine\Math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

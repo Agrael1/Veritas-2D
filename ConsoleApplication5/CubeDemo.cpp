@@ -6,6 +6,7 @@
 #include "Color.scheme"
 
 
+
 bool virtual(HandleInputEvents)(void* self, struct KeyboardEvent event)
 {
 	account(self);
@@ -19,22 +20,28 @@ bool virtual(HandleInputEvents)(void* self, struct KeyboardEvent event)
 		case VK_SPACE:
 			this->bStop ^= true;
 			break;
-		case VK_TAB:
-			this->cycle = (this->cycle + 1) % 3;
-			break;
-		case 'O':
-			this->back = (this->back + 0x10) % 0x100;
-			break;
-		case 'P':
-			this->fore = (this->fore + 0x1) % 18;
-			break;
 		}
 	}
 	return true;
 }
+void virtual(HandleControls)(void* self, const struct Keyboard* kbd, double fElapsedTime)
+{
+	account(self);
+	if (kbd->method->KeyPressed(kbd, 'W'))
+	{
+		if(this->pCam->r > 5.0f)
+			this->pCam->r -= 8.0f*(float)fElapsedTime;
+	}
+	if (kbd->method->KeyPressed(kbd, 'S'))
+	{
+		if (this->pCam->r < 40.0f)
+			this->pCam->r += 8.0f*(float)fElapsedTime;
+	}
+}
 bool virtual(OnUserCreate)(void* self)
 {
 	account(self);
+	this->pCam = new(Camera); // Create an instance of a camera
 
 	// using DB16 - DawnBringer's 16 Col Palette v1.0
 	// http://pixeljoint.com/forum/forum_posts.asp?TID=12795
@@ -60,12 +67,11 @@ bool virtual(OnUserCreate)(void* self)
 	base.Window->method->SetPalette(base.Window, palette);
 
 	this->bStop = false;
-	this->cycle = this->back = this->fore = 0;
 	this->model = Icosahedron_Make();
 	
 	// Setting up projection matrix and camera
 	base.Output->projection = VMMatrixPerspectiveLH(1.0f, (float)base.Output->nFrameHeight / (float)base.Output->nFrameLength, 0.5f, 40.0f);
-	base.Output->camera = VMMatrixTranslation(0.0f, 0.0f, 5.0f);
+	
 
 	// probably a temp solution
 	this->ScreenOffset = g_XMOne3.v;
@@ -80,6 +86,7 @@ bool virtual(OnUserUpdate)(void* self, double fElapsedSeconds)
 	if (this->bStop)
 		return true;
 
+	base.Output->camera = this->pCam->method->GetViewMatrix(this->pCam);
 	base.Output->method->ClearFrame(base.Output, ' ', BG_Sky);
 
 	this->fTheta += (float)fElapsedSeconds;
@@ -138,6 +145,8 @@ bool virtual(OnUserDestroy)(void* self)
 		free(this->model.indices);
 	if (this->model.vertices)
 		free(this->model.vertices);
+	if(this->pCam)
+		delete(this->pCam);
 	return true;
 }
 
@@ -146,6 +155,7 @@ Constructor(void* self, va_list *ap)
 	struct c_class *this = ((struct Class*)VeritasEngine)->ctor(self, ap);
 	base.AppName = stringOf(self);
 	base.method->OnUserCreate = virtual(OnUserCreate);
+	base.method->HandleControls = virtual(HandleControls);
 	base.method->OnUserUpdate = virtual(OnUserUpdate);
 	base.method->HandleInputEvents = virtual(HandleInputEvents);
 	base.method->OnUserDestroy = virtual(OnUserDestroy);
@@ -154,7 +164,6 @@ Constructor(void* self, va_list *ap)
 Destructor(void* self)
 {
 	struct c_class *this = ((struct Class*)VeritasEngine)->dtor(self);
-
 	return this;
 }
 ENDCLASSDESC

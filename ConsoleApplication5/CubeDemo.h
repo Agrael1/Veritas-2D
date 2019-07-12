@@ -2,6 +2,7 @@
 #include "VeritasEngine.h"
 #include "VTypes.h"
 #include "IndexedTriangleList.h"
+#include "Camera.h"
 #include "EngineCommons.h"
 
 #define c_class CubeDemo
@@ -14,8 +15,9 @@ class
 
 	VMVECTOR ScreenOffset;
 	VMVECTOR ScreenResolution;
-	
+	struct Camera* pCam;
+
+
 	bool bStop;
-	UINT cycle, back, fore;
 	struct IndexedTriangleList model;
 };

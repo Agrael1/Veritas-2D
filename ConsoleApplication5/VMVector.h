@@ -5,6 +5,12 @@
 #include "MathConstants.h"
 #include "EngineCommons.h"
 
+// Loads a zero vector
+inline VMVECTOR __vectorcall VMVectorZero()
+{
+	return _mm_setzero_ps();
+}
+
 // Rounds each component of a vector to the nearest even integer (known as "Bankers Rounding").
 inline VMVECTOR __vectorcall VMVectorRound
 (
@@ -22,26 +28,6 @@ inline VMVECTOR __vectorcall VMVectorRound
 	VMVECTOR vResult = _mm_xor_ps(R1, R2);
 	return vResult;
 }
-
-// Vector by matrix multiplication
-inline VMVECTOR __vectorcall VMVector3Transform
-(
-	FVMVECTOR V,
-	FXMMATRIX M
-)
-{
-	VMVECTOR vResult = XM_PERMUTE_PS(V, _MM_SHUFFLE(0, 0, 0, 0));
-	vResult = _mm_mul_ps(vResult, M.r[0]);
-	VMVECTOR vTemp = XM_PERMUTE_PS(V, _MM_SHUFFLE(1, 1, 1, 1));
-	vTemp = _mm_mul_ps(vTemp, M.r[1]);
-	vResult = _mm_add_ps(vResult, vTemp);
-	vTemp = XM_PERMUTE_PS(V, _MM_SHUFFLE(2, 2, 2, 2));
-	vTemp = _mm_mul_ps(vTemp, M.r[2]);
-	vResult = _mm_add_ps(vResult, vTemp);
-	vResult = _mm_add_ps(vResult, M.r[3]);
-	return vResult;
-}
-
 
 // Replicate the x component of the vector
 inline VMVECTOR __vectorcall VMVectorSplatX
@@ -123,7 +109,6 @@ inline VMVECTOR __vectorcall VMVectorAdd
 	return _mm_add_ps(V1, V2);
 }
 
-
 // Computes the product of the first two vectors added to the third vector.
 inline VMVECTOR __vectorcall VMVectorMultiplyAdd
 (
@@ -134,39 +119,6 @@ inline VMVECTOR __vectorcall VMVectorMultiplyAdd
 {
 	VMVECTOR vResult = _mm_mul_ps(V1, V2);
 	return _mm_add_ps(vResult, V3);
-}
-
-// Get normalized transformation
-inline VMVECTOR __vectorcall VMVector3TransformCoord
-(
-	FVMVECTOR V,
-	FXMMATRIX M
-)
-{
-	VMVECTOR Z = VMVectorSplatZ(V);
-	VMVECTOR Y = VMVectorSplatY(V);
-	VMVECTOR X = VMVectorSplatX(V);
-
-	VMVECTOR Result = VMVectorMultiplyAdd(Z, M.r[2], M.r[3]);
-	Result = VMVectorMultiplyAdd(Y, M.r[1], Result);
-	Result = VMVectorMultiplyAdd(X, M.r[0], Result);
-
-	VMVECTOR W = VMVectorSplatW(Result);
-	return VMVectorDivide(Result, W);
-}
-
-// Loading of Float3 to VMVector
-inline VMVECTOR __vectorcall VMLoadFloat3
-(
-	const VMFLOAT3* pSource
-)
-{
-	assert(pSource);
-	__m128 x = _mm_load_ss(&pSource->x);
-	__m128 y = _mm_load_ss(&pSource->y);
-	__m128 z = _mm_load_ss(&pSource->z);
-	__m128 xy = _mm_unpacklo_ps(x, y);
-	return _mm_movelh_ps(xy, z);
 }
 
 // Basic construction of VMVector
@@ -327,50 +279,26 @@ inline VMVECTOR __vectorcall VMVectorPermute
 	return Result;
 }
 
-// Calculate a normal
-inline VMVECTOR __vectorcall VMVector3Cross
+// Negates all the coords in vector
+inline VMVECTOR __vectorcall VMVectorNegate
 (
-	FVMVECTOR V1,
-	FVMVECTOR V2
+	FVMVECTOR V
 )
 {
-	// [ V1.y*V2.z - V1.z*V2.y, V1.z*V2.x - V1.x*V2.z, V1.x*V2.y - V1.y*V2.x ]
-	// y1,z1,x1,w1
-	VMVECTOR vTemp1 = XM_PERMUTE_PS(V1, _MM_SHUFFLE(3, 0, 2, 1));
-	// z2,x2,y2,w2
-	VMVECTOR vTemp2 = XM_PERMUTE_PS(V2, _MM_SHUFFLE(3, 1, 0, 2));
-	// Perform the left operation
-	VMVECTOR vResult = _mm_mul_ps(vTemp1, vTemp2);
-	// z1,x1,y1,w1
-	vTemp1 = XM_PERMUTE_PS(vTemp1, _MM_SHUFFLE(3, 0, 2, 1));
-	// y2,z2,x2,w2
-	vTemp2 = XM_PERMUTE_PS(vTemp2, _MM_SHUFFLE(3, 1, 0, 2));
-	// Perform the right operation
-	vTemp1 = _mm_mul_ps(vTemp1, vTemp2);
-	// Subract the right from left, and return answer
-	vResult = _mm_sub_ps(vResult, vTemp1);
-	// Set w to zero
-	return _mm_and_ps(vResult, g_XMMask3.v);
+	VMVECTOR Z;
+	Z = _mm_setzero_ps();
+	return _mm_sub_ps(Z, V);
 }
 
-// Dot product between two vectors
-inline VMVECTOR __vectorcall VMVector3Dot
+// Performs a per-component selection between two input vectors and returns the resulting vector.
+inline VMVECTOR __vectorcall VMVectorSelect
 (
 	FVMVECTOR V1,
-	FVMVECTOR V2
+	FVMVECTOR V2,
+	FVMVECTOR Control
 )
 {
-	// Perform the dot product
-	VMVECTOR vDot = _mm_mul_ps(V1, V2);
-	// x=Dot.vector4_f32[1], y=Dot.vector4_f32[2]
-	VMVECTOR vTemp = XM_PERMUTE_PS(vDot, _MM_SHUFFLE(2, 1, 2, 1));
-	// Result.vector4_f32[0] = x+y
-	vDot = _mm_add_ss(vDot, vTemp);
-	// x=Dot.vector4_f32[2]
-	vTemp = XM_PERMUTE_PS(vTemp, _MM_SHUFFLE(1, 1, 1, 1));
-	// Result.vector4_f32[0] = (x+y)+z
-	vDot = _mm_add_ss(vDot, vTemp);
-	// Splat x
-	return XM_PERMUTE_PS(vDot, _MM_SHUFFLE(0, 0, 0, 0));
+	VMVECTOR vTemp1 = _mm_andnot_ps(Control, V1);
+	VMVECTOR vTemp2 = _mm_and_ps(V2, Control);
+	return _mm_or_ps(vTemp1, vTemp2);
 }
-

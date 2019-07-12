@@ -3,6 +3,9 @@
 #include "Window.h"
 #include <malloc.h>
 
+#ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING
+#define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
+#endif
 // namespace ConsoleWindow
 #define c_class ConsoleWindow
 
@@ -62,27 +65,9 @@ bool _CreateConsole(selfptr, Word width, Word height, Byte fontw, Byte fonth)
 		CONSOLE_TEXTMODE_BUFFER, // must be TEXTMODE 
 		NULL);
 
-	if (this->hOut == INVALID_HANDLE_VALUE)
-	{
-		throw(WND_EXCEPT_AUTO());
-	}
-
-	if (!SetConsoleActiveScreenBuffer(this->hOut))
-	{
-		throw(WND_EXCEPT_AUTO());
-	}
-
-	// Set flags to allow mouse input		
-	if (!SetConsoleMode(this->hIn, ENABLE_EXTENDED_FLAGS))
-	{
-		throw(WND_EXCEPT_AUTO());
-	}
-		
-
-	if(!_SetFont(this, fontw, fonth))
-	{
-		throw(WND_EXCEPT_AUTO());
-	}
+	WND_CALL_INFO(this->hOut != INVALID_HANDLE_VALUE);
+	WND_CALL_INFO(SetConsoleActiveScreenBuffer(this->hOut));
+	WND_CALL_INFO(_SetFont(this, fontw, fonth));
 
 	COORD coordLargest = GetLargestConsoleWindowSize(this->hOut);
 	if (height > coordLargest.Y)
@@ -91,15 +76,11 @@ bool _CreateConsole(selfptr, Word width, Word height, Byte fontw, Byte fonth)
 		this->Height = width = coordLargest.X;
 
 	// Set size of buffer
-	SetConsoleScreenBufferSize(this->hOut, (COORD) { width, height });
+	WND_CALL_INFO(SetConsoleScreenBufferSize(this->hOut, (COORD) { width, height }));
 
 	// Set Physical Console Window Size
 	this->rWindowRect = (SMALL_RECT){ 0, 0, (short)width - 1, (short)height - 1 };
-	if (!SetConsoleWindowInfo(this->hOut, TRUE, &this->rWindowRect))
-	{
-		throw(WND_EXCEPT_AUTO());
-	}
-
+	WND_CALL_INFO(SetConsoleWindowInfo(this->hOut, TRUE, &this->rWindowRect))
 	return true;
 }
 void _BlockCursor(selfptr, bool blocked)

@@ -99,12 +99,12 @@ DWORD _stdcall _GameThread(selfptr)
 
 		_Show(this);
 
-		/*struct StringStream* oss = new(StringStream);
-		oss->method->AppendI(oss->method->Append(oss, "Cube Demo by Agrael FPS: "), (long)(1.0/fElapsedSeconds));
+		struct StringStream* oss = new(StringStream);
+		oss->method->AppendI(oss->method->Append(oss, "3D Demo by Agrael FPS: "), (long)(1.0/fElapsedSeconds));
 		char* _proxy = oss->method->EndStr(oss);
 
 		SetConsoleTitleA(_proxy);
-		free(_proxy);*/
+		free(_proxy);
 	}
 
 	if (this->method->OnUserDestroy&&!this->method->OnUserDestroy(this))

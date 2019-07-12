@@ -21,9 +21,9 @@ class
 		bool(*OnUserCreate)(void* self);
 		bool(*OnUserUpdate)(void* self, double fElapsedSeconds);
 		bool(*OnUserDestroy)(void* self);
-		void(*HandleMouse)(void* self, struct Mouse* mouse, const double fElapsedTime);
+		void(*HandleMouse)(void* self, struct Mouse* mouse, double fElapsedTime);
 		bool(*HandleInputEvents)(void* self, struct KeyboardEvent event);
-		void(*HandleControls)(void* self, const struct Keyboard* kbd, const double fElapsedTime);
+		void(*HandleControls)(void* self, const struct Keyboard* kbd, double fElapsedTime);
 
 		// Internals
 		bool(*SetupScreen)(selfptr, Word width, Word height, Byte fontw, Byte fonth);
