@@ -79,7 +79,7 @@ typedef struct
 
 typedef struct
 {
-	VMFLOAT3 p[3];
+	VMVECTOR p[3];
 }Triangle;
 
 typedef struct

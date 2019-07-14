@@ -309,5 +309,14 @@ inline VMMATRIX __vectorcall VMMatrixLookAtLH
 	VMVECTOR EyeDirection = VMVectorSubtract(FocusPosition, EyePosition);
 	return VMMatrixLookToLH(EyePosition, EyeDirection, UpDirection);
 }
+inline VMMATRIX __vectorcall VMMatrixIdentity()
+{
+	VMMATRIX M;
+	M.r[0] = g_XMIdentityR0.v;
+	M.r[1] = g_XMIdentityR1.v;
+	M.r[2] = g_XMIdentityR2.v;
+	M.r[3] = g_XMIdentityR3.v;
+	return M;
+}
 #pragma endregion
 

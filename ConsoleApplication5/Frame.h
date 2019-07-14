@@ -24,5 +24,6 @@ class
 	// 3D stuff
 	VMMATRIX projection;
 	VMMATRIX camera;
+	VMMATRIX world;
 };
 

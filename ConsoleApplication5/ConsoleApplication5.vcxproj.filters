@@ -76,6 +76,9 @@
     <Filter Include="Файлы исходного кода\Engine\Graphics\VObjects">
       <UniqueIdentifier>{c0bd522c-3697-421f-b6d5-123e79afaadb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Файлы исходного кода\Engine\Graphics\Pipeline">
+      <UniqueIdentifier>{d61b51a7-2988-4bdb-8ae9-c988949b72d0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MazeGen.c">
@@ -83,9 +86,6 @@
     </ClCompile>
     <ClCompile Include="Maze3D.c">
       <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
-    <ClCompile Include="Frame.c">
-      <Filter>Файлы исходного кода\Engine\Console</Filter>
     </ClCompile>
     <ClCompile Include="VeritasEngine.c">
       <Filter>Файлы исходного кода\Engine\Console</Filter>
@@ -129,6 +129,12 @@
     <ClCompile Include="Camera.c">
       <Filter>Файлы исходного кода\Engine\Graphics\VObjects</Filter>
     </ClCompile>
+    <ClCompile Include="Frame.c">
+      <Filter>Файлы исходного кода\Engine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Pipeline.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\Pipeline</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Queue.h">
@@ -163,9 +169,6 @@
     </ClInclude>
     <ClInclude Include="Control.h">
       <Filter>Заголовочные файлы\Engine\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Frame.h">
-      <Filter>Заголовочные файлы\Engine\Console</Filter>
     </ClInclude>
     <ClInclude Include="VeritasEngine.h">
       <Filter>Заголовочные файлы\Engine\Console</Filter>
@@ -226,6 +229,9 @@
     </ClInclude>
     <ClInclude Include="VMVector3.h">
       <Filter>Заголовочные файлы\Engine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Frame.h">
+      <Filter>Заголовочные файлы\Engine\Graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

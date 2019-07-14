@@ -165,6 +165,7 @@
     <ClCompile Include="Maze3D.c" />
     <ClCompile Include="MazeGen.c" />
     <ClCompile Include="Mouse.c" />
+    <ClCompile Include="Pipeline.c" />
     <ClCompile Include="Queue.c" />
     <ClCompile Include="StringStream.c" />
     <ClCompile Include="VeritasEngine.c" />

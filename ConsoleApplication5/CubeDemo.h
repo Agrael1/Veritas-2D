@@ -2,6 +2,7 @@
 #include "VeritasEngine.h"
 #include "VTypes.h"
 #include "IndexedTriangleList.h"
+#include "Pipeline.h"
 #include "Camera.h"
 #include "EngineCommons.h"
 
@@ -12,11 +13,8 @@ class
 	inherits(VeritasEngine);
 	
 	float fTheta;
-
-	VMVECTOR ScreenOffset;
-	VMVECTOR ScreenResolution;
 	struct Camera* pCam;
-
+	struct Pipeline* pPl;
 
 	bool bStop;
 	struct IndexedTriangleList model;

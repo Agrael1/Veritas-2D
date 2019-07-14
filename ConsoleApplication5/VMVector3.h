@@ -1,6 +1,9 @@
 #pragma once
 #include "VMVector.h"
 
+// Predecl
+inline VMMATRIX __vectorcall VMMatrixMultiply(FXMMATRIX M1, CXMMATRIX M2);
+
 // Vector by matrix multiplication
 inline VMVECTOR __vectorcall VMVector3Transform
 (
@@ -156,4 +159,50 @@ inline VMVECTOR __vectorcall VMVector3Normalize
 	VMVECTOR vTemp2 = _mm_and_ps(vResult, vLengthSq);
 	vResult = _mm_or_ps(vTemp1, vTemp2);
 	return vResult;
+}
+
+// Stores Vector into float3
+inline void __vectorcall VMStoreFloat3
+(
+	VMFLOAT3* pDestination,
+	FVMVECTOR V
+)
+{
+	assert(pDestination);
+	VMVECTOR T1 = XM_PERMUTE_PS(V, _MM_SHUFFLE(1, 1, 1, 1));
+	VMVECTOR T2 = XM_PERMUTE_PS(V, _MM_SHUFFLE(2, 2, 2, 2));
+	_mm_store_ss(&pDestination->x, V);
+	_mm_store_ss(&pDestination->y, T1);
+	_mm_store_ss(&pDestination->z, T2);
+}
+
+// Projects vector from world to screen space
+inline VMVECTOR __vectorcall VMVector3Project
+(
+	FVMVECTOR V,
+	float    ViewportX,
+	float    ViewportY,
+	float    ViewportWidth,
+	float    ViewportHeight,
+	float    ViewportMinZ,
+	float    ViewportMaxZ,
+	FXMMATRIX Projection,
+	CXMMATRIX View,
+	CXMMATRIX World
+)
+{
+	const float HalfViewportWidth = ViewportWidth * 0.5f;
+	const float HalfViewportHeight = ViewportHeight * 0.5f;
+
+	VMVECTOR Scale = VMVectorSet(HalfViewportWidth, -HalfViewportHeight, ViewportMaxZ - ViewportMinZ, 0.0f);
+	VMVECTOR Offset = VMVectorSet(ViewportX + HalfViewportWidth, ViewportY + HalfViewportHeight, ViewportMinZ, 0.0f);
+
+	VMMATRIX Transform = VMMatrixMultiply(*World, View);
+	Transform = VMMatrixMultiply(Transform, &Projection);
+
+	VMVECTOR Result = VMVector3TransformCoord(V, Transform);
+
+	Result = VMVectorMultiplyAdd(Result, Scale, Offset);
+
+	return Result;
 }

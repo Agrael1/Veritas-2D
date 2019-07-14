@@ -3,9 +3,6 @@
 #include "Window.h"
 #include <malloc.h>
 
-#ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING
-#define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
-#endif
 // namespace ConsoleWindow
 #define c_class ConsoleWindow
 
@@ -73,14 +70,14 @@ bool _CreateConsole(selfptr, Word width, Word height, Byte fontw, Byte fonth)
 	if (height > coordLargest.Y)
 		this->Height = height = coordLargest.Y;
 	if (width > coordLargest.X)
-		this->Height = width = coordLargest.X;
+		this->Width = width = coordLargest.X;
 
 	// Set size of buffer
 	WND_CALL_INFO(SetConsoleScreenBufferSize(this->hOut, (COORD) { width, height }));
 
 	// Set Physical Console Window Size
 	this->rWindowRect = (SMALL_RECT){ 0, 0, (short)width - 1, (short)height - 1 };
-	WND_CALL_INFO(SetConsoleWindowInfo(this->hOut, TRUE, &this->rWindowRect))
+	WND_CALL_INFO(SetConsoleWindowInfo(this->hOut, TRUE, &this->rWindowRect));
 	return true;
 }
 void _BlockCursor(selfptr, bool blocked)
@@ -103,11 +100,12 @@ void _OutputToScreen(selfptr, CHAR_INFO* buffer)
 }
 void _SetPalette(selfptr, COLORREF palette[16])
 {
-	CONSOLE_SCREEN_BUFFER_INFOEX *csbiex = malloc(sizeof(CONSOLE_SCREEN_BUFFER_INFOEX));
-	csbiex->cbSize = sizeof(CONSOLE_SCREEN_BUFFER_INFOEX);
-	GetConsoleScreenBufferInfoEx(self->hOut, csbiex);
-	memcpy(csbiex->ColorTable, palette, 16 * sizeof(COLORREF));
-	SetConsoleScreenBufferInfoEx(self->hOut, csbiex);
+	CONSOLE_SCREEN_BUFFER_INFOEX csbiex = { 0 };
+	csbiex.cbSize = sizeof(CONSOLE_SCREEN_BUFFER_INFOEX);
+	GetConsoleScreenBufferInfoEx(self->hOut, &csbiex);
+	csbiex.dwSize.Y--;					// a little fix of scrollbars
+	memcpy(csbiex.ColorTable, palette, 16 * sizeof(COLORREF));
+	SetConsoleScreenBufferInfoEx(self->hOut, &csbiex);
 }
 
 constructMethodTable(

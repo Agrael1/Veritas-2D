@@ -42,6 +42,7 @@ bool virtual(OnUserCreate)(void* self)
 {
 	account(self);
 	this->pCam = new(Camera); // Create an instance of a camera
+	this->pPl = new(Pipeline, base.Output);
 
 	// using DB16 - DawnBringer's 16 Col Palette v1.0
 	// http://pixeljoint.com/forum/forum_posts.asp?TID=12795
@@ -71,11 +72,7 @@ bool virtual(OnUserCreate)(void* self)
 	
 	// Setting up projection matrix and camera
 	base.Output->projection = VMMatrixPerspectiveLH(1.0f, (float)base.Output->nFrameHeight / (float)base.Output->nFrameLength, 0.5f, 40.0f);
-	
-
-	// probably a temp solution
-	this->ScreenOffset = g_XMOne3.v;
-	this->ScreenResolution = (VMVECTOR) { 0.5f * (float)base.Output->nFrameLength, 0.5f * (float)base.Output->nFrameHeight, 1.0f, 1.0f };
+	base.Output->world = VMMatrixIdentity();
 
 	return true;
 }
@@ -91,51 +88,10 @@ bool virtual(OnUserUpdate)(void* self, double fElapsedSeconds)
 
 	this->fTheta += (float)fElapsedSeconds;
 
-	// Calculate rotation matrix
-	VMMATRIX Rotation = VMMatrixRotationRollPitchYaw(-this->fTheta, 0, this->fTheta);
-
-	for (UINT i = 0; i < this->model.numInds; i+=3)
-	{
-		// Extract triangle
-		VMVECTOR v0 = VMLoadFloat3(&this->model.vertices[this->model.indices[i]].pos);
-		VMVECTOR v1 = VMLoadFloat3(&this->model.vertices[this->model.indices[i+1]].pos);
-		VMVECTOR v2 = VMLoadFloat3(&this->model.vertices[this->model.indices[i+2]].pos);
-
-		// Rotate and project to View Space
-		VMMATRIX Project = VMMatrixMultiply(Rotation, &base.Output->camera);
-
-		v0 = VMVector3TransformCoord(v0, Project);
-		v1 = VMVector3TransformCoord(v1, Project);
-		v2 = VMVector3TransformCoord(v2, Project);
-
-		VMVECTOR Normal = VMVector3Dot(VMVector3Cross(VMVectorSubtract(v2, v0), VMVectorSubtract(v1, v0)), v0);
-
-		// Do a culling test
-		if (Normal.m128_f32[0] >= 0.0f)
-		{
-			// Do a transformation to view
-			v0 = VMVector3TransformCoord(v0, base.Output->projection);
-			v1 = VMVector3TransformCoord(v1, base.Output->projection);
-			v2 = VMVector3TransformCoord(v2, base.Output->projection);
-
-			// Scale into view
-			v0 = VMVectorMultiply(VMVectorAdd(v0, this->ScreenOffset), this->ScreenResolution);
-			v1 = VMVectorMultiply(VMVectorAdd(v1, this->ScreenOffset), this->ScreenResolution);
-			v2 = VMVectorMultiply(VMVectorAdd(v2, this->ScreenOffset), this->ScreenResolution);
-
-			base.Output->method->DrawTriangle(base.Output,
-				&v0,
-				&v1,
-				&v2,
-				' ', BG_Dark_Magenta);
-		
-			base.Output->method->DrawTriangleWireframe(base.Output,
-				(Word)v0.m128_f32[0], (Word)v0.m128_f32[1],
-				(Word)v1.m128_f32[0], (Word)v1.m128_f32[1],
-				(Word)v2.m128_f32[0], (Word)v2.m128_f32[1],
-				' ', BG_Ditry_Gray);
-		}	
-	}
+	// Calculate rotation matrix and draw
+	VMMATRIX Project = VMMatrixRotationRollPitchYaw(-this->fTheta, 0, this->fTheta);
+	this->pPl->Transformation = VMMatrixMultiply(Project, &base.Output->camera);
+	this->pPl->method->Draw(this->pPl, &this->model);
 	return true;
 }
 bool virtual(OnUserDestroy)(void* self)
@@ -147,6 +103,8 @@ bool virtual(OnUserDestroy)(void* self)
 		free(this->model.vertices);
 	if(this->pCam)
 		delete(this->pCam);
+	if (this->pPl)
+		delete(this->pPl);
 	return true;
 }
 

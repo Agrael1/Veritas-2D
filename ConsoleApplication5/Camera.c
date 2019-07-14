@@ -11,8 +11,8 @@ VMMATRIX _GetViewMatrix(const selfptr)
 	FVMVECTOR up = VMVector3TransformCoord(
 		VMVectorSet(0.0f, 1.0f, 0.0f, 0.0f),
 		VMMatrixRotationRollPitchYaw(self->pitch, -self->yaw, self->roll));
-
-	return VMMatrixLookAtLH(pos, VMVectorZero(),up);
+	VMMATRIX res = VMMatrixLookAtLH(pos, VMVectorZero(),up);
+	return res;
 }
 void virtual(Reset)(selfptr)
 {
