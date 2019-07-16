@@ -159,6 +159,7 @@
     <ClCompile Include="Control.c" />
     <ClCompile Include="CubeDemo.cpp" />
     <ClCompile Include="Exception.c" />
+    <ClCompile Include="ExperimentalPS.c" />
     <ClCompile Include="Frame.c" />
     <ClCompile Include="Keyboard.c" />
     <ClCompile Include="EntryMain.c" />
@@ -176,6 +177,7 @@
     <ClInclude Include="Box.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Class.h" />
+    <ClInclude Include="Color.h" />
     <ClInclude Include="Color.scheme" />
     <ClInclude Include="Control.h" />
     <ClInclude Include="CubeDemo.h" />
@@ -192,7 +194,7 @@
     <ClInclude Include="Maze3D.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="New.h" />
-    <ClInclude Include="PhongPS.h" />
+    <ClInclude Include="ExperimentalPS.h" />
     <ClInclude Include="Pipeline.h" />
     <ClInclude Include="Queue.h" />
     <ClInclude Include="Standard.h" />

@@ -13,6 +13,7 @@ class
 		void(*Draw)(selfptr, struct IndexedTriangleList* trilist);
 	);
 
-	const struct Frame* gfx;
+	struct ExperimentalPS* PS;
+	struct Frame* gfx;
 	VMMATRIX Transformation;
 };

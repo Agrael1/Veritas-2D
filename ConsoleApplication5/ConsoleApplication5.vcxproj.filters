@@ -79,6 +79,9 @@
     <Filter Include="Файлы исходного кода\Engine\Graphics\Pipeline">
       <UniqueIdentifier>{d61b51a7-2988-4bdb-8ae9-c988949b72d0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Файлы исходного кода\Engine\Graphics\Shading">
+      <UniqueIdentifier>{785ca2ad-4eba-4049-a57d-767dbf6fc0a3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MazeGen.c">
@@ -134,6 +137,9 @@
     </ClCompile>
     <ClCompile Include="Pipeline.c">
       <Filter>Файлы исходного кода\Engine\Graphics\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="ExperimentalPS.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\Shading</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -209,9 +215,6 @@
     <ClInclude Include="Color.scheme">
       <Filter>Заголовочные файлы\Engine\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="PhongPS.h">
-      <Filter>Заголовочные файлы\Engine\Graphics\Shading</Filter>
-    </ClInclude>
     <ClInclude Include="Light.h">
       <Filter>Заголовочные файлы\Engine\Graphics\Shading</Filter>
     </ClInclude>
@@ -232,6 +235,12 @@
     </ClInclude>
     <ClInclude Include="Frame.h">
       <Filter>Заголовочные файлы\Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="ExperimentalPS.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Shading</Filter>
+    </ClInclude>
+    <ClInclude Include="Color.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Shading</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

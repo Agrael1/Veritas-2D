@@ -6,7 +6,6 @@
 #include "Color.scheme"
 
 
-
 bool virtual(HandleInputEvents)(void* self, struct KeyboardEvent event)
 {
 	account(self);
