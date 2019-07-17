@@ -1,4 +1,4 @@
-#include "ExperimentalPS.h"
+#include "ColorIndexPS.h"
 #include "Standard.h"
 #include "Pipeline.h"
 #include "Class.h"
@@ -59,11 +59,11 @@ inline void DrawFlatBottomTriangle(selfptr, const VMVECTOR* v0, const VMVECTOR* 
 
 		for (int x = xStart; x < xEnd; x++)
 		{
-			
 			self->gfx->method->PrintFrame(self->gfx, x, y, ret.sym, ret.color);
 		}
 	}
 }
+
 void _DrawTriangle(selfptr, VMVECTOR* v0, VMVECTOR* v1, VMVECTOR* v2, size_t PrimID)
 {
 	if (v1->m128_f32[1] < v0->m128_f32[1]) swapptr(&v0, &v1);
@@ -85,7 +85,7 @@ void _DrawTriangle(selfptr, VMVECTOR* v0, VMVECTOR* v1, VMVECTOR* v2, size_t Pri
 		const float alphaSplit =
 			(v1->m128_f32[1] - v0->m128_f32[1]) / (v2->m128_f32[1] - v0->m128_f32[1]);
 
-		const VMVECTOR vi = VMVectorAdd(*v0, VMVectorScale(VMVectorSubtract(*v2, *v0), alphaSplit));
+		FVMVECTOR vi = VMVectorAdd(*v0, VMVectorScale(VMVectorSubtract(*v2, *v0), alphaSplit));
 
 		if (v1->m128_f32[0] < vi.m128_f32[0])
 		{
@@ -149,7 +149,7 @@ Constructor(selfptr, va_list *ap)
 {
 	assignMethodTable(self);
 	self->gfx = va_arg(*ap, struct Frame*);
-	self->PS = new(ExperimentalPS);
+	self->PS = new(ColorIndexPS);
 	return self;
 }
 Destructor(selfptr)

@@ -4,7 +4,6 @@
 
 int main(void)
 {
-	//struct Maze3D *Game;
 	struct CubeDemo *Demo;
 	try
 	{

@@ -138,6 +138,9 @@
     <ClCompile Include="Pipeline.c">
       <Filter>Файлы исходного кода\Engine\Graphics\Pipeline</Filter>
     </ClCompile>
+    <ClCompile Include="ColorIndexPS.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\Shading</Filter>
+    </ClCompile>
     <ClCompile Include="ExperimentalPS.c">
       <Filter>Файлы исходного кода\Engine\Graphics\Shading</Filter>
     </ClCompile>
@@ -236,10 +239,13 @@
     <ClInclude Include="Frame.h">
       <Filter>Заголовочные файлы\Engine\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="ExperimentalPS.h">
+    <ClInclude Include="Color.h">
       <Filter>Заголовочные файлы\Engine\Graphics\Shading</Filter>
     </ClInclude>
-    <ClInclude Include="Color.h">
+    <ClInclude Include="ColorIndexPS.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Shading</Filter>
+    </ClInclude>
+    <ClInclude Include="ExperimentalPS.h">
       <Filter>Заголовочные файлы\Engine\Graphics\Shading</Filter>
     </ClInclude>
   </ItemGroup>

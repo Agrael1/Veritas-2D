@@ -4,14 +4,13 @@
 #include <math.h>
 #include <malloc.h>
 #include "Standard.h"
-
+#include <float.h>
 
 void _Clip(selfptr, Word *x, Word *y)
 {
 	if (*x > self->nFrameLength) *x = self->nFrameLength;
 	if (*y > self->nFrameHeight) *y = self->nFrameHeight;
 }
-
 void _PrintFrame(selfptr, Word x, Word y, wchar_t character, Word color)
 {
 	account(self);
@@ -21,6 +20,36 @@ void _PrintFrame(selfptr, Word x, Word y, wchar_t character, Word color)
 		this->localFrame[y*this->nFrameLength + x].Attributes = color;
 	}
 }
+bool _DepthTest(selfptr, Word x, Word y, float z)
+{
+	UINT *zv = self->ZBuffer+y*self->nFrameLength + x;
+	if ((UINT)z * 1000 < *zv)
+	{
+		*zv = (UINT)z * 1000;
+		return true;
+	}
+	return false;
+}
+
+void _ClearFrame(selfptr, wchar_t c, Word col)
+{
+	CHAR_INFO r;
+	r.Attributes = col;
+	r.Char.UnicodeChar = c;
+	
+	DWord value = *(DWord*)&r;
+	memset32(self->localFrame, value, self->nFrameHeight*self->nFrameLength);
+}
+inline void _ClearDepth(selfptr)
+{
+	memset32(self->ZBuffer, MAXUINT32, self->nFrameHeight*self->nFrameLength);
+}
+void _BeginFrame(selfptr, wchar_t c, Word col)
+{
+	_ClearFrame(self, c, col);
+	_ClearDepth(self);
+}
+
 // Old Functions
 void _FillRegion(selfptr, Word x1, Word y1, Word x2, Word y2, wchar_t c, Word col)
 {
@@ -113,18 +142,13 @@ void _DrawTriangleWireframe(selfptr, Word x1, Word y1, Word x2, Word y2, Word x3
 	_DrawLine(self, x2, y2, x3, y3, c, col);
 	_DrawLine(self, x3, y3, x1, y1, c, col);
 }
-void _ClearFrame(selfptr, wchar_t c, Word col)
-{
-	CHAR_INFO r;
-	r.Attributes = col;
-	r.Char.UnicodeChar = c;
-	
-	DWord value = *(DWord*)&r;
-	memset32(self->localFrame, value, self->nFrameHeight*self->nFrameLength);
-}
+
 
 constructMethodTable( 
 	.ClearFrame = _ClearFrame,
+	.BeginFrame = _BeginFrame,
+	.DepthTest = _DepthTest,
+
 	.DrawTriangleWireframe = _DrawTriangleWireframe,
 	.DrawLine = _DrawLine,
 	.PrintFrame = _PrintFrame,
@@ -140,7 +164,10 @@ Constructor(selfptr, va_list *ap)
 	this->nFrameHeight = va_arg(*ap, Word);
 
 	this->localFrame = malloc(this->nFrameLength * this->nFrameHeight * sizeof(CHAR_INFO));
+	this->ZBuffer = malloc(this->nFrameLength*this->nFrameHeight * sizeof(UINT));
 
+	if (this->ZBuffer)
+		_ClearDepth(this);
 	if (this->localFrame)
 		_ClearFrame(this, L' ', 0);
 

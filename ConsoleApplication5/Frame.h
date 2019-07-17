@@ -10,11 +10,15 @@ class
 	const void* _class;
 
 	CHAR_INFO *localFrame;
+	UINT* ZBuffer;
+
 	Word nFrameLength;
 	Word nFrameHeight;
 
 	methods(
+		bool (*DepthTest)(selfptr, Word x, Word y, float z);
 		void (*ClearFrame)(selfptr, wchar_t c, Word col);
+		void (*BeginFrame)(selfptr, wchar_t c, Word col);
 		void (*DrawTriangleWireframe)(selfptr, Word x1, Word y1, Word x2, Word y2, Word x3, Word y3, wchar_t c, Word col);
 		void (*DrawTriangle)(selfptr, VMVECTOR* v0, VMVECTOR* v1, VMVECTOR* v2, wchar_t c, Word col);
 		void (*DrawLine)(selfptr, Word x1, Word y1, Word x2, Word y2, wchar_t character, Word col);

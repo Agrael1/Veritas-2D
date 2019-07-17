@@ -83,8 +83,8 @@ bool virtual(OnUserUpdate)(void* self, double fElapsedSeconds)
 		return true;
 
 	base.Output->camera = this->pCam->method->GetViewMatrix(this->pCam);
-	base.Output->method->ClearFrame(base.Output, ' ', BG_Sky);
-
+	base.Output->method->BeginFrame(base.Output, ' ', BG_Sky);
+	
 	this->fTheta += (float)fElapsedSeconds;
 
 	// Calculate rotation matrix and draw
