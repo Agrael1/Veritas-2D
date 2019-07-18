@@ -9,7 +9,7 @@ class
 	const void* _class;
 
 	methods(
-		struct PSOut(*Apply)(selfptr, size_t primID);
+		CHAR_INFO(*Apply)(selfptr, size_t primID);
 	);
 	enum DB16_COLOUR colors[8];
 };

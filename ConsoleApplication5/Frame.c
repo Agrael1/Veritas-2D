@@ -1,4 +1,5 @@
 #include "VeritasMath.h"
+#include "Color.h"
 #include "Frame.h"
 #include "Class.h"
 #include <math.h>
@@ -11,14 +12,9 @@ void _Clip(selfptr, Word *x, Word *y)
 	if (*x > self->nFrameLength) *x = self->nFrameLength;
 	if (*y > self->nFrameHeight) *y = self->nFrameHeight;
 }
-void _PrintFrame(selfptr, Word x, Word y, wchar_t character, Word color)
+void _PrintFrame(selfptr, Word x, Word y, CHAR_INFO color)
 {
-	account(self);
-	if (x < this->nFrameLength&&y < this->nFrameHeight)
-	{
-		this->localFrame[y*this->nFrameLength + x].Char.UnicodeChar = character;
-		this->localFrame[y*this->nFrameLength + x].Attributes = color;
-	}
+	self->localFrame[y*self->nFrameLength + x] = color;
 }
 bool _DepthTest(selfptr, Word x, Word y, float z)
 {
@@ -79,6 +75,7 @@ void _DrawRectangle(selfptr, Word x1, Word y1, Word x2, Word y2, Word color)
 void _DrawLine(selfptr, Word x1, Word y1, Word x2, Word y2, wchar_t character, Word color)
 {
 	account(self);
+	CHAR_INFO r = { character , color };
 	int x, y, dx, dy, dx1, dy1, px, py, xe, ye, i;
 	dx = x2 - x1; dy = y2 - y1;
 	dx1 = abs(dx); dy1 = abs(dy);
@@ -94,7 +91,7 @@ void _DrawLine(selfptr, Word x1, Word y1, Word x2, Word y2, wchar_t character, W
 			x = x2; y = y2; xe = x1;
 		}
 
-		_PrintFrame(this, x, y, character, color);
+		_PrintFrame(this, x, y, r);
 
 		for (i = 0; x<xe; i++)
 		{
@@ -106,7 +103,7 @@ void _DrawLine(selfptr, Word x1, Word y1, Word x2, Word y2, wchar_t character, W
 				if ((dx<0 && dy<0) || (dx>0 && dy>0)) y = y + 1; else y = y - 1;
 				px = px + 2 * (dy1 - dx1);
 			}
-			_PrintFrame(this, x, y, character, color);
+			_PrintFrame(this, x, y, r);
 		}
 	}
 	else
@@ -120,7 +117,7 @@ void _DrawLine(selfptr, Word x1, Word y1, Word x2, Word y2, wchar_t character, W
 			x = x2; y = y2; ye = y1;
 		}
 
-		_PrintFrame(this, x, y, character, color);
+		_PrintFrame(this, x, y, r);
 
 		for (i = 0; y<ye; i++)
 		{
@@ -132,7 +129,7 @@ void _DrawLine(selfptr, Word x1, Word y1, Word x2, Word y2, wchar_t character, W
 				if ((dx<0 && dy<0) || (dx>0 && dy>0)) x = x + 1; else x = x - 1;
 				py = py + 2 * (dx1 - dy1);
 			}
-			_PrintFrame(this, x, y, character, color);
+			_PrintFrame(this, x, y, r);
 		}
 	}
 }

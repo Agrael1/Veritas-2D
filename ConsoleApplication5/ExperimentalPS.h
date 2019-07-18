@@ -8,6 +8,6 @@ class
 	const void* _class;
 
 	methods(
-		struct PSOut(*Apply)(selfptr, VMFLOAT3 normal);
+		CHAR_INFO(*Apply)(selfptr, VMFLOAT3 normal);
 	);
 };

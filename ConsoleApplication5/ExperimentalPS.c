@@ -3,7 +3,7 @@
 #include "ExperimentalPS.h"
 #include "Class.h"
 
-struct PSOut virtual(Apply)(selfptr, VMFLOAT3 normal)
+CHAR_INFO virtual(Apply)(selfptr, VMFLOAT3 normal)
 {
 
 }

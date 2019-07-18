@@ -302,3 +302,17 @@ inline VMVECTOR __vectorcall VMVectorSelect
 	VMVECTOR vTemp2 = _mm_and_ps(V2, Control);
 	return _mm_or_ps(vTemp1, vTemp2);
 }
+
+// Calculates a linear interpolated vector
+inline VMVECTOR __vectorcall VMVectorLerp
+(
+	FVMVECTOR V0,
+	FVMVECTOR V1,
+	float    t
+)
+{
+	VMVECTOR L = _mm_sub_ps(V1, V0);
+	VMVECTOR S = _mm_set_ps1(t);
+	VMVECTOR Result = _mm_mul_ps(L, S);
+	return _mm_add_ps(Result, V0);
+}

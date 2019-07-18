@@ -3,65 +3,101 @@
 #include "Pipeline.h"
 #include "Class.h"
 
-inline void DrawFlatTopTriangle(selfptr, const VMVECTOR* v0, const VMVECTOR* v1, const VMVECTOR* v2, size_t PrimID)
+inline void DrawFlatTriangle(selfptr,
+	FVMVECTOR* it0,
+	FVMVECTOR* it1,
+	FVMVECTOR* it2,
+	FVMVECTOR* dv0,
+	FVMVECTOR* dv1,
+	VMVECTOR itEdge1,
+	size_t PrimID)
 {
-	// calculate slopes in screen space
-	VMVECTOR res = VMVectorSubtract(*v2, *v0);
-	const float m0 = res.m128_f32[0] / res.m128_f32[1];
-	res = VMVectorSubtract(*v2, *v1);
-	const float m1 = res.m128_f32[0] / res.m128_f32[1];
-
-	struct PSOut ret = self->PS->method->Apply(self->PS, PrimID);
+	account(self);
+	CHAR_INFO ret = self->PS->method->Apply(self->PS, PrimID);
+	
+	// create edge interpolant for left edge (always v0)
+	VMVECTOR itEdge0 = *it0;
 
 	// calculate start and end scanlines
-	const int yStart = (int)ceilf(v0->m128_f32[1] - 0.5f);
-	const int yEnd = (int)ceilf(v2->m128_f32[1] - 0.5f);
+	const Word yStart = max((Word)ceilf(it0->m128_f32[1] - 0.5f), 0);
+	const Word yEnd = min((Word)ceilf(it2->m128_f32[1] - 0.5f), this->gfx->nFrameHeight - 1); // the scanline AFTER the last line drawn
 
-	for (int y = yStart; y < yEnd; y++)
+	// do interpolant prestep
+	const float step = ((float)yStart + 0.5f - it0->m128_f32[1]);
+	itEdge0 = VMVectorAdd( itEdge0, VMVectorScale(*dv0, step));
+	itEdge1 = VMVectorAdd(itEdge1, VMVectorScale(*dv1, step));
+
+	for (Word y = yStart; y < yEnd; y++,
+		itEdge0 = VMVectorAdd(itEdge0, *dv0), 
+		itEdge1 = VMVectorAdd(itEdge1, *dv1))
 	{
-		// calculate start and end points(x coord)
-		const float px0 = m0*((float)y + 0.5f - v0->m128_f32[1]) + v0->m128_f32[0];
-		const float px1 = m1*((float)y + 0.5f - v1->m128_f32[1]) + v1->m128_f32[0];
+		// calculate start and end pixels
+		const Word xStart = (Word)ceilf(itEdge0.m128_f32[0] - 0.5f);
+		const Word xEnd = (Word)ceilf(itEdge1.m128_f32[0] - 0.5f); // the pixel AFTER the last pixel drawn
 
-		// start and end pixels
-		const int xStart = (int)ceil(px0 - 0.5f);
-		const int xEnd = (int)ceil(px1 - 0.5f);
+														  // create scanline interpolant startpoint
+														  // (some waste for interpolating x,y,z, but makes life easier not having
+														  //  to split them off, and z will be needed in the future anyways...)
+		VMVECTOR iLine = itEdge0;
 
-		for (int x = xStart; x < xEnd; x++)
+		// calculate delta scanline interpolant / dx
+		const float dx = 1.0f / itEdge1.m128_f32[0] - itEdge0.m128_f32[0];
+		const float rdx = ((float)xStart + 0.5f - itEdge0.m128_f32[0]) * dx;
+
+		FVMVECTOR diLine = VMVectorScale(VMVectorSubtract(itEdge1, iLine), dx);
+
+		// prestep scanline interpolant
+		iLine = VMVectorLerp(iLine, itEdge1, rdx);
+
+		for (int x = xStart; x < xEnd; x++, 
+			iLine = VMVectorAdd(iLine,diLine))
 		{
-			self->gfx->method->PrintFrame(self->gfx, x, y, ret.sym, ret.color);
+			// recover interpolated z from interpolated 1/z
+			const float z = 1.0f / iLine.m128_f32[2];
+			// do z rejection / update of z buffer
+			// skip shading step if z rejected (early z)
+			if (self->gfx->method->DepthTest(self->gfx, x, y, z))
+			{
+				// recover interpolated attributes
+				// (wasted effort in multiplying pos (x,y,z) here, but
+				//  not a huge deal, not worth the code complication to fix)
+				//const auto attr = iLine * z;
+				// invoke pixel shader with interpolated vertex attributes
+				// and use result to set the pixel color on the screen
+				this->gfx->method->PrintFrame(this->gfx, x, y, ret);
+			}
 		}
 	}
 }
-inline void DrawFlatBottomTriangle(selfptr, const VMVECTOR* v0, const VMVECTOR* v1, const VMVECTOR* v2, size_t PrimID)
+
+inline void DrawFlatTopTriangle2(selfptr, FVMVECTOR* it0,
+	FVMVECTOR* it1,
+	FVMVECTOR* it2,
+	size_t PrimID)
 {
-	// calculate slopes in screen space
-	VMVECTOR res = VMVectorSubtract(*v1, *v0);
-	const float m0 = res.m128_f32[0] / res.m128_f32[1];
-	res = VMVectorSubtract(*v2, *v0);
-	const float m1 = res.m128_f32[0] / res.m128_f32[1];
+	// calulcate dVertex / dy
+	// change in interpolant for every 1 change in y
+	const float delta_y = 1.0f / (it2->m128_f32[1] - it0->m128_f32[1]);
+	FVMVECTOR dit0 = VMVectorScale(VMVectorSubtract(*it2, *it0), delta_y);
+	FVMVECTOR dit1 = VMVectorScale(VMVectorSubtract(*it2, *it1), delta_y);
 
-	struct PSOut ret = self->PS->method->Apply(self->PS, PrimID);
+	// call the flat triangle render routine, right edge interpolant is it1
+	DrawFlatTriangle(self, it0, it1, it2, &dit0, &dit1, *it1, PrimID);
+}
+// does flat *BOTTOM* tri-specific calculations and calls DrawFlatTriangle
+inline void DrawFlatBottomTriangle2(selfptr, FVMVECTOR* it0,
+	FVMVECTOR* it1,
+	FVMVECTOR* it2,
+	size_t PrimID)
+{
+	// calulcate dVertex / dy
+	// change in interpolant for every 1 change in y
+	const float delta_y = 1.0f / (it2->m128_f32[1] - it0->m128_f32[1]);
+	FVMVECTOR dit0 = VMVectorScale(VMVectorSubtract(*it1, *it0), delta_y);
+	FVMVECTOR dit1 = VMVectorScale(VMVectorSubtract(*it2, *it0), delta_y);
 
-	// calculate start and end scanlines
-	const int yStart = (int)ceilf(v0->m128_f32[1] - 0.5f);
-	const int yEnd = (int)ceilf(v2->m128_f32[1] - 0.5f);
-
-	for (int y = yStart; y < yEnd; y++)
-	{
-		// calculate start and end points(x coord)
-		const float px0 = m0*((float)y + 0.5f - v0->m128_f32[1]) + v0->m128_f32[0];
-		const float px1 = m1*((float)y + 0.5f - v0->m128_f32[1]) + v0->m128_f32[0];
-
-		// start and end pixels
-		const int xStart = (int)ceil(px0 - 0.5f);
-		const int xEnd = (int)ceil(px1 - 0.5f);
-
-		for (int x = xStart; x < xEnd; x++)
-		{
-			self->gfx->method->PrintFrame(self->gfx, x, y, ret.sym, ret.color);
-		}
-	}
+	// call the flat triangle render routine, right edge interpolant is it0
+	DrawFlatTriangle(self, it0, it1, it2, &dit0, &dit1, *it0, PrimID);
 }
 
 void _DrawTriangle(selfptr, VMVECTOR* v0, VMVECTOR* v1, VMVECTOR* v2, size_t PrimID)
@@ -73,29 +109,29 @@ void _DrawTriangle(selfptr, VMVECTOR* v0, VMVECTOR* v1, VMVECTOR* v2, size_t Pri
 	if (v0->m128_f32[1] == v1->m128_f32[1])	// Flat Top
 	{
 		if (v1->m128_f32[0] < v0->m128_f32[0]) swapptr(&v0, &v1);
-		DrawFlatTopTriangle(self, v0, v1, v2, PrimID);
+		DrawFlatTopTriangle2(self, v0, v1, v2, PrimID);
 	}
 	if (v1->m128_f32[1] == v2->m128_f32[1])	// Flat Bottom
 	{
 		if (v2->m128_f32[0] < v1->m128_f32[0]) swapptr(&v1, &v2);
-		DrawFlatBottomTriangle(self, v0, v1, v2, PrimID);
+		DrawFlatBottomTriangle2(self, v0, v1, v2, PrimID);
 	}
 	else // General
 	{
 		const float alphaSplit =
 			(v1->m128_f32[1] - v0->m128_f32[1]) / (v2->m128_f32[1] - v0->m128_f32[1]);
 
-		FVMVECTOR vi = VMVectorAdd(*v0, VMVectorScale(VMVectorSubtract(*v2, *v0), alphaSplit));
+		FVMVECTOR vi = VMVectorLerp(*v0, *v2, alphaSplit);
 
 		if (v1->m128_f32[0] < vi.m128_f32[0])
 		{
-			DrawFlatBottomTriangle(self, v0, v1, &vi, PrimID);
-			DrawFlatTopTriangle(self, v1, &vi, v2, PrimID);
+			DrawFlatBottomTriangle2(self, v0, v1, &vi, PrimID);
+			DrawFlatTopTriangle2(self, v1, &vi, v2, PrimID);
 		}
 		else
 		{
-			DrawFlatBottomTriangle(self, v0, &vi, v1, PrimID);
-			DrawFlatTopTriangle(self, &vi, v1, v2, PrimID);
+			DrawFlatBottomTriangle2(self, v0, &vi, v1, PrimID);
+			DrawFlatTopTriangle2(self, &vi, v1, v2, PrimID);
 		}
 	}
 }

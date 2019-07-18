@@ -3,12 +3,9 @@
 #include "Class.h"
 #include <memory.h>
 
-struct PSOut virtual(Apply)(selfptr, size_t primID)
+CHAR_INFO virtual(Apply)(selfptr, size_t primID)
 {
-	struct PSOut r;
-	r.color = self->colors[(primID) % 8];
-	r.sym = ' ';
-	return r;
+	return Pick(self->colors[(primID) % 8],2,0);
 }
 
 constructMethodTable(
