@@ -91,6 +91,13 @@ bool virtual(OnUserUpdate)(void* self, double fElapsedSeconds)
 	VMMATRIX Project = VMMatrixRotationRollPitchYaw(-this->fTheta, 0, this->fTheta);
 	this->pPl->Transformation = VMMatrixMultiply(Project, &base.Output->camera);
 	this->pPl->method->Draw(this->pPl, &this->model);
+
+
+	Project = VMMatrixRotationRollPitchYaw(this->fTheta, 0, this->fTheta);
+	Project = VMMatrixMultiply(VMMatrixTranslation(0.0f, 0.0f, 5.0f), &Project);
+	this->pPl->Transformation = VMMatrixMultiply(Project, &base.Output->camera);
+	this->pPl->method->Draw(this->pPl, &this->model);
+
 	return true;
 }
 bool virtual(OnUserDestroy)(void* self)

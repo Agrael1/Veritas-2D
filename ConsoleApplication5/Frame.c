@@ -18,10 +18,10 @@ void _PrintFrame(selfptr, Word x, Word y, CHAR_INFO color)
 }
 bool _DepthTest(selfptr, Word x, Word y, float z)
 {
-	UINT *zv = self->ZBuffer+y*self->nFrameLength + x;
-	if ((UINT)z * 1000 < *zv)
+	float *zv = self->ZBuffer+y*self->nFrameLength + x;
+	if (z < *zv)
 	{
-		*zv = (UINT)z * 1000;
+		*zv = z;
 		return true;
 	}
 	return false;
@@ -38,7 +38,10 @@ void _ClearFrame(selfptr, wchar_t c, Word col)
 }
 inline void _ClearDepth(selfptr)
 {
-	memset32(self->ZBuffer, MAXUINT32, self->nFrameHeight*self->nFrameLength);
+	for (int i = 0; i < self->nFrameHeight*self->nFrameLength; i++)
+	{
+		self->ZBuffer[i] = FLT_MAX;
+	}
 }
 void _BeginFrame(selfptr, wchar_t c, Word col)
 {

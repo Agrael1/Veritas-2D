@@ -10,7 +10,7 @@ class
 	const void* _class;
 
 	CHAR_INFO *localFrame;
-	UINT* ZBuffer;
+	float* ZBuffer;
 
 	Word nFrameLength;
 	Word nFrameHeight;

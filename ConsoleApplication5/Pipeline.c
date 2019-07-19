@@ -19,49 +19,39 @@ inline void DrawFlatTriangle(selfptr,
 	VMVECTOR itEdge0 = *it0;
 
 	// calculate start and end scanlines
-	const Word yStart = max((Word)ceilf(it0->m128_f32[1] - 0.5f), 0);
-	const Word yEnd = min((Word)ceilf(it2->m128_f32[1] - 0.5f), this->gfx->nFrameHeight - 1); // the scanline AFTER the last line drawn
+	const int yStart = max((int)ceilf(it0->m128_f32[1] - 0.5f), 0);
+	const int yEnd = min((int)ceilf(it2->m128_f32[1] - 0.5f), (int)this->gfx->nFrameHeight - 1); // the scanline AFTER the last line drawn
 
 	// do interpolant prestep
 	const float step = ((float)yStart + 0.5f - it0->m128_f32[1]);
 	itEdge0 = VMVectorAdd( itEdge0, VMVectorScale(*dv0, step));
 	itEdge1 = VMVectorAdd(itEdge1, VMVectorScale(*dv1, step));
 
-	for (Word y = yStart; y < yEnd; y++,
+	for (int y = yStart; y < yEnd; y++,
 		itEdge0 = VMVectorAdd(itEdge0, *dv0), 
 		itEdge1 = VMVectorAdd(itEdge1, *dv1))
 	{
 		// calculate start and end pixels
-		const Word xStart = (Word)ceilf(itEdge0.m128_f32[0] - 0.5f);
-		const Word xEnd = (Word)ceilf(itEdge1.m128_f32[0] - 0.5f); // the pixel AFTER the last pixel drawn
+		const int xStart = max((int)ceilf(itEdge0.m128_f32[0] - 0.5f),0);
+		const int xEnd = min((int)ceilf(itEdge1.m128_f32[0] - 0.5f), (int)this->gfx->nFrameLength-1); // the pixel AFTER the last pixel drawn
 
 														  // create scanline interpolant startpoint
 														  // (some waste for interpolating x,y,z, but makes life easier not having
 														  //  to split them off, and z will be needed in the future anyways...)
 		VMVECTOR iLine = itEdge0;
 
-		// calculate delta scanline interpolant / dx
-		const float dx = 1.0f / itEdge1.m128_f32[0] - itEdge0.m128_f32[0];
-		const float rdx = ((float)xStart + 0.5f - itEdge0.m128_f32[0]) * dx;
-
-		FVMVECTOR diLine = VMVectorScale(VMVectorSubtract(itEdge1, iLine), dx);
+		//// calculate delta scanline interpolant / dx
+		const float dx = itEdge1.m128_f32[0] - itEdge0.m128_f32[0];
+		FVMVECTOR diLine = VMVectorScale( VMVectorSubtract(itEdge1, iLine), 1.0f / dx);
 
 		// prestep scanline interpolant
-		iLine = VMVectorLerp(iLine, itEdge1, rdx);
+		iLine = VMVectorAdd(iLine, VMVectorScale(diLine, ((float)xStart + 0.5f - itEdge0.m128_f32[0])));
 
 		for (int x = xStart; x < xEnd; x++, 
 			iLine = VMVectorAdd(iLine,diLine))
 		{
-			// recover interpolated z from interpolated 1/z
-			const float z = 1.0f / iLine.m128_f32[2];
-			// do z rejection / update of z buffer
-			// skip shading step if z rejected (early z)
-			if (self->gfx->method->DepthTest(self->gfx, x, y, z))
+			if (self->gfx->method->DepthTest(self->gfx, x, y, iLine.m128_f32[2]))
 			{
-				// recover interpolated attributes
-				// (wasted effort in multiplying pos (x,y,z) here, but
-				//  not a huge deal, not worth the code complication to fix)
-				//const auto attr = iLine * z;
 				// invoke pixel shader with interpolated vertex attributes
 				// and use result to set the pixel color on the screen
 				this->gfx->method->PrintFrame(this->gfx, x, y, ret);
