@@ -15,6 +15,7 @@ class
 
 	struct ColorIndexPS* PS;
 	struct Frame* gfx;
+	struct DefaultVS* VS;
 
 	VMMATRIX Transformation;
 };

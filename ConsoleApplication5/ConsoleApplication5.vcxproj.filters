@@ -144,6 +144,9 @@
     <ClCompile Include="ExperimentalPS.c">
       <Filter>Файлы исходного кода\Engine\Graphics\Shading</Filter>
     </ClCompile>
+    <ClCompile Include="DefaultVS.cpp">
+      <Filter>Файлы исходного кода\Engine\Graphics\Shading</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Queue.h">
@@ -246,6 +249,9 @@
       <Filter>Заголовочные файлы\Engine\Graphics\Shading</Filter>
     </ClInclude>
     <ClInclude Include="ExperimentalPS.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Shading</Filter>
+    </ClInclude>
+    <ClInclude Include="DefaultVS.h">
       <Filter>Заголовочные файлы\Engine\Graphics\Shading</Filter>
     </ClInclude>
   </ItemGroup>

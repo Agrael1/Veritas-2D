@@ -1,3 +1,4 @@
+#include "DefaultVS.h"
 #include "ColorIndexPS.h"
 #include "Standard.h"
 #include "Pipeline.h"
@@ -152,12 +153,11 @@ void _ProcessVertices(selfptr, struct IndexedTriangleList* trilist)
 {
 	account(self);
 	VMVECTOR* VertsOut = malloc(sizeof(VMVECTOR)*trilist->numVerts);
+	this->VS->Transformation = self->Transformation;
 
 	// Transfor all the verts accordingly
-	for (int i = 0; i < trilist->numVerts; i++)
-	{ 
-		VertsOut[i] = VMVector3TransformCoord(VMLoadFloat3(&trilist->vertices[i].pos), this->Transformation);
-	}
+	this->VS->method->Apply(this->VS, VertsOut, trilist);
+
 	_AssembleTriangles(self, VertsOut, trilist->indices, trilist->numInds);
 	free(VertsOut);
 }
@@ -176,6 +176,7 @@ Constructor(selfptr, va_list *ap)
 	assignMethodTable(self);
 	self->gfx = va_arg(*ap, struct Frame*);
 	self->PS = new(ColorIndexPS);
+	self->VS = new(DefaultVS);
 	return self;
 }
 Destructor(selfptr)
