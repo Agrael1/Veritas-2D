@@ -39,8 +39,12 @@ typedef unsingned int MaxInt;
 
 #define ctab __rconcat(_, c_class)
 #define virtual(x) __rconcat( x, __rctab(c_class))
+
+// construction specific
 #define Destructor void* __rconcat(c_class,_dtor)
 #define Constructor void* __rconcat(c_class,_ctor)
+#define Allocator size_t __rconcat(c_class,_ator)
+
 #define meth __rconcat(c_class, _method)
 #define _private __rconcat(c_class,_private)
 #define vftb __rconcat(c_class,_vftb)
@@ -57,7 +61,7 @@ typedef unsingned int MaxInt;
 
 // Private Handling
 #define privatev(...) Byte virtual(__internal_prtb)[ sizeof( struct _private{ __VA_ARGS__ } )]
-#define private (*(struct _private*)(this->virtual(__internal_prtb)))
+#define private (*(struct _private*)(self->virtual(__internal_prtb)))
 // Method Handling
 #define methods(...) struct vftb { __VA_ARGS__ }*method
 #define constructMethodTable(...) struct vftb meth = { __VA_ARGS__ }
@@ -65,9 +69,17 @@ typedef unsingned int MaxInt;
 
 // Class construction handling
 #define ENDCLASSDESC const struct Class ctab = { sizeof(struct c_class),\
-.ctor = __rconcat(c_class,_ctor),.dtor = __rconcat(c_class,_dtor),.typestring = __rtypestr(c_class)}; \
+.ator = NULL, .ctor = __rconcat(c_class,_ctor),.dtor = __rconcat(c_class,_dtor),.typestring = __rtypestr(c_class)}; \
 const void* c_class = &ctab;
+
+#define ENDCLASSDESCWA const struct Class ctab = { sizeof(struct c_class),\
+.ator = __rconcat(c_class,_ator), .ctor = __rconcat(c_class,_ctor),.dtor = __rconcat(c_class,_dtor),.typestring = __rtypestr(c_class)}; \
+const void* c_class = &ctab;
+
 #define selfptr struct c_class* self
+
+#define operator(x) virtual(x)
+#define GENERATED_DESC const void* _class;
 #endif
 
 #undef c_class

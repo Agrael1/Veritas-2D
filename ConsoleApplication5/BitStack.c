@@ -7,7 +7,7 @@
 #include "BitStack.h"
 #include "Class.h"
 
-bool virtual(Push)(void* self, Byte value, Byte length)
+bool virtual(Push)(selfptr, Byte value, Byte length)
 {
 	account(self);
 
@@ -29,7 +29,7 @@ bool virtual(Push)(void* self, Byte value, Byte length)
 		else return false;	
 	}
 }
-short virtual(Pop)(void* self, Byte length)
+short virtual(Pop)(selfptr, Byte length)
 {
 	account(self);
 	short a;
@@ -55,7 +55,7 @@ short virtual(Pop)(void* self, Byte length)
 		}
 	}
 }
-void virtual(Reset)(void* self)
+void virtual(Reset)(selfptr)
 {
 	account(self);
 	for (int i = 0; i < DST; i++)

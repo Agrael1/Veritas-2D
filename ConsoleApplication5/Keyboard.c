@@ -19,7 +19,6 @@ void TrimBuffer(struct Queue* buffer)
 }
 void ClearBuffer(struct Queue* buffer)
 {
-	
 	while (buffer->Contains)
 	{
 		void* _proxy = NULL;
@@ -28,24 +27,20 @@ void ClearBuffer(struct Queue* buffer)
 	}
 }
 
-bool virtual(IsPress)(struct c_class* self)
+bool virtual(IsPress)(selfptr)
 {
-	account(self);
 	return private.type == Press;
 }
-bool virtual(IsRelease)(struct c_class* self)
+bool virtual(IsRelease)(selfptr)
 {
-	account(self);
 	return private.type == Release;
 }
-bool virtual(IsInvalid)(struct c_class* self)
+bool virtual(IsInvalid)(selfptr)
 {
-	account(self);
 	return private.type == Invalid;
 }
-Byte virtual(GetCode)(void* self)
+Byte virtual(GetCode)(selfptr)
 {
-	account(self);
 	return private.code;
 }
 
@@ -56,15 +51,14 @@ constructMethodTable(
 	.GetCode = virtual(GetCode)
 );
 
-Constructor(void* self, va_list *ap)
+Constructor(selfptr, va_list *ap)
 {
-	account(self);
-	assignMethodTable(this);
+	assignMethodTable(self);
 	private.type = va_arg(*ap, enum virtual(Type));
 	private.code = va_arg(*ap, Byte);
-	return this;
+	return self;
 }
-Destructor(void* self)
+Destructor(selfptr)
 {
 	return self;
 }
@@ -73,15 +67,12 @@ ENDCLASSDESC
 #undef c_class
 #define c_class Keyboard
 
-bool virtual(KeyPressed)(const void* self, Byte keycode)
+bool virtual(KeyPressed)(const selfptr, Byte keycode)
 {
-	const account(self);
 	return private.KeyStates->method->IsSet(private.KeyStates, keycode);
 }
-struct KeyboardEvent* virtual(ReadKey)(void* self)
+struct KeyboardEvent* virtual(ReadKey)(selfptr)
 {
-	account(self);
-
 	if (private.KeyBuffer->Contains > 0u)
 	{
 		struct KeyboardEvent *ep = NULL;
@@ -93,14 +84,12 @@ struct KeyboardEvent* virtual(ReadKey)(void* self)
 		return new(KeyboardEvent,Invalid,0);
 	}
 }
-bool virtual(KeyIsEmpty)(const void* self)
+bool virtual(KeyIsEmpty)(const selfptr)
 {
-	const account(self);
 	return private.KeyBuffer->method->empty(private.KeyBuffer);
 }
-void virtual(ClearKey)(void* self)
+void virtual(ClearKey)(selfptr)
 {
-	account(self);
 	private.KeyBuffer->method->clear(private.KeyBuffer);
 }
 
@@ -111,24 +100,21 @@ void virtual(ClearKey)(void* self)
 //void(*Flush)(struct c_class* self);
 // Internal
 
-void _OnKeyPressed(void* self, Byte keycode)
+void _OnKeyPressed(selfptr, Byte keycode)
 {
-	account(self);
 	TrimBuffer(private.KeyBuffer);
 	private.KeyStates->method->Set(private.KeyStates, keycode);
 	private.KeyBuffer->method->push(private.KeyBuffer, new(KeyboardEvent, Press, keycode));
 }
-void _OnKeyReleased(void* self, Byte keycode)
+void _OnKeyReleased(selfptr, Byte keycode)
 {
-	account(self);
 	TrimBuffer(private.KeyBuffer);
 	private.KeyStates->method->Reset(private.KeyStates, keycode);
 	private.KeyBuffer->method->push(private.KeyBuffer, new(KeyboardEvent, Release, keycode));
 }
 //void(*OnChar)(char character);
-void _ClearState(void* self)
+void _ClearState(selfptr)
 {
-	account(self);
 	private.KeyStates->method->FullReset(private.KeyStates);
 }
 
@@ -143,20 +129,18 @@ constructMethodTable(
 	.ClearState = _ClearState
 );
 
-Constructor(void* self, va_list *ap)
+Constructor(selfptr, va_list *ap)
 {
-	account(self);
-	assignMethodTable(this);
+	assignMethodTable(self);
 	private.KeyBuffer = new(Queue, sizeof(void*), bufferSize);
-	private.KeyStates = new(BitField, nKeys);
-	return this;
+	private.KeyStates = new(BitField, nKeys, nKeys);
+	return self;
 }
-Destructor(void* self)
+Destructor(selfptr)
 {
-	account(self);
 	ClearBuffer(private.KeyBuffer);
 	delete(private.KeyBuffer);
 	delete(private.KeyStates);
-	return this;
+	return self;
 }
 ENDCLASSDESC

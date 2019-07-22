@@ -1,11 +1,14 @@
 #include "Class.h"
+#include <stdlib.h>
 #include "StringStream.h"
 #include "VeritasEngine.h"
 
-#define EMPTYQUEUE this->Control->kbd->method->KeyIsEmpty(this->Control->kbd)
-#define ReadEventQueue(event) struct KeyboardEvent* __event_ptr = this->Control->kbd->method->ReadKey(this->Control->kbd);\
+#define EMPTYQUEUE this->Control->kbd.method->KeyIsEmpty(&this->Control->kbd)
+#define ReadEventQueue(event) struct KeyboardEvent* __event_ptr = this->Control->kbd.method->ReadKey(&this->Control->kbd);\
 event = *__event_ptr; delete(__event_ptr)
 
+
+__declspec(thread) char buf[10];
 volatile bool bActive = false;
 
 bool virtual(HandleInputEvents)(void* self, struct KeyboardEvent event)
@@ -87,11 +90,11 @@ DWORD _stdcall _GameThread(selfptr)
 
 		// Process mouse
 		if (this->method->HandleMouse)
-			this->method->HandleMouse(this, this->Control->mouse, fElapsedSeconds);
+			this->method->HandleMouse(this, &this->Control->mouse, fElapsedSeconds);
 
 		// Process continuous input
 		if(this->method->HandleControls)
-			this->method->HandleControls(this, this->Control->kbd, fElapsedSeconds);
+			this->method->HandleControls(this, &this->Control->kbd, fElapsedSeconds);
 
 		// render frame
 		if (!this->method->OnUserUpdate(this, fElapsedSeconds))
@@ -99,12 +102,7 @@ DWORD _stdcall _GameThread(selfptr)
 
 		_Show(this);
 
-		struct StringStream* oss = new(StringStream);
-		oss->method->AppendI(oss->method->Append(oss, "3D Demo by Agrael FPS: "), (long)(1.0/fElapsedSeconds));
-		char* _proxy = oss->method->EndStr(oss);
-
-		SetConsoleTitleA(_proxy);
-		free(_proxy);
+		SetConsoleTitleA(_itoa((int)(1.0 / fElapsedSeconds),buf,10));
 	}
 
 	if (this->method->OnUserDestroy&&!this->method->OnUserDestroy(this))

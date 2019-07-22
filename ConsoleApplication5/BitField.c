@@ -2,96 +2,85 @@
 #include <malloc.h>
 #include "Class.h"
 
-inline Byte CalcrPos(DWord pos) 
+#define BITSCOUNT (sizeof(MaxInt)*8)
+
+inline size_t CalcrPos(DWord pos) 
 {
-	return pos / BLOCKSZ;
+	return pos / BITSCOUNT;
 }
-inline DWord CalcdPos(DWord pos)
+inline size_t CalcdPos(DWord pos)
 {
-	return 1i64 << (pos%BLOCKSZ);
+	return 1i64 << (pos % BITSCOUNT);
 }
 
-bool _IsSet(void* self, DWord pos)
+bool _IsSet(selfptr, DWord pos)
 {
-	struct c_class *this = self;
-	if (pos <= this->Positions)
-		return this->BitArray[CalcrPos(pos)]&CalcdPos(pos);
-	else
-		return false;
+	if (pos < self->Positions)
+		return self->BitArray[CalcrPos(pos)] & CalcdPos(pos);
+	return false;
 }
-bool _Any(void* self)
+bool _Any(selfptr)
 {
-	struct c_class *this = self;
-	for (DWord i = 0; i < this->Positions; i++)
+	for (DWord i = 0; i < self->Positions; i++)
 	{
-		if (_IsSet(this, i))
-		{
-			return true;
-		}
+		if(self->BitArray[CalcrPos(i)] & CalcdPos(i)) return true;
 	}
 	return false;
 }
-bool _Set(void* self, DWord pos)
+bool _Set(selfptr, DWord pos)
 {
-	struct c_class *this = self;
-	if (pos <= this->Positions)
+	if (pos < self->Positions)
 	{
-		this->BitArray[CalcrPos(pos)]|=CalcdPos(pos);
+		self->BitArray[CalcrPos(pos)]|=CalcdPos(pos);
 		return true;
 	}
-	else
-		return false;
+	return false;
 }
-bool _Reset(void* self, DWord pos)
+bool _Reset(selfptr, DWord pos)
 {
-	struct c_class *this = self;
-	if (pos <= this->Positions)
+	if (pos <= self->Positions)
 	{
-		this->BitArray[CalcrPos(pos)] &= ~CalcdPos(pos);
+		self->BitArray[CalcrPos(pos)] &= ~CalcdPos(pos);
 		return true;
 	}
-	else
-		return false;
+	return false;
 }
-bool _FullReset(void* self)
+bool _FullReset(selfptr)
 {
-	struct c_class *this = self;
-	if (this->Positions > 0)
+	if (self->Positions > 0)
 	{
-		Byte num = (this->Positions % BLOCKSZ) > 0 ? this->Positions / BLOCKSZ + 1 : this->Positions / BLOCKSZ;
-		for (int i = 0; i < num; i++)
-			this->BitArray[i] = 0;
+		size_t num = (self->Positions % BITSCOUNT) > 0 ? self->Positions / BITSCOUNT + 1 : self->Positions / BITSCOUNT;
+		for (size_t i = 0; i < num; i++)
+			self->BitArray[i] = 0;
 		return true;
 	}
 	return false;
 }
 
-constructMethodTable(.Any = _Any,.IsSet = _IsSet,.Set = _Set,.Reset = _Reset,.FullReset = _FullReset);
+constructMethodTable(
+	.Any = _Any,
+	.IsSet = _IsSet,
+	.Set = _Set,
+	.Reset = _Reset,
+	.FullReset = _FullReset
+);
 
-Constructor(void* self, va_list* ap)
+Constructor(selfptr, va_list* ap)
 {
-	account(self);
-	assignMethodTable(this);
-
-	if (ap != NULL)
-	{
-		this->Positions =  va_arg(*ap, DWord);
-		Byte num = (this->Positions % BLOCKSZ) > 0 ? this->Positions / BLOCKSZ + 1 : this->Positions / BLOCKSZ;
-		this->BitArray = malloc(num*BLOCKSZ); //Because we allocate MaxInt
-		if (!_FullReset(this)) return NULL;
-	}
-	else
-	{
-		this->BitArray = malloc(BLOCKSZ);
-		this->Positions = BLOCKSZ;
-		this->BitArray[0] = 0;
-	}
-	return this;
+	assignMethodTable(self);
+	self->Positions = va_arg(*ap, DWord);
+	return self;
 }
-Destructor(void* self)
+Destructor(selfptr)
 {
-	struct c_class *this = self;
-	free(this->BitArray);
-	return this;
+	return self;
 }
-ENDCLASSDESC
+Allocator(va_list* ap)
+{
+	size_t positions = va_arg(*ap, DWord);
+	size_t num = (positions % BITSCOUNT) > 0 ?
+		positions / BITSCOUNT + 1 :
+		positions / BITSCOUNT;
+	return num * sizeof(MaxInt);
+}
+ENDCLASSDESCWA

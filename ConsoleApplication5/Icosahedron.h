@@ -39,3 +39,19 @@ static struct IndexedTriangleList Icosahedron_Make()
 
 	return _ret;
 }
+static struct IndexedTriangleList Icosahedron_MakeIndependent()
+{
+	struct IndexedTriangleList temp = Icosahedron_Make();
+
+	Vertex* ReVertices = malloc(temp.numInds * sizeof(Vertex));
+	unsigned j = 0;
+	for (auto i = 0; i<temp.numInds;i++)
+	{
+		ReVertices[j++] = temp.vertices[temp.indices[i]];
+		temp.indices[i] = i;
+	}
+	free(temp.vertices);
+	temp.vertices = ReVertices;
+
+	return temp;
+};

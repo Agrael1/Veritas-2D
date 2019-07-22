@@ -147,6 +147,9 @@
     <ClCompile Include="DefaultVS.cpp">
       <Filter>Файлы исходного кода\Engine\Graphics\Shading</Filter>
     </ClCompile>
+    <ClCompile Include="Vertex.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\Pipeline</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Queue.h">
@@ -253,6 +256,9 @@
     </ClInclude>
     <ClInclude Include="DefaultVS.h">
       <Filter>Заголовочные файлы\Engine\Graphics\Shading</Filter>
+    </ClInclude>
+    <ClInclude Include="Vertex.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Pipeline</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

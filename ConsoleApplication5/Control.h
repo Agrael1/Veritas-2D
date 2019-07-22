@@ -7,13 +7,14 @@
 #define c_class MessageWindow
 class
 {
-	const void* _class;
+	GENERATED_DESC
 	LPCWSTR wndClassName;
 	HINSTANCE hInst;
 	HWND Window;
 
-	struct Keyboard* kbd;
-	struct Mouse* mouse;
+	// Embedded classes
+	struct Keyboard kbd;
+	struct Mouse mouse;
 
 	methods(
 		LRESULT(*HandleMsg)(void* self, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);

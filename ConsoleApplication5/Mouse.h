@@ -44,7 +44,6 @@ class
 		int(*GetX)(const selfptr);
 		int(*GetY)(const selfptr);
 		void (*ReadMouseMovement)(selfptr, int* X, int* Y);
-		void(*InitializeMouse)(selfptr, HWND hWnd);
 		void(*OnMouseMoved)(selfptr, RAWMOUSE* mouse);
 		bool(*ButtonPressed)(selfptr, MButtons BCode);
 	);
@@ -54,7 +53,7 @@ class
 		struct Queue* MouseBuffer;
 		struct BitField* MBStates;
 	);
-	
+
 	int deltaX, deltaY;
 };
 

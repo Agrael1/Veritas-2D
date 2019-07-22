@@ -91,7 +91,9 @@ void _TranslateMouseInput(selfptr, RAWMOUSE* mouse)
 	}
 	if (mouse->usButtonFlags > 0)
 	{
-		Word NANDmask = 0, ORMask = 0, result = (Word)private.MBStates->BitArray[0];
+		Word NANDmask = 0, ORMask = 0;
+		MaxInt result = private.MBStates->BitArray[0];
+
 		for (Byte i = 0, j = 0; i < 10, j < 5; j++, i += 2)
 		{
 			NANDmask |= (((1 << (i + 1))&mouse->usButtonFlags)>>(j+1));
@@ -103,10 +105,8 @@ void _TranslateMouseInput(selfptr, RAWMOUSE* mouse)
 			private.MBStates->BitArray[0] = result;
 	}
 }
-void _InitializeMouse(void* self, HWND hWnd)
-{
-	account(self);
-	
+inline void _InitializeMouse(selfptr, HWND hWnd)
+{	
 	private.Rid.usUsagePage = HID_USAGE_PAGE_GENERIC;
 	private.Rid.usUsage = HID_USAGE_GENERIC_MOUSE;
 	private.Rid.dwFlags = RIDEV_INPUTSINK | RIDEV_NOLEGACY;
@@ -119,27 +119,24 @@ constructMethodTable(
 	.GetX = virtual(GetX),
 	.GetY = virtual(GetY),
 	.ButtonPressed = virtual(ButtonPressed),
-	.InitializeMouse = _InitializeMouse,
 	.OnMouseMoved = _TranslateMouseInput,
 	.ReadMouseMovement = _ReadMouseMovement
 );
 
-Constructor(void* self, va_list* ap)
+Constructor(selfptr, va_list* ap)
 {
-	account(self);
-	assignMethodTable(this);
+	assignMethodTable(self);
 	private.MouseBuffer = new(Queue, sizeof(void*), bufferSize);
-	private.MBStates = new(BitField, nKeys);
-	return this;
-}
-Destructor(void* self)
-{
-	account(self);
+	private.MBStates = new(BitField, nKeys, nKeys);
+	_InitializeMouse(self, va_arg(*ap, HWND));
 
+	return self;
+}
+Destructor(selfptr)
+{
 	ClearBuffer(private.MouseBuffer);
 	delete(private.MouseBuffer);
 	delete(private.MBStates);
-
-	return this;
+	return self;
 }
 ENDCLASSDESC

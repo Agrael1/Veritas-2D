@@ -4,10 +4,9 @@
 //
 // Class declaration file
 // Stack for small bit values (<8 bit)
+#pragma once
 #include "EngineCommons.h"
 
-#ifndef BitStack_h
-#define BitStack_h
 #if _WIN64
 #define NREG 64									// using data type, which fits the entire register
 #define DST 50
@@ -21,10 +20,7 @@
 
 class
 {
-	const void* _class;							// class description goes here
-	privatev(
-		MaxInt data[DST];			// storage for stack values
-	);
+	GENERATED_DESC
 	Word head;							// pointer to the last element of big stack
 	Byte bitctr;								// pointer to the last element of bits
 
@@ -41,5 +37,7 @@ class
 		//Resets the bit stack
 		void(*Reset)(void* self);
 	);
+	privatev(
+		MaxInt data[DST];			// storage for stack values
+	);
 };
-#endif // !BitStack

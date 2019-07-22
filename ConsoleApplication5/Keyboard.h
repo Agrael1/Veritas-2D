@@ -3,28 +3,26 @@
 #include "BitField.h"
 #include "EngineCommons.h"
 
-
 #define c_class KeyboardEvent
 
 class
 {
-	const void* _class;
+	GENERATED_DESC
 	privatev(
-
-	enum virtual(Type)
-	{
-		Press,
-		Release,
-		Invalid
-	}type;
-	Byte code;
+		enum virtual(Type)
+		{
+			Press,
+			Release,
+			Invalid
+		}type;
+		Byte code;
 	);
 
 	methods(
-		bool(*IsPress)(struct c_class* self);
-		bool(*IsRelease)(struct c_class* self);
-		bool(*IsInvalid)(struct c_class* self);
-		Byte(*GetCode)(struct c_class* self);
+		bool(*IsPress)(selfptr);
+		bool(*IsRelease)(selfptr);
+		bool(*IsInvalid)(selfptr);
+		Byte(*GetCode)(selfptr);
 	);
 };
 
@@ -33,7 +31,7 @@ class
 
 class
 {
-	const void* _class;
+	GENERATED_DESC
 	methods(
 		bool (*KeyPressed)(const struct c_class* self, Byte keycode);
 		struct KeyboardEvent* (*ReadKey)(struct c_class* self);
@@ -51,6 +49,7 @@ class
 		void (*ClearState)(void* self);
 	);
 
+	
 privatev(
 	struct BitField* KeyStates;
 	struct Queue* KeyBuffer;

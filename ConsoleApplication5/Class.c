@@ -3,21 +3,47 @@
 #include "Class.h"
 #include "New.h"
 
+void construct(void* where, const void* what, ...)
+{
+	va_list ap;
+	va_start(ap, what);
+	const struct Class* rclass = what;
+
+	assert(where);
+	*(const struct Class**)where = rclass;
+	if (rclass->ctor)
+	{
+		rclass->ctor(where, &ap);
+	}
+	va_end(ap);
+}
+void deconstruct(void* self)
+{
+	const struct Class** cp = self;		
+	if (self&&*cp && (*cp)->dtor)		
+		self = (*cp)->dtor(self);
+}
+
 void* new(const void* _class,...)
 {
-	const struct Class* rclass = _class;	// we need to convert pointer from void* to class* safely
-	void *p = calloc(1, rclass->size);	// allocation of memory for class .using size param
+	va_list ap;
+	va_start(ap, _class);
+	const struct Class* rclass = _class;	// we need to convert pointer from void* to class*
+	size_t additional = 0;
+	if (rclass->ator)
+	{
+		additional = rclass->ator(&ap);
+	}
+	void *p = calloc(1, rclass->size + additional);	// allocation of memory for class .using size param
 	
 	assert(p);							// if Null -> throw an error
-	*(const struct Class**)p = rclass;	// safe assignment of class pointer to (value) of p, to have memory and built in funcs
+	*(const struct Class**)p = rclass;	// passing class descriptor to class (const void* _class)
 	if (rclass->ctor)					// if has constructor with some dynal in it, execute with varargs on its input
 	{
-		va_list ap;
-		va_start(ap, _class);			// 
-		p = rclass->ctor(p, &ap);		// pass arguments as a list of pointers.
-		va_end(ap);
+		p = rclass->ctor(p, &ap);		// pass arguments as a list of pointers.	
 	}
-	return p;							//returns a pointer to class pointer (weird but worx)
+	va_end(ap);
+	return p;							//returns a pointer to class pointer
 }
 
 void delete(void* self)
@@ -35,11 +61,10 @@ unsigned int sizeOf(const void* _self)
 	assert(_self&&*cp);
 	return (*cp)->size;
 }
-
-const char * stringOf(const void * _self)
+const char* stringOf(const void * _self)
 {
 	const struct Class* const * cp = _self;
-	assert(_self&&*cp);
+	assert(_self&&*cp && (*cp)->typestring);
 	return (*cp)->typestring;
 }
 

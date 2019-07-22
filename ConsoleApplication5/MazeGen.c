@@ -14,7 +14,7 @@
 #define vectorSave(x,y) (this->MazeRep[(((y) * this->DimX) >> 1) + ((x) >> 1)] |= 1 << private.vector)
 
 // Gets random start point values
-void _GetStart(void* self)
+void _GetStart(selfptr)
 {
 	account(self);
 	switch (rand() % 4) {
@@ -46,7 +46,7 @@ void _GetStart(void* self)
 	bitSet(this->startx, this->starty);	
 	private.flag = this->startx & 1 ? (this->starty & 1)^1 : this->starty & 1;
 }
-bool MazeNext(void* self, Byte *nx, Byte *ny)
+bool MazeNext(selfptr, Byte *nx, Byte *ny)
 {
 	account(self);
 	Byte rotct = 0, retcond = 0; // debuggers
@@ -120,7 +120,7 @@ constructMethodTable(
 	.Generate = _Generate
 );
 
-Constructor(void* self, va_list *ap)
+Constructor(selfptr, va_list *ap)
 {
 	account(self);
 	assignMethodTable(this);
@@ -143,7 +143,7 @@ Constructor(void* self, va_list *ap)
 	_GetStart(this);
 	return this;
 }
-Destructor(void* self)
+Destructor(selfptr)
 {
 	account(self);
 	delete(private.S);

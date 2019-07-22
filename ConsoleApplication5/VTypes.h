@@ -64,18 +64,26 @@ typedef __declspec(align(16)) struct
 	float y;
 	float z;
 }VMFLOAT3A;
-typedef struct
+typedef struct VMFLOAT3
  {
 	 float x;
 	 float y;
 	 float z;
  }VMFLOAT3;
-
-typedef struct 
+typedef struct
 {
-	unsigned short x;
-	unsigned short y;
-}Vec2us;
+	float x;
+	float y;
+	float z;
+	float w;
+}VMFLOAT4;
+
+// Vector with coordinates
+typedef union
+{
+	VMFLOAT4 c;
+	VMVECTOR v;
+}CVMVECTOR;
 
 typedef struct
 {

@@ -6,8 +6,12 @@
 
 #ifndef New_h
 #define New_h
+
+void construct(void* where, const void* what, ...);
+void deconstruct(void* self);
+
 // creates instance of class with launching constructor with parameters
-void* new (const void* type, ...);
+void* __cdecl new (const void* type, ...);
 
 // deletes a class instance
 void delete(void* item);

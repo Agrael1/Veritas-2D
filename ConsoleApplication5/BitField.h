@@ -5,21 +5,16 @@
 
 class 
 {
-	const void* _class;
-	MaxInt* BitArray;
+	GENERATED_DESC
 	DWord Positions;
 
 	methods(
-		bool(*Any)(void* self);
-		bool(*IsSet)(void* self, DWord pos);
-		bool(*Set)(void* self, DWord pos);
-		bool(*Reset)(void* self, DWord pos);
-		bool(*FullReset)(void* self);
+		bool(*Any)(selfptr);
+		bool(*IsSet)(selfptr, DWord pos);
+		bool(*Set)(selfptr, DWord pos);
+		bool(*Reset)(selfptr, DWord pos);
+		bool(*FullReset)(selfptr);
 		);
-};
 
-#if _WIN64
-#define BLOCKSZ 64
-#else
-#define BLOCKSZ 32
-#endif
+	MaxInt BitArray[0];
+};

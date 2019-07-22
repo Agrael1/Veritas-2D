@@ -34,7 +34,7 @@ inline void itoa_s(char* const buffer, const long n, const Word len)
 	}
 }
 
-struct c_class* _Append_s(void* self, const char* str, const DWord length)
+struct c_class* _Append_s(selfptr, const char* str, const DWord length)
 {
 	struct c_class* this = self;
 
@@ -46,15 +46,13 @@ struct c_class* _Append_s(void* self, const char* str, const DWord length)
 
 	return this;
 }
-
-struct c_class* _Append(void* self, const char* str)
+struct c_class* _Append(selfptr, const char* str)
 {
 	struct c_class* this = self;
 	_Append_s(this, str, Strlen(str));
 	return this;
 }
-
-struct c_class* _AppendI(void* self, const long num)
+struct c_class* _AppendI(selfptr, const long num)
 {
 	struct c_class* this = self;
 	// loading buffer length of a number
@@ -68,8 +66,7 @@ struct c_class* _AppendI(void* self, const long num)
 
 	return this;
 }
-
-char* _str(const void* self)
+char* _str(const selfptr)
 {
 	const struct c_class* this = self;
 	return private.inStr;
@@ -78,7 +75,7 @@ char* _str(const void* self)
 // Warning this one is self destruct last breath string yield function,
 // it is callable when you need string as a return value
 // but don't need a string stream to continue existing
-char* _EndStr(void* self)
+char* _EndStr(selfptr)
 {
 	struct c_class* this = self;
 	char* _proxy = private.inStr;
@@ -95,7 +92,7 @@ constructMethodTable
 	.EndStr = _EndStr
 );
 
-Constructor(void* self, va_list* ap)
+Constructor(selfptr, va_list* ap)
 {
 	struct c_class* this = self;
 	assignMethodTable(this);
@@ -104,7 +101,7 @@ Constructor(void* self, va_list* ap)
 	private.len = 0;
 	return this;
 }
-Destructor(void* self)
+Destructor(selfptr)
 {
 	struct c_class* this = self;
 	if (private.inStr != NULL)

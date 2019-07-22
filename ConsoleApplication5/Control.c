@@ -1,7 +1,7 @@
 #include "Control.h"
 #include "Class.h"
 
-LRESULT _HandleMsg(void* self, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT _HandleMsg(selfptr, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {	
 	account(self);
 	switch (msg)
@@ -13,30 +13,29 @@ LRESULT _HandleMsg(void* self, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 	case WM_SYSKEYDOWN:
 		if (!(lParam & 0x40000000))
 		{
-			this->kbd->method->OnKeyPressed(this->kbd,(Byte)(wParam));
+			this->kbd.method->OnKeyPressed(&this->kbd,(Byte)(wParam));
 		}
 		break;
 	case WM_KEYUP:
 	case WM_SYSKEYUP:
-		this->kbd->method->OnKeyReleased(this->kbd, (Byte)(wParam));
+		this->kbd.method->OnKeyReleased(&this->kbd, (Byte)(wParam));
 		break;
 	case WM_INPUT:
-	{
-		UINT dwSize = 48;
-		RAWINPUT raw;
-
-		if (GetRawInputData((HRAWINPUT)lParam, RID_INPUT, &raw, &dwSize,
-			sizeof(RAWINPUTHEADER)) != dwSize)
-			OutputDebugString(TEXT("GetRawInputData does not return correct size !\n"));
-
-		if (raw.header.dwType == RIM_TYPEMOUSE)
 		{
-			this->mouse->method->OnMouseMoved(this->mouse, &raw.data.mouse);
-		}
+			UINT dwSize = 48;
+			RAWINPUT raw;
 
-		break;
-	}
-	
+			if (GetRawInputData((HRAWINPUT)lParam, RID_INPUT, &raw, &dwSize,
+				sizeof(RAWINPUTHEADER)) != dwSize)
+				OutputDebugString(TEXT("GetRawInputData does not return correct size !\n"));
+
+			if (raw.header.dwType == RIM_TYPEMOUSE)
+			{
+				this->mouse.method->OnMouseMoved(&this->mouse, &raw.data.mouse);
+			}
+
+			break;
+		}
 	}
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
@@ -63,63 +62,50 @@ LRESULT HandleMessageSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	}
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
-HINSTANCE _GetInstance(void* self)
+inline void _CreateControl(selfptr, HWND parent)
 {
-	return ((struct c_class*)self)->hInst;
-}
-bool _CreateControl(void* self, HWND parent)
-{
-	account(self);
-
 	WNDCLASSEX wx = {0};
 	wx.cbSize = sizeof(WNDCLASSEX);
 	wx.lpfnWndProc = HandleMessageSetup;        // function which will handle messages
-	wx.hInstance = _GetInstance(self);
-	wx.lpszClassName = this->wndClassName;
+	wx.hInstance = self->hInst;
+	wx.lpszClassName = self->wndClassName;
 
 	if (RegisterClassEx(&wx)) 
 	{
-		this->Window = CreateWindowExW(0,
-			this->wndClassName,
+		self->Window = CreateWindowExW(0,
+			self->wndClassName,
 			L"dummy_name",
 			WS_CHILD, 0, 0, 0, 0,
 			parent,
-			NULL, _GetInstance(this), this);
+			NULL, self->hInst, self);
 		
-		SetFocus(this->Window);
-
-		return true;
+		SetFocus(self->Window);
 	}
-	return false;
 }
 
 constructMethodTable(
 	.HandleMsg = _HandleMsg
 );
 
-Constructor(void* self, va_list *ap)
+Constructor(selfptr, va_list *ap)
 {
-	struct c_class* this = self;
-	assignMethodTable(this);
+	assignMethodTable(self);
 
-	this->wndClassName = L"DUMMY_CLASS";
-	this->hInst = GetModuleHandle(NULL);
+	self->wndClassName = L"DUMMY_CLASS";
+	self->hInst = GetModuleHandle(NULL);
 
-	_CreateControl(this,va_arg(*ap, HWND));
+	_CreateControl(self, va_arg(*ap, HWND));
 
 	// Create controls and bind mouse to the window
-	this->kbd = new(Keyboard);
-	this->mouse = new(Mouse);
-	this->mouse->method->InitializeMouse(this->mouse, this->Window);
-
-	return this;
+	construct(&self->kbd, Keyboard);
+	construct(&self->mouse, Mouse, self->Window);
+	return self;
 }
-Destructor(void* self)
+Destructor(selfptr)
 {
-	struct c_class* this = self;
-	UnregisterClass(this->wndClassName, _GetInstance(self));
-	delete(this->kbd);
-	delete(this->mouse);
-	return this;
+	UnregisterClass(self->wndClassName, self->hInst);
+	deconstruct(&self->kbd);
+	deconstruct(&self->mouse);
+	return self;
 }
 ENDCLASSDESC

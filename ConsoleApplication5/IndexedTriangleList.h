@@ -1,6 +1,5 @@
 #pragma once
 #include "VTypes.h"
-#include "BitField.h"
 
 typedef struct 
 {
