@@ -6,13 +6,13 @@
 #include "Color.scheme"
 
 
-bool virtual(HandleInputEvents)(void* self, struct KeyboardEvent event)
+bool virtual(HandleInputEvents)(void* self, const KeyboardEvent* event)
 {
 	account(self);
-	if (event.method->IsPress(&event))
+	if (event->type == Press)
 	{
 		// check if the event was for the space key
-		switch (event.method->GetCode(&event))
+		switch (event->code)
 		{
 		case VK_ESCAPE:
 			return false;

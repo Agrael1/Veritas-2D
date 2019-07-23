@@ -170,7 +170,6 @@
     <ClCompile Include="MazeGen.c" />
     <ClCompile Include="Mouse.c" />
     <ClCompile Include="Pipeline.c" />
-    <ClCompile Include="Queue.c" />
     <ClCompile Include="StringStream.c" />
     <ClCompile Include="VeritasEngine.c" />
     <ClCompile Include="Vertex.c" />
@@ -203,7 +202,6 @@
     <ClInclude Include="New.h" />
     <ClInclude Include="ColorIndexPS.h" />
     <ClInclude Include="Pipeline.h" />
-    <ClInclude Include="Queue.h" />
     <ClInclude Include="Standard.h" />
     <ClInclude Include="StringStream.h" />
     <ClInclude Include="VeritasEngine.h" />

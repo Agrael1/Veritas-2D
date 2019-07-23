@@ -4,55 +4,14 @@
 #define nKeys 256u
 #define bufferSize 16u
 
-#undef c_class
-#define c_class KeyboardEvent
-
-bool virtual(IsPress)(const selfptr)
-{
-	return private.type == Press;
-}
-bool virtual(IsRelease)(const selfptr)
-{
-	return private.type == Release;
-}
-bool virtual(IsInvalid)(const selfptr)
-{
-	return private.type == Invalid;
-}
-Byte virtual(GetCode)(const selfptr)
-{
-	return private.code;
-}
-
-constructMethodTable(
-	.IsPress = virtual(IsPress),
-	.IsRelease = virtual(IsRelease),
-	.IsInvalid = virtual(IsInvalid),
-	.GetCode = virtual(GetCode)
-);
-
-Constructor(selfptr, va_list *ap)
-{
-	assignMethodTable(self);
-	private.type = va_arg(*ap, enum virtual(Type));
-	private.code = va_arg(*ap, Byte);
-	return self;
-}
-Destructor(selfptr)
-{
-	return self;
-}
-ENDCLASSDESC
-
-#undef c_class
-#define c_class Keyboard
-
 bool virtual(KeyPressed)(const selfptr, Byte keycode)
 {
 	return self->KeyStates->method->IsSet(self->KeyStates, keycode);
 }
-struct KeyboardEvent* virtual(ReadKey)(selfptr)
+KeyboardEvent* virtual(ReadKey)(selfptr)
 {
+	if (self->KeyBuffer.Contains == 0)
+		return nullptr;
 	return self->KeyBuffer.method->Read(&self->KeyBuffer);
 }
 void virtual(ClearKey)(selfptr)
@@ -79,14 +38,16 @@ void _Flush(selfptr)
 void _OnKeyPressed(selfptr, Byte keycode)
 {
 	self->KeyStates->method->Set(self->KeyStates, keycode);
-	void* _p = self->KeyBuffer.method->GetNext(&self->KeyBuffer);
-	construct(_p, KeyboardEvent, Press, keycode);
+	KeyboardEvent* _p = self->KeyBuffer.method->GetNext(&self->KeyBuffer);
+	_p->type = Press;
+	_p->code = keycode;
 }
 void _OnKeyReleased(selfptr, Byte keycode)
 {
 	self->KeyStates->method->Reset(self->KeyStates, keycode);
-	void* _p = self->KeyBuffer.method->GetNext(&self->KeyBuffer);
-	construct(_p, KeyboardEvent, Release, keycode);
+	KeyboardEvent* _p = self->KeyBuffer.method->GetNext(&self->KeyBuffer);
+	_p->type = Release;
+	_p->code = keycode;
 }
 void _OnChar(selfptr, char character)
 {
@@ -116,7 +77,7 @@ Constructor(selfptr, va_list *ap)
 {
 	assignMethodTable(self);
 	self->KeyStates = new(BitField, nKeys, nKeys);
-	construct(&self->KeyBuffer, EventQueue, sizeof(struct KeyboardEvent), bufferSize, sizeof(void*));
+	construct(&self->KeyBuffer, EventQueue, sizeof(KeyboardEvent), bufferSize, sizeof(enum Type));
 	construct(&self->CharBuffer, EventQueue, sizeof(char), bufferSize, sizeof(char));
 	return self;
 }

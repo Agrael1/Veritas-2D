@@ -1,33 +1,19 @@
 #pragma once
-#include "Queue.h"
 #include "EventQueue.h"
 #include "BitField.h"
 #include "EngineCommons.h"
 
-#define c_class KeyboardEvent
-
-class
+typedef struct 
 {
-	GENERATED_DESC
-	methods(
-		bool(*IsPress)(const selfptr);
-		bool(*IsRelease)(const selfptr);
-		bool(*IsInvalid)(const selfptr);
-		Byte(*GetCode)(const selfptr);
-	);
+	enum Type
+	{
+		Press,
+		Release,
+		Invalid
+	}type;
+	Byte code;
+}KeyboardEvent;
 
-	privatev(
-		enum virtual(Type)
-		{
-			Press,
-			Release,
-			Invalid
-		}type;
-		Byte code;
-	);
-};
-
-#undef c_class
 #define c_class Keyboard
 
 class
@@ -35,7 +21,7 @@ class
 	GENERATED_DESC
 	methods(
 		bool (*KeyPressed)(const selfptr, Byte keycode);
-		struct KeyboardEvent* (*ReadKey)(selfptr);
+		KeyboardEvent* (*ReadKey)(selfptr);
 		void (*ClearKey)(selfptr);
 	// CharRoutines
 		char (*ReadChar)(selfptr);

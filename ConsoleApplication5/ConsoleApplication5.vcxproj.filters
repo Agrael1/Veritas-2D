@@ -105,9 +105,6 @@
     <ClCompile Include="StringStream.c">
       <Filter>Файлы исходного кода\Engine\Framework\Containers</Filter>
     </ClCompile>
-    <ClCompile Include="Queue.c">
-      <Filter>Файлы исходного кода\Engine\Framework\Containers</Filter>
-    </ClCompile>
     <ClCompile Include="Exception.c">
       <Filter>Файлы исходного кода\Engine\Framework</Filter>
     </ClCompile>
@@ -155,9 +152,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Queue.h">
-      <Filter>Заголовочные файлы\Engine\Framework\Containers</Filter>
-    </ClInclude>
     <ClInclude Include="BitField.h">
       <Filter>Заголовочные файлы\Engine\Framework\Containers</Filter>
     </ClInclude>

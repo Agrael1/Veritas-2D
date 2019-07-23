@@ -6,12 +6,12 @@
 __declspec(thread) char buf[10];
 volatile bool bActive = false;
 
-bool virtual(HandleInputEvents)(void* self, const struct KeyboardEvent* event)
+bool virtual(HandleInputEvents)(void* self, const KeyboardEvent* event)
 {
-	if (event->method->IsPress(event))
+	if (event->type == Press)
 	{
 		// check if the event was for the escape key
-		if (event->method->GetCode(event) == VK_ESCAPE)
+		if (event->code == VK_ESCAPE)
 		{
 			return false;
 		}
@@ -20,7 +20,7 @@ bool virtual(HandleInputEvents)(void* self, const struct KeyboardEvent* event)
 }
 bool _PassEvents(selfptr)
 {
-	struct KeyboardEvent const *event;
+	KeyboardEvent *event;
 	while ((event = self->Control->kbd.method->ReadKey(&self->Control->kbd))!=nullptr)
 	{
 		return self->method->HandleInputEvents(self, event);
@@ -60,6 +60,8 @@ DWORD _stdcall _GameThread(selfptr)
 	LARGE_INTEGER StartingTime, EndingTime;
 	LARGE_INTEGER Frequency;
 	double fElapsedSeconds;
+	int rtime = 0;
+	int middle = 0, k = 0;
 
 	QueryPerformanceFrequency(&Frequency);
 	QueryPerformanceCounter(&StartingTime);
@@ -93,7 +95,13 @@ DWORD _stdcall _GameThread(selfptr)
 
 		_Show(this);
 
-		SetConsoleTitleA(_itoa((int)(1.0 / fElapsedSeconds),buf,10));
+		if (k++ == 60)
+		{
+			rtime = (int)(1.0 / fElapsedSeconds);
+			middle = (rtime + middle) / 2;
+			k = 0;
+			SetConsoleTitleA(_itoa(middle, buf, 10));
+		}
 	}
 
 	if (this->method->OnUserDestroy&&!this->method->OnUserDestroy(this))
