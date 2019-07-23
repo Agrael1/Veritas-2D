@@ -24,8 +24,7 @@ void deconstruct(void* self)
 		self = (*cp)->dtor(self);
 }
 
-void* new(const void* _class,...)
-{
+void* new(const void* _class,...){
 	va_list ap;
 	va_start(ap, _class);
 	const struct Class* rclass = _class;	// we need to convert pointer from void* to class*

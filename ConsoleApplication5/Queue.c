@@ -15,15 +15,14 @@ bool virtual(empty)(void* self)
 	account(self);
 	return (this->Contains == 0);
 }
-void virtual(push)(self, smth)
-struct c_class* self; const void* smth;
+
+void virtual(push)(selfptr, const void* smth)
 {
-	account(self);
-	if (this->Contains < this->Capacity)
+	if (self->Contains < self->Capacity)
 	{
-		memcpy(((Byte*)this->insides + this->cur*this->Size), &smth, this->Size);
-		this->cur = (this->cur + 1) % this->Capacity;
-		this->Contains++;
+		memcpy(((Byte*)self->insides + self->cur*self->Size), &smth, self->Size);
+		self->cur = (self->cur + 1) % self->Capacity;
+		self->Contains++;
 	}
 }
 void virtual(pop)(void* self, void* to)

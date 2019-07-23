@@ -52,9 +52,6 @@ ENDCLASSDESC
 #define bufferSize 16
 #define nKeys 5
 
-extern void TrimBuffer(struct Queue* buffer);
-extern void ClearBuffer(struct Queue* buffer);
-
 int virtual(GetX)(const selfptr)
 {
 	return self->deltaX;

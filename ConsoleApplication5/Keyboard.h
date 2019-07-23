@@ -1,5 +1,6 @@
 #pragma once
 #include "Queue.h"
+#include "EventQueue.h"
 #include "BitField.h"
 #include "EngineCommons.h"
 
@@ -8,6 +9,13 @@
 class
 {
 	GENERATED_DESC
+	methods(
+		bool(*IsPress)(const selfptr);
+		bool(*IsRelease)(const selfptr);
+		bool(*IsInvalid)(const selfptr);
+		Byte(*GetCode)(const selfptr);
+	);
+
 	privatev(
 		enum virtual(Type)
 		{
@@ -16,13 +24,6 @@ class
 			Invalid
 		}type;
 		Byte code;
-	);
-
-	methods(
-		bool(*IsPress)(selfptr);
-		bool(*IsRelease)(selfptr);
-		bool(*IsInvalid)(selfptr);
-		Byte(*GetCode)(selfptr);
 	);
 };
 
@@ -33,26 +34,21 @@ class
 {
 	GENERATED_DESC
 	methods(
-		bool (*KeyPressed)(const struct c_class* self, Byte keycode);
-		struct KeyboardEvent* (*ReadKey)(struct c_class* self);
-		bool (*KeyIsEmpty)(const struct c_class* self);
-		void (*ClearKey)(struct c_class* self);
+		bool (*KeyPressed)(const selfptr, Byte keycode);
+		struct KeyboardEvent* (*ReadKey)(selfptr);
+		void (*ClearKey)(selfptr);
 	// CharRoutines
-		/*Byte (*ReadChar)(struct c_class* self);
-		bool (*CharIsEmpty)(const struct c_class* self);
-		void (*ClearChar)(struct c_class* self);
-		void (*Flush)(struct c_class* self);*/
+		char (*ReadChar)(selfptr);
+		void (*ClearChar)(selfptr);
+		void (*Flush)(selfptr);
 	// Internal
-		void (*OnKeyPressed)(void* self, Byte keycode);
-		void (*OnKeyReleased)(void* self, Byte keycode);
-		//void (*OnChar)(char character);
-		void (*ClearState)(void* self);
+		void (*OnKeyPressed)(selfptr, Byte keycode);
+		void (*OnKeyReleased)(selfptr, Byte keycode);
+		void (*OnChar)(selfptr, char character);
+		void (*ClearState)(selfptr);
 	);
-
-	
-privatev(
 	struct BitField* KeyStates;
-	struct Queue* KeyBuffer;
-	//struct Queue* CharBuffer;
-	);
+
+	struct EventQueue KeyBuffer;
+	struct EventQueue CharBuffer;
 };

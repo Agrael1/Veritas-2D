@@ -7,39 +7,19 @@
 #undef c_class
 #define c_class KeyboardEvent
 
-void TrimBuffer(struct Queue* buffer)
-{
-	
-	if (buffer->Contains + 1 > bufferSize)
-	{
-		void* _proxy = NULL;
-		buffer->method->pop(buffer, &_proxy);
-		delete(_proxy);
-	}
-}
-void ClearBuffer(struct Queue* buffer)
-{
-	while (buffer->Contains)
-	{
-		void* _proxy = NULL;
-		buffer->method->pop(buffer, &_proxy);
-		delete(_proxy);
-	}
-}
-
-bool virtual(IsPress)(selfptr)
+bool virtual(IsPress)(const selfptr)
 {
 	return private.type == Press;
 }
-bool virtual(IsRelease)(selfptr)
+bool virtual(IsRelease)(const selfptr)
 {
 	return private.type == Release;
 }
-bool virtual(IsInvalid)(selfptr)
+bool virtual(IsInvalid)(const selfptr)
 {
 	return private.type == Invalid;
 }
-Byte virtual(GetCode)(selfptr)
+Byte virtual(GetCode)(const selfptr)
 {
 	return private.code;
 }
@@ -69,60 +49,63 @@ ENDCLASSDESC
 
 bool virtual(KeyPressed)(const selfptr, Byte keycode)
 {
-	return private.KeyStates->method->IsSet(private.KeyStates, keycode);
+	return self->KeyStates->method->IsSet(self->KeyStates, keycode);
 }
 struct KeyboardEvent* virtual(ReadKey)(selfptr)
 {
-	if (private.KeyBuffer->Contains > 0u)
-	{
-		struct KeyboardEvent *ep = NULL;
-		private.KeyBuffer->method->pop(private.KeyBuffer, &ep);
-		return ep;
-	}
-	else
-	{
-		return new(KeyboardEvent,Invalid,0);
-	}
-}
-bool virtual(KeyIsEmpty)(const selfptr)
-{
-	return private.KeyBuffer->method->empty(private.KeyBuffer);
+	return self->KeyBuffer.method->Read(&self->KeyBuffer);
 }
 void virtual(ClearKey)(selfptr)
 {
-	private.KeyBuffer->method->clear(private.KeyBuffer);
+	self->KeyBuffer.method->Wipe(&self->KeyBuffer);
 }
 
 // CharRoutines
-//Byte(*ReadChar)(struct c_class* self);
-//bool(*CharIsEmpty)(const struct c_class* self);
-//void(*ClearChar)(struct c_class* self);
-//void(*Flush)(struct c_class* self);
-// Internal
+char _ReadChar(selfptr)
+{
+	return *(char*)self->CharBuffer.method->Read(&self->CharBuffer);
+}
+void _ClearChar(selfptr)
+{
+	self->CharBuffer.method->Wipe(&self->CharBuffer);
+}
+void _Flush(selfptr)
+{
+	_ClearChar(self);
+	virtual(ClearKey)(self);
+}
 
+// Internal
 void _OnKeyPressed(selfptr, Byte keycode)
 {
-	TrimBuffer(private.KeyBuffer);
-	private.KeyStates->method->Set(private.KeyStates, keycode);
-	private.KeyBuffer->method->push(private.KeyBuffer, new(KeyboardEvent, Press, keycode));
+	self->KeyStates->method->Set(self->KeyStates, keycode);
+	void* _p = self->KeyBuffer.method->GetNext(&self->KeyBuffer);
+	construct(_p, KeyboardEvent, Press, keycode);
 }
 void _OnKeyReleased(selfptr, Byte keycode)
 {
-	TrimBuffer(private.KeyBuffer);
-	private.KeyStates->method->Reset(private.KeyStates, keycode);
-	private.KeyBuffer->method->push(private.KeyBuffer, new(KeyboardEvent, Release, keycode));
+	self->KeyStates->method->Reset(self->KeyStates, keycode);
+	void* _p = self->KeyBuffer.method->GetNext(&self->KeyBuffer);
+	construct(_p, KeyboardEvent, Release, keycode);
 }
-//void(*OnChar)(char character);
+void _OnChar(selfptr, char character)
+{
+	char* _p = self->CharBuffer.method->GetNext(&self->KeyBuffer);
+	*_p = character;
+}
 void _ClearState(selfptr)
 {
-	private.KeyStates->method->FullReset(private.KeyStates);
+	self->KeyStates->method->FullReset(self->KeyStates);
 }
 
 constructMethodTable(
 	.KeyPressed = virtual(KeyPressed),
 	.ReadKey = virtual(ReadKey),
-	.KeyIsEmpty = virtual(KeyIsEmpty),
 	.ClearKey = virtual(ClearKey),
+
+	.ReadChar = _ReadChar,
+	.ClearChar = _ClearChar,
+	.Flush = _Flush,
 
 	.OnKeyPressed = _OnKeyPressed,
 	.OnKeyReleased = _OnKeyReleased,
@@ -132,15 +115,16 @@ constructMethodTable(
 Constructor(selfptr, va_list *ap)
 {
 	assignMethodTable(self);
-	private.KeyBuffer = new(Queue, sizeof(void*), bufferSize);
-	private.KeyStates = new(BitField, nKeys, nKeys);
+	self->KeyStates = new(BitField, nKeys, nKeys);
+	construct(&self->KeyBuffer, EventQueue, sizeof(struct KeyboardEvent), bufferSize, sizeof(void*));
+	construct(&self->CharBuffer, EventQueue, sizeof(char), bufferSize, sizeof(char));
 	return self;
 }
 Destructor(selfptr)
 {
-	ClearBuffer(private.KeyBuffer);
-	delete(private.KeyBuffer);
-	delete(private.KeyStates);
+	delete(self->KeyStates);
+	deconstruct(&self->KeyBuffer);
+	deconstruct(&self->CharBuffer);
 	return self;
 }
 ENDCLASSDESC

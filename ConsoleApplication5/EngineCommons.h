@@ -25,6 +25,7 @@ typedef unsingned int MaxInt;
 #define M_PI 3.14159265358979323846
 #define true 1
 #define false 0
+#define nullptr ((void*)0)
 
 #pragma region Automation
 // Easy mangling for method and private tables

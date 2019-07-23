@@ -150,6 +150,9 @@
     <ClCompile Include="Vertex.c">
       <Filter>Файлы исходного кода\Engine\Graphics\Pipeline</Filter>
     </ClCompile>
+    <ClCompile Include="EventQueue.c">
+      <Filter>Файлы исходного кода\Engine\Framework\Containers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Queue.h">
@@ -259,6 +262,9 @@
     </ClInclude>
     <ClInclude Include="Vertex.h">
       <Filter>Заголовочные файлы\Engine\Graphics\Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="EventQueue.h">
+      <Filter>Заголовочные файлы\Engine\Framework\Containers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

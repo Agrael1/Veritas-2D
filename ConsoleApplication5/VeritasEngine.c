@@ -3,36 +3,27 @@
 #include "StringStream.h"
 #include "VeritasEngine.h"
 
-#define EMPTYQUEUE this->Control->kbd.method->KeyIsEmpty(&this->Control->kbd)
-#define ReadEventQueue(event) struct KeyboardEvent* __event_ptr = this->Control->kbd.method->ReadKey(&this->Control->kbd);\
-event = *__event_ptr; delete(__event_ptr)
-
-
 __declspec(thread) char buf[10];
 volatile bool bActive = false;
 
-bool virtual(HandleInputEvents)(void* self, struct KeyboardEvent event)
+bool virtual(HandleInputEvents)(void* self, const struct KeyboardEvent* event)
 {
-	if (event.method->IsPress(&event))
+	if (event->method->IsPress(event))
 	{
-		// check if the event was for the space key
-		if (event.method->GetCode(&event) == VK_ESCAPE)
+		// check if the event was for the escape key
+		if (event->method->GetCode(event) == VK_ESCAPE)
 		{
 			return false;
 		}
 	}
 	return true;
 }
-bool _PassEvents(void* self)
+bool _PassEvents(selfptr)
 {
-	account(self);
-	struct KeyboardEvent event;
-
-	while (!EMPTYQUEUE)
+	struct KeyboardEvent const *event;
+	while ((event = self->Control->kbd.method->ReadKey(&self->Control->kbd))!=nullptr)
 	{
-		// get an event from the queue
-		ReadEventQueue(event);
-		return this->method->HandleInputEvents(this, event);
+		return self->method->HandleInputEvents(self, event);
 	}
 	return true;
 }

@@ -22,7 +22,7 @@ class
 		bool(*OnUserUpdate)(void* self, double fElapsedSeconds);
 		bool(*OnUserDestroy)(void* self);
 		void(*HandleMouse)(void* self, struct Mouse* mouse, double fElapsedTime);
-		bool(*HandleInputEvents)(void* self, struct KeyboardEvent event);
+		bool(*HandleInputEvents)(void* self, const struct KeyboardEvent* event);
 		void(*HandleControls)(void* self, const struct Keyboard* kbd, double fElapsedTime);
 
 		// Internals

@@ -6,8 +6,6 @@
 class 
 {
 	GENERATED_DESC
-	DWord Positions;
-
 	methods(
 		bool(*Any)(selfptr);
 		bool(*IsSet)(selfptr, DWord pos);
@@ -16,5 +14,6 @@ class
 		bool(*FullReset)(selfptr);
 		);
 
+	DWord Positions;
 	MaxInt BitArray[0];
 };

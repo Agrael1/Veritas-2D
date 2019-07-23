@@ -159,6 +159,7 @@
     <ClCompile Include="Control.c" />
     <ClCompile Include="CubeDemo.cpp" />
     <ClCompile Include="DefaultVS.cpp" />
+    <ClCompile Include="EventQueue.c" />
     <ClCompile Include="Exception.c" />
     <ClCompile Include="ColorIndexPS.c" />
     <ClCompile Include="ExperimentalPS.c" />
@@ -186,6 +187,7 @@
     <ClInclude Include="CubeDemo.h" />
     <ClInclude Include="DefaultVS.h" />
     <ClInclude Include="EngineCommons.h" />
+    <ClInclude Include="EventQueue.h" />
     <ClInclude Include="Exception.h" />
     <ClInclude Include="ExperimentalPS.h" />
     <ClInclude Include="Frame.h" />
