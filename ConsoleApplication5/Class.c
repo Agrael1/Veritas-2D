@@ -44,7 +44,6 @@ void* new(const void* _class,...){
 	va_end(ap);
 	return p;							//returns a pointer to class pointer
 }
-
 void delete(void* self)
 {
 	const struct Class** cp = self;		// finds that little bastard (class pointer poiter)
@@ -52,7 +51,6 @@ void delete(void* self)
 		self = (*cp)->dtor(self);
 	free(self);
 }
-
 
 unsigned int sizeOf(const void* _self)
 {

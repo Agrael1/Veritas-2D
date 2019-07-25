@@ -164,6 +164,7 @@
     <ClCompile Include="ColorIndexPS.c" />
     <ClCompile Include="ExperimentalPS.c" />
     <ClCompile Include="Frame.c" />
+    <ClCompile Include="Icosphere.c" />
     <ClCompile Include="Keyboard.c" />
     <ClCompile Include="EntryMain.c" />
     <ClCompile Include="Maze3D.c" />
@@ -171,6 +172,7 @@
     <ClCompile Include="Mouse.c" />
     <ClCompile Include="Pipeline.c" />
     <ClCompile Include="StringStream.c" />
+    <ClCompile Include="Test.c" />
     <ClCompile Include="VeritasEngine.c" />
     <ClCompile Include="Vertex.c" />
     <ClCompile Include="Window.c" />
@@ -192,6 +194,7 @@
     <ClInclude Include="Frame.h" />
     <ClInclude Include="BitStack.h" />
     <ClInclude Include="Icosahedron.h" />
+    <ClInclude Include="Icosphere.h" />
     <ClInclude Include="IndexedTriangleList.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="Light.h" />
@@ -204,6 +207,7 @@
     <ClInclude Include="Pipeline.h" />
     <ClInclude Include="Standard.h" />
     <ClInclude Include="StringStream.h" />
+    <ClInclude Include="Test.h" />
     <ClInclude Include="VeritasEngine.h" />
     <ClInclude Include="VeritasMath.h" />
     <ClInclude Include="Vertex.h" />

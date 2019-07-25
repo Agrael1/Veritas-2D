@@ -82,6 +82,12 @@
     <Filter Include="Файлы исходного кода\Engine\Graphics\Shading">
       <UniqueIdentifier>{785ca2ad-4eba-4049-a57d-767dbf6fc0a3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Заголовочные файлы\Engine\Graphics\Scenes">
+      <UniqueIdentifier>{0cfd3d6b-5932-447c-ac5d-7eb6a29a2b7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\Engine\Graphics\Scenes">
+      <UniqueIdentifier>{e569dfc9-eaf8-4823-9b79-327c35dddc99}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MazeGen.c">
@@ -149,6 +155,12 @@
     </ClCompile>
     <ClCompile Include="EventQueue.c">
       <Filter>Файлы исходного кода\Engine\Framework\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="Test.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Icosphere.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\Scenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -259,6 +271,12 @@
     </ClInclude>
     <ClInclude Include="EventQueue.h">
       <Filter>Заголовочные файлы\Engine\Framework\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Icosphere.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Test.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

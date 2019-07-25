@@ -1,10 +1,15 @@
 #include "StringStream.h"
 #include "VeritasMath.h"
 #include "Class.h"
-#include "Icosahedron.h"
+#include "Icosphere.h"
 #include "CubeDemo.h"
 #include "Color.scheme"
+#include <stdlib.h>
 
+float GetRand(float min, float max)
+{
+	return ((float)rand() / (float)(RAND_MAX)) * max - min;
+}
 
 bool virtual(HandleInputEvents)(void* self, const KeyboardEvent* event)
 {
@@ -67,7 +72,19 @@ bool virtual(OnUserCreate)(void* self)
 	base.Window->method->SetPalette(base.Window, palette);
 
 	this->bStop = false;
-	this->model = Icosahedron_Make();
+	srand((unsigned int)time(NULL));
+	
+	this->model = new(Icosphere,
+		GetRand(0.1f, 5.0f),
+		GetRand(0.1f, 5.0f),
+		GetRand(0.1f, 5.0f),
+		GetRand(0.1f, 5.0f),
+		GetRand(0.1f, 5.0f),
+		GetRand(0.1f, 5.0f),
+		GetRand(0.1f, 5.0f),
+		GetRand(0.1f, 5.0f),
+		GetRand(0.1f, 5.0f),
+		GetRand(0.1f, 5.0f));
 	
 	// Setting up projection matrix and camera
 	base.Output->projection = VMMatrixPerspectiveLH(1.0f, (float)base.Output->nFrameHeight / (float)base.Output->nFrameLength, 0.5f, 40.0f);
@@ -84,29 +101,20 @@ bool virtual(OnUserUpdate)(void* self, double fElapsedSeconds)
 
 	base.Output->camera = this->pCam->method->GetViewMatrix(this->pCam);
 	base.Output->method->BeginFrame(base.Output, ' ', BG_Sky);
-	
-	this->fTheta += (float)fElapsedSeconds;
 
-	// Calculate rotation matrix and draw
-	VMMATRIX Project = VMMatrixRotationRollPitchYaw(-this->fTheta, 0, this->fTheta);
-	this->pPl->Transformation = VMMatrixMultiply(Project, &base.Output->camera);
-	this->pPl->method->Draw(this->pPl, &this->model);
+	this->model->_base.method->Update(this->model, (float)fElapsedSeconds);
 
-
-	Project = VMMatrixRotationRollPitchYaw(this->fTheta, 0, this->fTheta);
-	Project = VMMatrixMultiply(VMMatrixTranslation(0.0f, 0.0f, 5.0f), &Project);
-	this->pPl->Transformation = VMMatrixMultiply(Project, &base.Output->camera);
-	this->pPl->method->Draw(this->pPl, &this->model);
-
+	this->pPl->Transformation = VMMatrixMultiply(this->model->_base.method->GetTransformXM(this->model), &base.Output->camera);
+	this->pPl->method->Draw(this->pPl, &this->model->model);
 	return true;
 }
 bool virtual(OnUserDestroy)(void* self)
 {
 	account(self);
-	if (this->model.indices)
-		free(this->model.indices);
-	if (this->model.vertices)
-		free(this->model.vertices);
+	if (this->model->model.indices)
+		free(this->model->model.indices);
+	if (this->model->model.vertices)
+		free(this->model->model.vertices);
 	if(this->pCam)
 		delete(this->pCam);
 	if (this->pPl)

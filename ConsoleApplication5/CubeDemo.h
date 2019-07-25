@@ -17,5 +17,5 @@ class
 	struct Pipeline* pPl;
 
 	bool bStop;
-	struct IndexedTriangleList model;
+	struct Icosphere* model;
 };
