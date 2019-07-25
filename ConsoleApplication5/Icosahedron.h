@@ -3,25 +3,25 @@
 #include <memory.h>
 #include <math.h>
 
-static struct IndexedTriangleList Icosahedron_Make()
+static struct IndexedTriangleList Icosahedron_Make(size_t VSize)
 {
 	const float t = (1.0f + sqrtf(5.0f)) / 2.0f;
 
-	Vertex* vertices = malloc(12*sizeof(Vertex));
-	vertices[0].pos = (VMFLOAT3) { -1.0f, t, 0.0f }; // 0
-	vertices[1].pos = (VMFLOAT3) { 1.0f, t, 0.0f }; // 1
-	vertices[2].pos = (VMFLOAT3) { -1.0f, -t, 0.0f }; // 2
-	vertices[3].pos = (VMFLOAT3) { 1.0f, -t, -0.0f }; // 3
-			  
-	vertices[4].pos = (VMFLOAT3) { 0.0f, -1.0f, t }; // 4
-	vertices[5].pos = (VMFLOAT3) { 0.0f, 1.0f, t }; // 5
-	vertices[6].pos = (VMFLOAT3) { 0.0f, -1.0f, -t }; // 6
-	vertices[7].pos = (VMFLOAT3) { 0.0f, 1.0f, -t }; // 7
-						  
-	vertices[8].pos = (VMFLOAT3) { t, 0.0f, -1.0f }; // 8
-	vertices[9].pos = (VMFLOAT3) { t, 0.0f, 1.0f }; // 9
-	vertices[10].pos = (VMFLOAT3) { -t, 0.0f, -1.0f }; // 10
-	vertices[11].pos = (VMFLOAT3) { -t, 0.0f, 1.0f }; // 11
+	void* vertices = malloc(12 * VSize);
+	memcpy_s((char*)vertices + 0 * VSize, VSize, (float[]) { -1.0f, t, 0.0f }, 3 * sizeof(float)); // 0
+	memcpy_s((char*)vertices + 1 * VSize, VSize, (float[]) { 1.0f, t, 0.0f }, 3 * sizeof(float)); // 1
+	memcpy_s((char*)vertices + 2 * VSize, VSize, (float[]) { -1.0f, -t, 0.0f }, 3 * sizeof(float)); // 2
+	memcpy_s((char*)vertices + 3 * VSize, VSize, (float[]) { 1.0f, -t, -0.0f }, 3 * sizeof(float)); // 3
+	
+	memcpy_s((char*)vertices + 4 * VSize, VSize, (float[]) { 0.0f, -1.0f, t }, 3 * sizeof(float)); // 4
+	memcpy_s((char*)vertices + 5 * VSize, VSize, (float[]) { 0.0f, 1.0f, t }, 3 * sizeof(float)); // 5
+	memcpy_s((char*)vertices + 6 * VSize, VSize, (float[]) { 0.0f, -1.0f, -t }, 3 * sizeof(float)); // 6
+	memcpy_s((char*)vertices + 7 * VSize, VSize, (float[]) { 0.0f, 1.0f, -t }, 3 * sizeof(float)); // 7
+	
+	memcpy_s((char*)vertices + 8 * VSize, VSize, (float[]) { t, 0.0f, -1.0f }, 3 * sizeof(float)); // 8
+	memcpy_s((char*)vertices + 9 * VSize, VSize, (float[]) { t, 0.0f, 1.0f }, 3 * sizeof(float)); // 9
+	memcpy_s((char*)vertices + 10 * VSize, VSize, (float[]) { -t, 0.0f, -1.0f }, 3 * sizeof(float)); // 10
+	memcpy_s((char*)vertices + 11 * VSize, VSize, (float[]) { -t, 0.0f, 1.0f }, 3 * sizeof(float)); // 11
 
 	size_t* indices = malloc(60 * sizeof(size_t));
 	memcpy(indices, (size_t[]) {
@@ -33,6 +33,7 @@ static struct IndexedTriangleList Icosahedron_Make()
 
 	struct IndexedTriangleList _ret = { 0 };
 	_ret.vertices = vertices;
+	_ret.VSize = VSize;
 	_ret.indices = indices;
 	_ret.numVerts = 12;
 	_ret.numInds = 60;
@@ -41,17 +42,17 @@ static struct IndexedTriangleList Icosahedron_Make()
 }
 static struct IndexedTriangleList Icosahedron_MakeIndependent()
 {
-	struct IndexedTriangleList temp = Icosahedron_Make();
+	//struct IndexedTriangleList temp = Icosahedron_Make(4);
 
-	Vertex* ReVertices = malloc(temp.numInds * sizeof(Vertex));
-	unsigned j = 0;
-	for (auto i = 0; i<temp.numInds;i++)
-	{
-		ReVertices[j++] = temp.vertices[temp.indices[i]];
-		temp.indices[i] = i;
-	}
-	free(temp.vertices);
-	temp.vertices = ReVertices;
+	//Vertex* ReVertices = malloc(temp.numInds * sizeof(Vertex));
+	//unsigned j = 0;
+	//for (auto i = 0; i<temp.numInds;i++)
+	//{
+	//	ReVertices[j++] = temp.vertices[temp.indices[i]];
+	//	temp.indices[i] = i;
+	//}
+	//free(temp.vertices);
+	//temp.vertices = ReVertices;
 
-	return temp;
+	//return temp;
 };

@@ -147,9 +147,6 @@
     <ClCompile Include="ExperimentalPS.c">
       <Filter>Файлы исходного кода\Engine\Graphics\Shading</Filter>
     </ClCompile>
-    <ClCompile Include="DefaultVS.cpp">
-      <Filter>Файлы исходного кода\Engine\Graphics\Shading</Filter>
-    </ClCompile>
     <ClCompile Include="Vertex.c">
       <Filter>Файлы исходного кода\Engine\Graphics\Pipeline</Filter>
     </ClCompile>
@@ -161,6 +158,9 @@
     </ClCompile>
     <ClCompile Include="Icosphere.c">
       <Filter>Файлы исходного кода\Engine\Graphics\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="DefaultVS.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\Shading</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -5,6 +5,11 @@
 
 #define c_class Icosphere
 
+typedef struct
+{
+	CVMVECTOR pos;
+}virtual(Vertex);
+
 class
 {
 	inherits(TestObject);

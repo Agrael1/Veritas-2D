@@ -2,11 +2,11 @@
 #include "DefaultVS.h"
 #include "Class.h"
 
-void virtual(Apply)(selfptr, VMVECTOR* _out, struct IndexedTriangleList* _in)
+void virtual(Apply)(selfptr, void* _out, struct IndexedTriangleList* _in)
 {
 	for (int i = 0; i < _in->numVerts; i++)
 	{
-		_out[i] = VMVector3TransformCoord(VMLoadFloat3(&_in->vertices[i].pos), self->Transformation);
+		((Vertex_Icosphere*)_out)[i].pos.v = VMVector3TransformCoord(((Vertex_Icosphere*)_in->vertices)[i].pos.v, self->Transformation);
 	}
 }
 

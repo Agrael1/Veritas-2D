@@ -1,6 +1,8 @@
 #pragma once
+#include "Icosphere.h"
 #include "VeritasMath.h"
 #include "EngineCommons.h"
+
 
 
 #define c_class DefaultVS
