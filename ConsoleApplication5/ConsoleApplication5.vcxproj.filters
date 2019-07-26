@@ -162,6 +162,9 @@
     <ClCompile Include="DefaultVS.c">
       <Filter>Файлы исходного кода\Engine\Graphics\Shading</Filter>
     </ClCompile>
+    <ClCompile Include="Light.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\Shading</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BitField.h">
@@ -277,6 +280,9 @@
     </ClInclude>
     <ClInclude Include="Test.h">
       <Filter>Заголовочные файлы\Engine\Graphics\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="FlatLightES.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Shading</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

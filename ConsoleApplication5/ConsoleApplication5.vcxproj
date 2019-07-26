@@ -167,6 +167,7 @@
     <ClCompile Include="Icosphere.c" />
     <ClCompile Include="Keyboard.c" />
     <ClCompile Include="EntryMain.c" />
+    <ClCompile Include="Light.c" />
     <ClCompile Include="Maze3D.c" />
     <ClCompile Include="MazeGen.c" />
     <ClCompile Include="Mouse.c" />
@@ -191,6 +192,7 @@
     <ClInclude Include="EventQueue.h" />
     <ClInclude Include="Exception.h" />
     <ClInclude Include="ExperimentalPS.h" />
+    <ClInclude Include="FlatLightES.h" />
     <ClInclude Include="Frame.h" />
     <ClInclude Include="BitStack.h" />
     <ClInclude Include="Icosahedron.h" />

@@ -152,26 +152,18 @@ void _AssembleTriangles(selfptr, const VMVECTOR* Verts, const size_t* indices, s
 void _ProcessVertices(selfptr, struct IndexedTriangleList* trilist)
 {
 	account(self);
-	void* VertsOut;
 	size_t memstore = trilist->VSize*trilist->numVerts;
-	if (memstore <= _ALLOCA_S_THRESHOLD)
-	{
-		VertsOut = alloca(memstore);			// local allocation on stack
-	}
-	else
-	{
-		VertsOut = malloc(memstore);
-	}
+	void* VertsOut = _malloca(memstore);			// local allocation on stack
 
 	if (VertsOut)
 	{
 		this->VS->Transformation = self->Transformation;
 
-		// Transfor all the verts accordingly
+		// Transform all the verts accordingly
 		this->VS->method->Apply(this->VS, VertsOut, trilist);
-
 		_AssembleTriangles(self, VertsOut, trilist->indices, trilist->numInds);
 	}
+	_freea(VertsOut);
 }
 
 // Future thread ops, now the const call
