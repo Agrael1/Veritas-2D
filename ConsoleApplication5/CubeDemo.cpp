@@ -48,6 +48,7 @@ bool virtual(OnUserCreate)(void* self)
 	this->pCam = new(Camera); // Create an instance of a camera
 	this->pPl = new(Pipeline, base.Output);
 
+
 	// using DB16 - DawnBringer's 16 Col Palette v1.0
 	// http://pixeljoint.com/forum/forum_posts.asp?TID=12795
 	COLORREF palette[16] = {
@@ -86,6 +87,7 @@ bool virtual(OnUserCreate)(void* self)
 		GetRand(0.1f, 5.0f),
 		GetRand(0.1f, 5.0f));
 	
+	this->pPl->VS = this->model->VS;
 	// Setting up projection matrix and camera
 	base.Output->projection = VMMatrixPerspectiveLH(1.0f, (float)base.Output->nFrameHeight / (float)base.Output->nFrameLength, 0.5f, 40.0f);
 	base.Output->world = VMMatrixIdentity();
@@ -102,7 +104,6 @@ bool virtual(OnUserUpdate)(void* self, double fElapsedSeconds)
 	base.Output->camera = this->pCam->method->GetViewMatrix(this->pCam);
 	base.Output->method->BeginFrame(base.Output, ' ', BG_Sky);
 
-	this->pPl->VS = this->model->VS;
 	this->model->_base.method->Update(this->model, (float)fElapsedSeconds);
 
 	this->model->VS->Transformation = VMMatrixMultiply(this->model->_base.method->GetTransformXM(this->model), &base.Output->camera);

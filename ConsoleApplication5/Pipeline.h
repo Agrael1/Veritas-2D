@@ -8,7 +8,7 @@
 
 class
 {
-	const void* _class;
+	GENERATED_DESC
 	methods(
 		void(*Draw)(selfptr, struct IndexedTriangleList* trilist);
 	);
