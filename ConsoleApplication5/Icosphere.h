@@ -1,5 +1,6 @@
 #pragma once
 #include "Icosahedron.h"
+#include "DefaultVS.h"
 #include "Test.h"
 #include "EngineCommons.h"
 
@@ -13,5 +14,6 @@ typedef struct
 class
 {
 	inherits(TestObject);
+	struct DefaultVS* VS;
 	struct IndexedTriangleList model;
 };

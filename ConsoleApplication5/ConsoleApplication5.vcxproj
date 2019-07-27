@@ -163,6 +163,7 @@
     <ClCompile Include="Exception.c" />
     <ClCompile Include="ColorIndexPS.c" />
     <ClCompile Include="ExperimentalPS.c" />
+    <ClCompile Include="FlatLightGS.c" />
     <ClCompile Include="Frame.c" />
     <ClCompile Include="Icosphere.c" />
     <ClCompile Include="Keyboard.c" />
@@ -192,7 +193,8 @@
     <ClInclude Include="EventQueue.h" />
     <ClInclude Include="Exception.h" />
     <ClInclude Include="ExperimentalPS.h" />
-    <ClInclude Include="FlatLightES.h" />
+    <ClInclude Include="FlatLightGS.h" />
+    <ClInclude Include="FlatPS.h" />
     <ClInclude Include="Frame.h" />
     <ClInclude Include="BitStack.h" />
     <ClInclude Include="Icosahedron.h" />
@@ -207,6 +209,7 @@
     <ClInclude Include="New.h" />
     <ClInclude Include="ColorIndexPS.h" />
     <ClInclude Include="Pipeline.h" />
+    <ClInclude Include="VSBase.h" />
     <ClInclude Include="Standard.h" />
     <ClInclude Include="StringStream.h" />
     <ClInclude Include="Test.h" />

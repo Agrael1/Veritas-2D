@@ -1,8 +1,17 @@
-#include "DefaultVS.h"
+#include "VSBase.h"
 #include "ColorIndexPS.h"
+#include "FlatLightGS.h"
 #include "Standard.h"
 #include "Pipeline.h"
 #include "Class.h"
+
+typedef struct
+{
+	size_t SV_PrimID;
+	VMVECTOR SV_PrimN;
+}IAOut;
+
+IAOut ia;
 
 inline void DrawFlatTriangle(selfptr,
 	FVMVECTOR* it0,
@@ -11,10 +20,10 @@ inline void DrawFlatTriangle(selfptr,
 	FVMVECTOR* dv0,
 	FVMVECTOR* dv1,
 	VMVECTOR itEdge1,
-	size_t PrimID)
+	CHAR_INFO GSOut)
 {
 	account(self);
-	CHAR_INFO ret = self->PS->method->Apply(self->PS, PrimID);
+	CHAR_INFO ret = GSOut;
 	
 	// create edge interpolant for left edge (always v0)
 	VMVECTOR itEdge0 = *it0;
@@ -55,7 +64,7 @@ inline void DrawFlatTriangle(selfptr,
 			{
 				// invoke pixel shader with interpolated vertex attributes
 				// and use result to set the pixel color on the screen
-				this->gfx->method->PrintFrame(this->gfx, x, y, ret);
+				this->gfx->method->PrintFrame(this->gfx, x, y, self->PS->method->Apply(self->PS, 1));
 			}
 		}
 	}
@@ -64,7 +73,7 @@ inline void DrawFlatTriangle(selfptr,
 inline void DrawFlatTopTriangle2(selfptr, FVMVECTOR* it0,
 	FVMVECTOR* it1,
 	FVMVECTOR* it2,
-	size_t PrimID)
+	CHAR_INFO GSOut)
 {
 	// calulcate dVertex / dy
 	// change in interpolant for every 1 change in y
@@ -73,13 +82,12 @@ inline void DrawFlatTopTriangle2(selfptr, FVMVECTOR* it0,
 	FVMVECTOR dit1 = VMVectorScale(VMVectorSubtract(*it2, *it1), delta_y);
 
 	// call the flat triangle render routine, right edge interpolant is it1
-	DrawFlatTriangle(self, it0, it1, it2, &dit0, &dit1, *it1, PrimID);
+	DrawFlatTriangle(self, it0, it1, it2, &dit0, &dit1, *it1, GSOut);
 }
-// does flat *BOTTOM* tri-specific calculations and calls DrawFlatTriangle
 inline void DrawFlatBottomTriangle2(selfptr, FVMVECTOR* it0,
 	FVMVECTOR* it1,
 	FVMVECTOR* it2,
-	size_t PrimID)
+	CHAR_INFO GSOut)
 {
 	// calulcate dVertex / dy
 	// change in interpolant for every 1 change in y
@@ -88,10 +96,10 @@ inline void DrawFlatBottomTriangle2(selfptr, FVMVECTOR* it0,
 	FVMVECTOR dit1 = VMVectorScale(VMVectorSubtract(*it2, *it0), delta_y);
 
 	// call the flat triangle render routine, right edge interpolant is it0
-	DrawFlatTriangle(self, it0, it1, it2, &dit0, &dit1, *it0, PrimID);
+	DrawFlatTriangle(self, it0, it1, it2, &dit0, &dit1, *it0, GSOut);
 }
 
-void _DrawTriangle(selfptr, VMVECTOR* v0, VMVECTOR* v1, VMVECTOR* v2, size_t PrimID)
+void _DrawTriangle(selfptr, VMVECTOR* v0, VMVECTOR* v1, VMVECTOR* v2, CHAR_INFO GSOut)
 {
 	if (v1->m128_f32[1] < v0->m128_f32[1]) swapptr(&v0, &v1);
 	if (v2->m128_f32[1] < v1->m128_f32[1]) swapptr(&v1, &v2);
@@ -100,12 +108,12 @@ void _DrawTriangle(selfptr, VMVECTOR* v0, VMVECTOR* v1, VMVECTOR* v2, size_t Pri
 	if (v0->m128_f32[1] == v1->m128_f32[1])	// Flat Top
 	{
 		if (v1->m128_f32[0] < v0->m128_f32[0]) swapptr(&v0, &v1);
-		DrawFlatTopTriangle2(self, v0, v1, v2, PrimID);
+		DrawFlatTopTriangle2(self, v0, v1, v2, GSOut);
 	}
 	if (v1->m128_f32[1] == v2->m128_f32[1])	// Flat Bottom
 	{
 		if (v2->m128_f32[0] < v1->m128_f32[0]) swapptr(&v1, &v2);
-		DrawFlatBottomTriangle2(self, v0, v1, v2, PrimID);
+		DrawFlatBottomTriangle2(self, v0, v1, v2, GSOut);
 	}
 	else // General
 	{
@@ -116,52 +124,59 @@ void _DrawTriangle(selfptr, VMVECTOR* v0, VMVECTOR* v1, VMVECTOR* v2, size_t Pri
 
 		if (v1->m128_f32[0] < vi.m128_f32[0])
 		{
-			DrawFlatBottomTriangle2(self, v0, v1, &vi, PrimID);
-			DrawFlatTopTriangle2(self, v1, &vi, v2, PrimID);
+			DrawFlatBottomTriangle2(self, v0, v1, &vi, GSOut);
+			DrawFlatTopTriangle2(self, v1, &vi, v2, GSOut);
 		}
 		else
 		{
-			DrawFlatBottomTriangle2(self, v0, &vi, v1, PrimID);
-			DrawFlatTopTriangle2(self, &vi, v1, v2, PrimID);
+			DrawFlatBottomTriangle2(self, v0, &vi, v1, GSOut);
+			DrawFlatTopTriangle2(self, &vi, v1, v2, GSOut);
 		}
 	}
 }
-void _ProcessTriangle(selfptr, VMVECTOR* v0, VMVECTOR* v1, VMVECTOR* v2, size_t primID)
+void _ProcessTriangle(selfptr, VMVECTOR* v0, VMVECTOR* v1, VMVECTOR* v2)
 {
 	*v0 = VMVector3Project(*v0, 0.0f, 0.0f, self->gfx->nFrameLength, self->gfx->nFrameHeight, 0.0f, 1.0f, self->gfx->world, &self->gfx->projection, &self->gfx->world);
 	*v1 = VMVector3Project(*v1, 0.0f, 0.0f, self->gfx->nFrameLength, self->gfx->nFrameHeight, 0.0f, 1.0f, self->gfx->world, &self->gfx->projection, &self->gfx->world);
 	*v2 = VMVector3Project(*v2, 0.0f, 0.0f, self->gfx->nFrameLength, self->gfx->nFrameHeight, 0.0f, 1.0f, self->gfx->world, &self->gfx->projection, &self->gfx->world);
-	_DrawTriangle(self, v0, v1, v2, primID);
+	_DrawTriangle(self, v0, v1, v2, self->GS->method->Apply(ia.SV_PrimN));
 }
-void _AssembleTriangles(selfptr, const VMVECTOR* Verts, const size_t* indices, size_t indN)
+void _AssembleTriangles(selfptr, const VMVECTOR* Verts, size_t VSize, const size_t* indices, size_t indN)
 {
 	for (size_t i = 0; i < indN; i+=3)
 	{
-		VMVECTOR v0 = Verts[indices[i]];
-		VMVECTOR v1 = Verts[indices[i+1]];
-		VMVECTOR v2 = Verts[indices[i+2]];
+		VMVECTOR v0p = *(Verts + indices[i]);
+		VMVECTOR v1p = *(Verts+indices[i+1]);
+		VMVECTOR v2p = *(Verts+indices[i+2]);
 
-		VMVECTOR Normal = VMVector3Dot(VMVector3Cross(VMVectorSubtract(v2, v0), VMVectorSubtract(v1, v0)), v0);
+		ia.SV_PrimID = i/3;
+		ia.SV_PrimN = VMVector3Cross(VMVectorSubtract(v2p, v0p), VMVectorSubtract(v1p, v0p));
+
+		VMVECTOR Normal = VMVector3Dot(ia.SV_PrimN, v0p);
 		// Culling by normal
 		if (Normal.m128_f32[0] >= 0.0f)
 		{
-			_ProcessTriangle(self, &v0, &v1, &v2, i);
+			_ProcessTriangle(self, &v0p, &v1p, &v2p);
 		}
 	}
 }
 void _ProcessVertices(selfptr, struct IndexedTriangleList* trilist)
 {
 	account(self);
-	size_t memstore = trilist->VSize*trilist->numVerts;
+	if (!this->VS)
+	{
+		_AssembleTriangles(self, trilist->vertices, trilist->VSize, trilist->indices, trilist->numInds);
+		return;
+	}
+		
+	size_t memstore = trilist->VSize * trilist->numVerts;
 	void* VertsOut = _malloca(memstore);			// local allocation on stack
 
 	if (VertsOut)
 	{
-		this->VS->Transformation = self->Transformation;
-
 		// Transform all the verts accordingly
-		this->VS->method->Apply(this->VS, VertsOut, trilist);
-		_AssembleTriangles(self, VertsOut, trilist->indices, trilist->numInds);
+		this->VS->Apply(this->VS, VertsOut, trilist);
+		_AssembleTriangles(self, VertsOut, trilist->VSize, trilist->indices, trilist->numInds);
 	}
 	_freea(VertsOut);
 }
@@ -180,7 +195,7 @@ Constructor(selfptr, va_list *ap)
 	assignMethodTable(self);
 	self->gfx = va_arg(*ap, struct Frame*);
 	self->PS = new(ColorIndexPS);
-	self->VS = new(DefaultVS);
+	self->GS = new(FlatLightGS);
 	return self;
 }
 Destructor(selfptr)

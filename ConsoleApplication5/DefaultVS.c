@@ -1,22 +1,24 @@
+#include "Icosphere.h"
 #include "IndexedTriangleList.h"
 #include "DefaultVS.h"
 #include "Class.h"
 
-void virtual(Apply)(selfptr, void* _out, struct IndexedTriangleList* _in)
+#undef c_class
+#define c_class DefaultVS
+
+void virtual(Apply)(void* self, void* _out, struct IndexedTriangleList* _in)
 {
+	account(self);
 	for (int i = 0; i < _in->numVerts; i++)
 	{
-		((Vertex_Icosphere*)_out)[i].pos.v = VMVector3TransformCoord(((Vertex_Icosphere*)_in->vertices)[i].pos.v, self->Transformation);
+		((Vertex_Icosphere*)_out)[i].pos.v = VMVector3TransformCoord(((Vertex_Icosphere*)_in->vertices)[i].pos.v, this->Transformation);
 	}
 }
 
-constructMethodTable(
-	.Apply = virtual(Apply)
-);
-
 Constructor(selfptr, va_list *ap)
 {
-	assignMethodTable(self);
+	account(self);
+	base.Apply = virtual(Apply);
 	self->Transformation = VMMatrixIdentity();
 	return self;
 }

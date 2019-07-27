@@ -88,6 +88,9 @@
     <Filter Include="Файлы исходного кода\Engine\Graphics\Scenes">
       <UniqueIdentifier>{e569dfc9-eaf8-4823-9b79-327c35dddc99}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Заголовочные файлы\Engine\Graphics\Shading\FlatLight">
+      <UniqueIdentifier>{dadd845a-a2cd-469f-99af-36b478ffbc2c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MazeGen.c">
@@ -163,6 +166,9 @@
       <Filter>Файлы исходного кода\Engine\Graphics\Shading</Filter>
     </ClCompile>
     <ClCompile Include="Light.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\Shading</Filter>
+    </ClCompile>
+    <ClCompile Include="FlatLightGS.c">
       <Filter>Файлы исходного кода\Engine\Graphics\Shading</Filter>
     </ClCompile>
   </ItemGroup>
@@ -266,9 +272,6 @@
     <ClInclude Include="ExperimentalPS.h">
       <Filter>Заголовочные файлы\Engine\Graphics\Shading</Filter>
     </ClInclude>
-    <ClInclude Include="DefaultVS.h">
-      <Filter>Заголовочные файлы\Engine\Graphics\Shading</Filter>
-    </ClInclude>
     <ClInclude Include="Vertex.h">
       <Filter>Заголовочные файлы\Engine\Graphics\Pipeline</Filter>
     </ClInclude>
@@ -281,7 +284,16 @@
     <ClInclude Include="Test.h">
       <Filter>Заголовочные файлы\Engine\Graphics\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="FlatLightES.h">
+    <ClInclude Include="FlatLightGS.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Shading\FlatLight</Filter>
+    </ClInclude>
+    <ClInclude Include="DefaultVS.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Shading\FlatLight</Filter>
+    </ClInclude>
+    <ClInclude Include="FlatPS.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Shading\FlatLight</Filter>
+    </ClInclude>
+    <ClInclude Include="VSBase.h">
       <Filter>Заголовочные файлы\Engine\Graphics\Shading</Filter>
     </ClInclude>
   </ItemGroup>
