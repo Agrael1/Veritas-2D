@@ -78,12 +78,12 @@ typedef struct
 	float w;
 }VMFLOAT4;
 
-// Vector with coordinates
+// Standardized Vector
 typedef union
 {
 	VMFLOAT4 c;
 	VMVECTOR v;
-}CVMVECTOR;
+}SVMVECTOR;
 
 typedef struct
 {

@@ -9,7 +9,7 @@ class
 	GENERATED_DESC
 	struct
 	{
-		CVMVECTOR dir;
+		SVMVECTOR dir;
 		DWord diffuse;
 		DWord ambientForce;
 	}LightCBuf;

@@ -11,5 +11,5 @@ class
 	methods(
 		int x;
 	);
-	CVMVECTOR pos;
+	SVMVECTOR pos;
 };

@@ -105,9 +105,10 @@ bool virtual(OnUserUpdate)(void* self, double fElapsedSeconds)
 	base.Output->method->BeginFrame(base.Output, ' ', BG_Sky);
 
 	this->model->_base.method->Update(this->model, (float)fElapsedSeconds);
-
-	this->model->VS->Transformation = VMMatrixMultiply(this->model->_base.method->GetTransformXM(this->model), &base.Output->camera);
+	VMMATRIX Transformation = VMMatrixMultiply(this->model->_base.method->GetTransformXM(this->model), &base.Output->camera);
+	this->model->VS->ModelViewProj = VMMatrixMultiply(Transformation, &base.Output->projection);
 	this->pPl->method->Draw(this->pPl, &this->model->model);
+
 	return true;
 }
 bool virtual(OnUserDestroy)(void* self)

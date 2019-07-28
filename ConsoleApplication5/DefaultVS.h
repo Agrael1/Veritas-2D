@@ -8,5 +8,5 @@
 class
 {
 	inherits(VSBase);
-	VMMATRIX Transformation;
+	VMMATRIX ModelViewProj;
 };

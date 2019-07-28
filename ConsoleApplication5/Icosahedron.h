@@ -8,20 +8,20 @@ static struct IndexedTriangleList Icosahedron_Make(size_t VSize)
 	const float t = (1.0f + sqrtf(5.0f)) / 2.0f;
 
 	void* vertices = malloc(12 * VSize);
-	memcpy_s((char*)vertices + 0 * VSize, VSize, (float[]) { -1.0f, t, 0.0f }, 3 * sizeof(float)); // 0
-	memcpy_s((char*)vertices + 1 * VSize, VSize, (float[]) { 1.0f, t, 0.0f }, 3 * sizeof(float)); // 1
-	memcpy_s((char*)vertices + 2 * VSize, VSize, (float[]) { -1.0f, -t, 0.0f }, 3 * sizeof(float)); // 2
-	memcpy_s((char*)vertices + 3 * VSize, VSize, (float[]) { 1.0f, -t, -0.0f }, 3 * sizeof(float)); // 3
+	memcpy_s((char*)vertices + 0 * VSize, VSize, (float[]) { -1.0f, t, 0.0f , 1.0f }, 4 * sizeof(float)); // 0
+	memcpy_s((char*)vertices + 1 * VSize, VSize, (float[]) { 1.0f, t, 0.0f, 1.0f }, 4 * sizeof(float)); // 1
+	memcpy_s((char*)vertices + 2 * VSize, VSize, (float[]) { -1.0f, -t, 0.0f, 1.0f }, 4 * sizeof(float)); // 2
+	memcpy_s((char*)vertices + 3 * VSize, VSize, (float[]) { 1.0f, -t, -0.0f, 1.0f }, 4 * sizeof(float)); // 3
 	
-	memcpy_s((char*)vertices + 4 * VSize, VSize, (float[]) { 0.0f, -1.0f, t }, 3 * sizeof(float)); // 4
-	memcpy_s((char*)vertices + 5 * VSize, VSize, (float[]) { 0.0f, 1.0f, t }, 3 * sizeof(float)); // 5
-	memcpy_s((char*)vertices + 6 * VSize, VSize, (float[]) { 0.0f, -1.0f, -t }, 3 * sizeof(float)); // 6
-	memcpy_s((char*)vertices + 7 * VSize, VSize, (float[]) { 0.0f, 1.0f, -t }, 3 * sizeof(float)); // 7
+	memcpy_s((char*)vertices + 4 * VSize, VSize, (float[]) { 0.0f, -1.0f, t, 1.0f }, 4 * sizeof(float)); // 4
+	memcpy_s((char*)vertices + 5 * VSize, VSize, (float[]) { 0.0f, 1.0f, t, 1.0f }, 4 * sizeof(float)); // 5
+	memcpy_s((char*)vertices + 6 * VSize, VSize, (float[]) { 0.0f, -1.0f, -t, 1.0f }, 4 * sizeof(float)); // 6
+	memcpy_s((char*)vertices + 7 * VSize, VSize, (float[]) { 0.0f, 1.0f, -t, 1.0f }, 4 * sizeof(float)); // 7
 	
-	memcpy_s((char*)vertices + 8 * VSize, VSize, (float[]) { t, 0.0f, -1.0f }, 3 * sizeof(float)); // 8
-	memcpy_s((char*)vertices + 9 * VSize, VSize, (float[]) { t, 0.0f, 1.0f }, 3 * sizeof(float)); // 9
-	memcpy_s((char*)vertices + 10 * VSize, VSize, (float[]) { -t, 0.0f, -1.0f }, 3 * sizeof(float)); // 10
-	memcpy_s((char*)vertices + 11 * VSize, VSize, (float[]) { -t, 0.0f, 1.0f }, 3 * sizeof(float)); // 11
+	memcpy_s((char*)vertices + 8 * VSize, VSize, (float[]) { t, 0.0f, -1.0f, 1.0f }, 4 * sizeof(float)); // 8
+	memcpy_s((char*)vertices + 9 * VSize, VSize, (float[]) { t, 0.0f, 1.0f, 1.0f }, 4 * sizeof(float)); // 9
+	memcpy_s((char*)vertices + 10 * VSize, VSize, (float[]) { -t, 0.0f, -1.0f, 1.0f }, 4 * sizeof(float)); // 10
+	memcpy_s((char*)vertices + 11 * VSize, VSize, (float[]) { -t, 0.0f, 1.0f, 1.0f} , 4 * sizeof(float)); // 11
 
 	size_t* indices = malloc(60 * sizeof(size_t));
 	memcpy(indices, (size_t[]) {

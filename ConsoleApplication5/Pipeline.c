@@ -98,7 +98,6 @@ inline void DrawFlatBottomTriangle2(selfptr, FVMVECTOR* it0,
 	// call the flat triangle render routine, right edge interpolant is it0
 	DrawFlatTriangle(self, it0, it1, it2, &dit0, &dit1, *it0, GSOut);
 }
-
 void _DrawTriangle(selfptr, VMVECTOR* v0, VMVECTOR* v1, VMVECTOR* v2, CHAR_INFO GSOut)
 {
 	if (v1->m128_f32[1] < v0->m128_f32[1]) swapptr(&v0, &v1);
@@ -134,11 +133,26 @@ void _DrawTriangle(selfptr, VMVECTOR* v0, VMVECTOR* v1, VMVECTOR* v2, CHAR_INFO 
 		}
 	}
 }
-void _ProcessTriangle(selfptr, VMVECTOR* v0, VMVECTOR* v1, VMVECTOR* v2)
+
+inline void Transform(const selfptr, SVMVECTOR* v)
 {
-	*v0 = VMVector3Project(*v0, 0.0f, 0.0f, self->gfx->nFrameLength, self->gfx->nFrameHeight, 0.0f, 1.0f, self->gfx->world, &self->gfx->projection, &self->gfx->world);
-	*v1 = VMVector3Project(*v1, 0.0f, 0.0f, self->gfx->nFrameLength, self->gfx->nFrameHeight, 0.0f, 1.0f, self->gfx->world, &self->gfx->projection, &self->gfx->world);
-	*v2 = VMVector3Project(*v2, 0.0f, 0.0f, self->gfx->nFrameLength, self->gfx->nFrameHeight, 0.0f, 1.0f, self->gfx->world, &self->gfx->projection, &self->gfx->world);
+	// perform homo -> ndc on xyz / perspective-correct interpolative divide on all other attributes
+	const float wInv = 1.0f / v->c.w;
+	v->v = VMVectorScale(v->v, wInv);
+	// additional divide for mapped z because it must be interpolated
+	// adjust position x,y from perspective normalized space
+	// to screen dimension space after perspective divide
+	v->c.x = (v->c.x + 1.0f) * self->gfx->nFrameLength*0.5f;
+	v->c.y = (-v->c.y + 1.0f) * self->gfx->nFrameHeight*0.5f;
+	// store 1/w in w (we will need the interpolated 1/w
+	// so that we can recover the attributes after interp.)
+	v->c.w = wInv;
+}
+void _ProcessTriangle(selfptr, void* v0, void* v1, void* v2)
+{
+	Transform(self, v0);
+	Transform(self, v1);
+	Transform(self, v2);
 	_DrawTriangle(self, v0, v1, v2, self->GS->method->Apply(ia.SV_PrimN));
 }
 
@@ -275,7 +289,7 @@ void _AssembleTriangles(selfptr, const void* Verts, size_t VSize, const size_t* 
 		// Culling by normal
 		if (Normal.m128_f32[0] >= 0.0f)
 		{
-			_ClipCullTriangle(self, v0, v1, v2, VSize);
+			_ProcessTriangle(self, v0, v1, v2);
 		}
 	}
 }

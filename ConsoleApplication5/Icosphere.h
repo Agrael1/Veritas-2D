@@ -8,7 +8,7 @@
 
 typedef struct
 {
-	CVMVECTOR pos;
+	SVMVECTOR pos;
 }virtual(Vertex);
 
 class
