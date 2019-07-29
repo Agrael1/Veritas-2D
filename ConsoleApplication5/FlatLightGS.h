@@ -1,15 +1,16 @@
 #pragma once
-#include "VTypes.h"
+#include "GSBase.h"
+#include "Pipeline.h"
 #include "EngineCommons.h"
 
 #define c_class FlatLightGS
 
+typedef struct
+{
+	CHAR_INFO color;
+}GSOut;
+
 class
 {
-	GENERATED_DESC
-
-	struct vftb
-	{
-		CHAR_INFO(*Apply)(VMVECTOR normal);
-	}*method;
+	inherits(GSBase);
 };

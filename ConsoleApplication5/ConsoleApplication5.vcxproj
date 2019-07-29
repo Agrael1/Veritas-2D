@@ -197,6 +197,7 @@
     <ClInclude Include="FlatPS.h" />
     <ClInclude Include="Frame.h" />
     <ClInclude Include="BitStack.h" />
+    <ClInclude Include="GSBase.h" />
     <ClInclude Include="Icosahedron.h" />
     <ClInclude Include="Icosphere.h" />
     <ClInclude Include="IndexedTriangleList.h" />
@@ -209,6 +210,7 @@
     <ClInclude Include="New.h" />
     <ClInclude Include="ColorIndexPS.h" />
     <ClInclude Include="Pipeline.h" />
+    <ClInclude Include="PSBase.h" />
     <ClInclude Include="VSBase.h" />
     <ClInclude Include="Standard.h" />
     <ClInclude Include="StringStream.h" />

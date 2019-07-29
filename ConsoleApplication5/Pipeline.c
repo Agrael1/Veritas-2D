@@ -1,15 +1,9 @@
+#include "GSBase.h"
 #include "VSBase.h"
-#include "ColorIndexPS.h"
-#include "FlatLightGS.h"
+#include "PSBase.h"
 #include "Standard.h"
 #include "Pipeline.h"
 #include "Class.h"
-
-typedef struct
-{
-	size_t SV_PrimID;
-	VMVECTOR SV_PrimN;
-}IAOut;
 
 IAOut ia;
 
@@ -23,7 +17,6 @@ inline void DrawFlatTriangle(selfptr,
 	CHAR_INFO GSOut)
 {
 	account(self);
-	CHAR_INFO ret = GSOut;
 	
 	// create edge interpolant for left edge (always v0)
 	VMVECTOR itEdge0 = *it0;
@@ -64,7 +57,7 @@ inline void DrawFlatTriangle(selfptr,
 			{
 				// invoke pixel shader with interpolated vertex attributes
 				// and use result to set the pixel color on the screen
-				this->gfx->method->PrintFrame(this->gfx, x, y, self->PS->method->Apply(self->PS, 1));
+				this->gfx->method->PrintFrame(this->gfx, x, y, self->PS->Apply(self->PS, nullptr));
 			}
 		}
 	}
@@ -153,7 +146,10 @@ void _ProcessTriangle(selfptr, void* v0, void* v1, void* v2)
 	Transform(self, v0);
 	Transform(self, v1);
 	Transform(self, v2);
-	_DrawTriangle(self, v0, v1, v2, self->GS->method->Apply(ia.SV_PrimN));
+	
+	if(self->GS)
+		self->GS->Apply(self->GS, v0, v1, v2);
+	_DrawTriangle(self, v0, v1, v2, (CHAR_INFO) { 0 });
 }
 
 // Clipper Module
@@ -327,8 +323,6 @@ Constructor(selfptr, va_list *ap)
 {
 	assignMethodTable(self);
 	self->gfx = va_arg(*ap, struct Frame*);
-	self->PS = new(ColorIndexPS);
-	self->GS = new(FlatLightGS);
 	return self;
 }
 Destructor(selfptr)

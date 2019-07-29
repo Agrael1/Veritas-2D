@@ -3,19 +3,18 @@
 #include "FlatLightGS.h"
 #include "Class.h"
 
-CHAR_INFO virtual(Apply)(VMVECTOR normal)
-{
-	return Pick(BG_Moon_White, 1, FG_Dark_Blue);
-}
+extern IAOut ia;
+GSOut gs;
 
-constructMethodTable(
-	.Apply = virtual(Apply)
-);
+void virtual(Apply)(selfptr, void* v0, void* v1, void* v2)
+{
+	gs.color = Pick(BG_Moon_White, ia.SV_PrimID%8, FG_Dark_Blue);
+}
 
 Constructor(selfptr, va_list *ap)
 {
-	assignMethodTable(self);
-
+	account(self);
+	base.Apply = virtual(Apply);
 	return self;
 }
 Destructor(selfptr)

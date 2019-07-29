@@ -1,21 +1,22 @@
 #include "Color.h"
 #include "VeritasMath.h"
+#include "Pipeline.h"
+#include "FlatLightGS.h"
 #include "ExperimentalPS.h"
 #include "Class.h"
 
-CHAR_INFO virtual(Apply)(selfptr, VMFLOAT3 normal)
+extern IAOut ia;
+extern GSOut gs;
+
+CHAR_INFO virtual(Apply)(selfptr, void* _in)
 {
-
+	return gs.color;
 }
-
-constructMethodTable(
-	.Apply = virtual(Apply)
-);
 
 Constructor(selfptr, va_list *ap)
 {
-	assignMethodTable(self);
-
+	account(self);
+	base.Apply = virtual(Apply);
 	return self;
 }
 Destructor(selfptr)

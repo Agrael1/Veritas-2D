@@ -4,6 +4,12 @@
 #include "VeritasMath.h"
 #include "EngineCommons.h"
 
+typedef struct
+{
+	size_t SV_PrimID;
+	VMVECTOR SV_PrimN;
+}IAOut;
+
 #define c_class Pipeline
 
 class
@@ -13,8 +19,8 @@ class
 		void(*Draw)(selfptr, struct IndexedTriangleList* trilist);
 	);
 
-	struct ColorIndexPS* PS;
 	struct Frame* gfx;
 	struct VSBase* VS;
-	struct FlatLightGS* GS;
+	struct GSBase* GS;
+	struct PSBase* PS;
 };

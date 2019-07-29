@@ -1,13 +1,10 @@
 #pragma once
+#include "PSBase.h"
 #include "EngineCommons.h"
 
 #define c_class ExperimentalPS
 
 class
 {
-	const void* _class;
-
-	methods(
-		CHAR_INFO(*Apply)(selfptr, VMFLOAT3 normal);
-	);
+	inherits(PSBase);
 };

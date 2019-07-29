@@ -1,6 +1,8 @@
 #pragma once
 #include "Icosahedron.h"
 #include "DefaultVS.h"
+#include "FlatLightGS.h"
+#include "ExperimentalPS.h"
 #include "Test.h"
 #include "EngineCommons.h"
 
@@ -15,5 +17,7 @@ class
 {
 	inherits(TestObject);
 	struct DefaultVS* VS;
+	struct FlatLightGS* GS;
+	struct ExperimentalPS* PS;
 	struct IndexedTriangleList model;
 };

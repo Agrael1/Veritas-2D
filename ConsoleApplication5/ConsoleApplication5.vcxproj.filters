@@ -242,9 +242,6 @@
     <ClInclude Include="Color.scheme">
       <Filter>Заголовочные файлы\Engine\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="Light.h">
-      <Filter>Заголовочные файлы\Engine\Graphics\Shading</Filter>
-    </ClInclude>
     <ClInclude Include="CubeDemo.h">
       <Filter>Заголовочные файлы\Demo</Filter>
     </ClInclude>
@@ -294,6 +291,15 @@
       <Filter>Заголовочные файлы\Engine\Graphics\Shading\FlatLight</Filter>
     </ClInclude>
     <ClInclude Include="VSBase.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Shading</Filter>
+    </ClInclude>
+    <ClInclude Include="GSBase.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Shading</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Shading\FlatLight</Filter>
+    </ClInclude>
+    <ClInclude Include="PSBase.h">
       <Filter>Заголовочные файлы\Engine\Graphics\Shading</Filter>
     </ClInclude>
   </ItemGroup>

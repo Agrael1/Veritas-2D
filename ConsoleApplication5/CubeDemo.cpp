@@ -88,6 +88,8 @@ bool virtual(OnUserCreate)(void* self)
 		GetRand(0.1f, 5.0f));
 	
 	this->pPl->VS = this->model->VS;
+	this->pPl->GS = this->model->GS;
+	this->pPl->PS = this->model->PS;
 	// Setting up projection matrix and camera
 	base.Output->projection = VMMatrixPerspectiveLH(1.0f, (float)base.Output->nFrameHeight / (float)base.Output->nFrameLength, 0.5f, 40.0f);
 	base.Output->world = VMMatrixIdentity();
