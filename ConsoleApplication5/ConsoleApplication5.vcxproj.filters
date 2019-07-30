@@ -287,9 +287,6 @@
     <ClInclude Include="DefaultVS.h">
       <Filter>Заголовочные файлы\Engine\Graphics\Shading\FlatLight</Filter>
     </ClInclude>
-    <ClInclude Include="FlatPS.h">
-      <Filter>Заголовочные файлы\Engine\Graphics\Shading\FlatLight</Filter>
-    </ClInclude>
     <ClInclude Include="VSBase.h">
       <Filter>Заголовочные файлы\Engine\Graphics\Shading</Filter>
     </ClInclude>

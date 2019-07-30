@@ -194,7 +194,6 @@
     <ClInclude Include="Exception.h" />
     <ClInclude Include="ExperimentalPS.h" />
     <ClInclude Include="FlatLightGS.h" />
-    <ClInclude Include="FlatPS.h" />
     <ClInclude Include="Frame.h" />
     <ClInclude Include="BitStack.h" />
     <ClInclude Include="GSBase.h" />

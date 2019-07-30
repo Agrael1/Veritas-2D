@@ -3,6 +3,7 @@
 #include "VTypes.h"
 #include "IndexedTriangleList.h"
 #include "Pipeline.h"
+#include "Light.h"
 #include "Camera.h"
 #include "EngineCommons.h"
 
@@ -15,6 +16,7 @@ class
 	float fTheta;
 	struct Camera* pCam;
 	struct Pipeline* pPl;
+	struct DirectionalLight* pLight;
 
 	bool bStop;
 	struct Icosphere* model;

@@ -316,3 +316,18 @@ inline VMVECTOR __vectorcall VMVectorLerp
 	VMVECTOR Result = _mm_mul_ps(L, S);
 	return _mm_add_ps(Result, V0);
 }
+
+inline VMVECTOR __vectorcall VMVector4Dot
+(
+	FVMVECTOR V1,
+	FVMVECTOR V2
+)
+{
+	VMVECTOR vTemp2 = V2;
+	VMVECTOR vTemp = _mm_mul_ps(V1, vTemp2);
+	vTemp2 = _mm_shuffle_ps(vTemp2, vTemp, _MM_SHUFFLE(1, 0, 0, 0)); // Copy X to the Z position and Y to the W position
+	vTemp2 = _mm_add_ps(vTemp2, vTemp);          // Add Z = X+Z; W = Y+W;
+	vTemp = _mm_shuffle_ps(vTemp, vTemp2, _MM_SHUFFLE(0, 3, 0, 0));  // Copy W to the Z position
+	vTemp = _mm_add_ps(vTemp, vTemp2);           // Add Z and W together
+	return XM_PERMUTE_PS(vTemp, _MM_SHUFFLE(2, 2, 2, 2));    // Splat Z and return
+}

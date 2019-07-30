@@ -13,4 +13,6 @@ typedef struct
 class
 {
 	inherits(GSBase);
+	struct DirectionalLight* light;
+	VMMATRIX Proj;
 };

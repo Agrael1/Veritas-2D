@@ -47,7 +47,7 @@ bool virtual(OnUserCreate)(void* self)
 	account(self);
 	this->pCam = new(Camera); // Create an instance of a camera
 	this->pPl = new(Pipeline, base.Output);
-
+	this->pLight = new(DirectionalLight);
 
 	// using DB16 - DawnBringer's 16 Col Palette v1.0
 	// http://pixeljoint.com/forum/forum_posts.asp?TID=12795
@@ -90,9 +90,12 @@ bool virtual(OnUserCreate)(void* self)
 	this->pPl->VS = this->model->VS;
 	this->pPl->GS = this->model->GS;
 	this->pPl->PS = this->model->PS;
-	// Setting up projection matrix and camera
+
 	base.Output->projection = VMMatrixPerspectiveLH(1.0f, (float)base.Output->nFrameHeight / (float)base.Output->nFrameLength, 0.5f, 40.0f);
-	base.Output->world = VMMatrixIdentity();
+
+	this->model->GS->light = this->pLight;
+	
+	// Setting up projection matrix and camera
 
 	return true;
 }
@@ -105,10 +108,11 @@ bool virtual(OnUserUpdate)(void* self, double fElapsedSeconds)
 
 	base.Output->camera = this->pCam->method->GetViewMatrix(this->pCam);
 	base.Output->method->BeginFrame(base.Output, ' ', BG_Sky);
-
+	
 	this->model->_base.method->Update(this->model, (float)fElapsedSeconds);
 	VMMATRIX Transformation = VMMatrixMultiply(this->model->_base.method->GetTransformXM(this->model), &base.Output->camera);
 	this->model->VS->ModelViewProj = VMMatrixMultiply(Transformation, &base.Output->projection);
+	this->model->GS->Proj = Transformation;
 	this->pPl->method->Draw(this->pPl, &this->model->model);
 
 	return true;

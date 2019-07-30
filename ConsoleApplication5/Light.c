@@ -4,7 +4,7 @@
 
 Constructor(selfptr, va_list *ap)
 {
-	self->LightCBuf.ambientForce = 1u;
+	self->LightCBuf.ambientForce = 4u;
 	self->LightCBuf.diffuse = BG_Moon_White;
 	self->LightCBuf.dir.c = (VMFLOAT4) { 0.0f, 0.0f, 1.0f };
 	return self;
