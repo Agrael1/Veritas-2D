@@ -7,7 +7,6 @@
 typedef struct
 {
 	size_t SV_PrimID;
-	VMVECTOR SV_PrimN;
 }IAOut;
 
 #define c_class Pipeline

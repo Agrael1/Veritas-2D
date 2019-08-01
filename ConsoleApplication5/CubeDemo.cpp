@@ -1,7 +1,9 @@
-#include "StringStream.h"
-#include "VeritasMath.h"
-#include "Class.h"
 #include "Icosphere.h"
+
+#include "DefaultVS.h"
+#include "FlatLightGS.h"
+
+#include "Class.h"
 #include "CubeDemo.h"
 #include "Color.scheme"
 #include <stdlib.h>
@@ -112,7 +114,7 @@ bool virtual(OnUserUpdate)(void* self, double fElapsedSeconds)
 	this->model->_base.method->Update(this->model, (float)fElapsedSeconds);
 	VMMATRIX Transformation = VMMatrixMultiply(this->model->_base.method->GetTransformXM(this->model), &base.Output->camera);
 	this->model->VS->ModelViewProj = VMMatrixMultiply(Transformation, &base.Output->projection);
-	this->model->GS->Proj = Transformation;
+	this->model->VS->ModelView = VMMatrixTranspose(VMMatrixInverse(nullptr, Transformation));
 	this->pPl->method->Draw(this->pPl, &this->model->model);
 
 	return true;

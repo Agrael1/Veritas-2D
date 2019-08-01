@@ -176,7 +176,6 @@
     <ClCompile Include="StringStream.c" />
     <ClCompile Include="Test.c" />
     <ClCompile Include="VeritasEngine.c" />
-    <ClCompile Include="Vertex.c" />
     <ClCompile Include="Window.c" />
   </ItemGroup>
   <ItemGroup>
@@ -216,7 +215,6 @@
     <ClInclude Include="Test.h" />
     <ClInclude Include="VeritasEngine.h" />
     <ClInclude Include="VeritasMath.h" />
-    <ClInclude Include="Vertex.h" />
     <ClInclude Include="VMVector.h" />
     <ClInclude Include="VMVector3.h" />
     <ClInclude Include="VTypes.h" />

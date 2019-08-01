@@ -13,8 +13,7 @@ inline void DrawFlatTriangle(selfptr,
 	FVMVECTOR* it2,
 	FVMVECTOR* dv0,
 	FVMVECTOR* dv1,
-	VMVECTOR itEdge1,
-	CHAR_INFO GSOut)
+	VMVECTOR itEdge1)
 {
 	account(self);
 	
@@ -65,8 +64,7 @@ inline void DrawFlatTriangle(selfptr,
 
 inline void DrawFlatTopTriangle2(selfptr, FVMVECTOR* it0,
 	FVMVECTOR* it1,
-	FVMVECTOR* it2,
-	CHAR_INFO GSOut)
+	FVMVECTOR* it2)
 {
 	// calulcate dVertex / dy
 	// change in interpolant for every 1 change in y
@@ -75,12 +73,11 @@ inline void DrawFlatTopTriangle2(selfptr, FVMVECTOR* it0,
 	FVMVECTOR dit1 = VMVectorScale(VMVectorSubtract(*it2, *it1), delta_y);
 
 	// call the flat triangle render routine, right edge interpolant is it1
-	DrawFlatTriangle(self, it0, it1, it2, &dit0, &dit1, *it1, GSOut);
+	DrawFlatTriangle(self, it0, it1, it2, &dit0, &dit1, *it1);
 }
 inline void DrawFlatBottomTriangle2(selfptr, FVMVECTOR* it0,
 	FVMVECTOR* it1,
-	FVMVECTOR* it2,
-	CHAR_INFO GSOut)
+	FVMVECTOR* it2)
 {
 	// calulcate dVertex / dy
 	// change in interpolant for every 1 change in y
@@ -89,40 +86,40 @@ inline void DrawFlatBottomTriangle2(selfptr, FVMVECTOR* it0,
 	FVMVECTOR dit1 = VMVectorScale(VMVectorSubtract(*it2, *it0), delta_y);
 
 	// call the flat triangle render routine, right edge interpolant is it0
-	DrawFlatTriangle(self, it0, it1, it2, &dit0, &dit1, *it0, GSOut);
+	DrawFlatTriangle(self, it0, it1, it2, &dit0, &dit1, *it0);
 }
-void _DrawTriangle(selfptr, VMVECTOR* v0, VMVECTOR* v1, VMVECTOR* v2, CHAR_INFO GSOut)
+void _DrawTriangle(selfptr, SVMVECTOR* v0, SVMVECTOR* v1, SVMVECTOR* v2)
 {
-	if (v1->m128_f32[1] < v0->m128_f32[1]) swapptr(&v0, &v1);
-	if (v2->m128_f32[1] < v1->m128_f32[1]) swapptr(&v1, &v2);
-	if (v1->m128_f32[1] < v0->m128_f32[1]) swapptr(&v0, &v1);
+	if (v1->c.y < v0->c.y) swapptr(&v0, &v1);
+	if (v2->c.y < v1->c.y) swapptr(&v1, &v2);
+	if (v1->c.y < v0->c.y) swapptr(&v0, &v1);
 
-	if (v0->m128_f32[1] == v1->m128_f32[1])	// Flat Top
+	if (v0->c.y == v1->c.y)	// Flat Top
 	{
-		if (v1->m128_f32[0] < v0->m128_f32[0]) swapptr(&v0, &v1);
-		DrawFlatTopTriangle2(self, v0, v1, v2, GSOut);
+		if (v1->c.x < v0->c.x) swapptr(&v0, &v1);
+		DrawFlatTopTriangle2(self, v0, v1, v2);
 	}
-	if (v1->m128_f32[1] == v2->m128_f32[1])	// Flat Bottom
+	if (v1->c.y == v2->c.y)	// Flat Bottom
 	{
-		if (v2->m128_f32[0] < v1->m128_f32[0]) swapptr(&v1, &v2);
-		DrawFlatBottomTriangle2(self, v0, v1, v2, GSOut);
+		if (v2->c.x < v1->c.x) swapptr(&v1, &v2);
+		DrawFlatBottomTriangle2(self, v0, v1, v2);
 	}
 	else // General
 	{
 		const float alphaSplit =
-			(v1->m128_f32[1] - v0->m128_f32[1]) / (v2->m128_f32[1] - v0->m128_f32[1]);
+			(v1->c.y - v0->c.y) / (v2->c.y - v0->c.y);
 
-		FVMVECTOR vi = VMVectorLerp(*v0, *v2, alphaSplit);
+		FVMVECTOR vi = VMVectorLerp(v0->v, v2->v, alphaSplit);
 
-		if (v1->m128_f32[0] < vi.m128_f32[0])
+		if (v1->c.x < vi.m128_f32[0])
 		{
-			DrawFlatBottomTriangle2(self, v0, v1, &vi, GSOut);
-			DrawFlatTopTriangle2(self, v1, &vi, v2, GSOut);
+			DrawFlatBottomTriangle2(self, v0, v1, &vi);
+			DrawFlatTopTriangle2(self, v1, &vi, v2);
 		}
 		else
 		{
-			DrawFlatBottomTriangle2(self, v0, &vi, v1, GSOut);
-			DrawFlatTopTriangle2(self, &vi, v1, v2, GSOut);
+			DrawFlatBottomTriangle2(self, v0, &vi, v1);
+			DrawFlatTopTriangle2(self, &vi, v1, v2);
 		}
 	}
 }
@@ -141,128 +138,128 @@ inline void Transform(const selfptr, SVMVECTOR* v)
 	// so that we can recover the attributes after interp.)
 	v->c.w = wInv;
 }
-void _ProcessTriangle(selfptr, struct IndexedTriangleList* trilist, void* v0, void* v1, void* v2)
+void _ProcessTriangle(selfptr, void* v0, void* v1, void* v2)
 {
 	Transform(self, v0);
 	Transform(self, v1);
 	Transform(self, v2);
 	
 	if(self->GS)
-		self->GS->Apply(self->GS, v0, v1, v2, trilist);
-	_DrawTriangle(self, v0, v1, v2, (CHAR_INFO) { 0 });
+		self->GS->Apply(self->GS, v0, v1, v2);
+	_DrawTriangle(self, v0, v1, v2);
 }
 
-// Clipper Module
-//inline void Clip1V(selfptr, VMVECTOR* v0, VMVECTOR* v1, VMVECTOR* v2, size_t VSize)
-//{
-//	// calculate alpha values for getting adjusted vertices
-//	const float alphaA = (-v0->m128_f32[2]) / (v1->m128_f32[2] - v0->m128_f32[2]);
-//	const float alphaB = (-v0->m128_f32[2]) / (v2->m128_f32[2] - v0->m128_f32[2]);
-//	// interpolate to get v0a and v0b
-//	void* v0a = _alloca(VSize);
-//	void* v0b = _alloca(VSize);
-//	if (VSize != sizeof(VMVECTOR))
-//	{
-//		memcpy_s(v0a, VSize, v0 + sizeof(VMVECTOR), VSize - sizeof(VMVECTOR));
-//		memcpy_s(v0b, VSize, v0 + sizeof(VMVECTOR), VSize - sizeof(VMVECTOR));
-//	}
-//
-//	*(VMVECTOR*)v0a = VMVectorLerp(*v0, *v1, alphaA);
-//	*(VMVECTOR*)v0b = VMVectorLerp(*v0, *v2, alphaB);
-//	// draw triangles
-//	_ProcessTriangle(self, v0a, v1, v2);
-//	_ProcessTriangle(self, v0b, v0a, v2);
-//}
-//inline void Clip2V(selfptr, VMVECTOR* v0, VMVECTOR* v1, VMVECTOR* v2, size_t VSize)
-//{
-//	// calculate alpha values for getting adjusted vertices
-//	const float alpha0 = (-v0->m128_f32[2]) / (v2->m128_f32[2] - v0->m128_f32[2]);
-//	const float alpha1 = (-v1->m128_f32[2]) / (v2->m128_f32[2] - v1->m128_f32[2]);
-//	// interpolate to get v0a and v0b
-//	*v0 = VMVectorLerp(*v0, *v2, alpha0);
-//	*v1 = VMVectorLerp(*v1, *v2, alpha1);
-//	// draw triangles
-//	_ProcessTriangle(self, v0, v1, v2);
-//};
-//void _ClipCullTriangle(selfptr, VMVECTOR* v0, VMVECTOR* v1, VMVECTOR* v2, size_t VSize)
-//{
-//	{
-//		// cull tests
-//		if (v0->m128_f32[0] > v0->m128_f32[3] &&
-//			v1->m128_f32[0] > v1->m128_f32[3] &&
-//			v2->m128_f32[0] > v2->m128_f32[3])
-//		{
-//			return;
-//		}
-//		if (v0->m128_f32[0] < -v0->m128_f32[3] &&
-//			v1->m128_f32[0] < -v1->m128_f32[3] &&
-//			v2->m128_f32[0] < -v2->m128_f32[3])
-//		{
-//			return;
-//		}
-//		if (v0->m128_f32[1] > v0->m128_f32[3] &&
-//			v1->m128_f32[1] > v1->m128_f32[3] &&
-//			v2->m128_f32[1] > v2->m128_f32[3])
-//		{
-//			return;
-//		}
-//		if (v0->m128_f32[1] < -v0->m128_f32[3] &&
-//			v1->m128_f32[1] < -v1->m128_f32[3] &&
-//			v2->m128_f32[1] < -v2->m128_f32[3])
-//		{
-//			return;
-//		}
-//		if (v0->m128_f32[2] > v0->m128_f32[3] &&
-//			v1->m128_f32[2] > v1->m128_f32[3] &&
-//			v2->m128_f32[2] > v2->m128_f32[3])
-//		{
-//			return;
-//		}
-//		if (v0->m128_f32[2] < 0.0f &&
-//			v1->m128_f32[2] < 0.0f &&
-//			v2->m128_f32[2] < 0.0f)
-//		{
-//			return;
-//		}
-//	}
-//	// near clipping tests
-//	if (v0->m128_f32[2] < 0.0f)
-//	{
-//		if (v1->m128_f32[2] < 0.0f)
-//		{
-//			Clip2V(self, v0, v1, v2, VSize);
-//		}
-//		else if (v2->m128_f32[2] < 0.0f)
-//		{
-//			Clip2V(self, v0, v2, v1, VSize);
-//		}
-//		else
-//		{
-//			Clip1V(self, v0, v1, v2, VSize);
-//		}
-//	}
-//	else if (v1->m128_f32[2] < 0.0f)
-//	{
-//		if (v2->m128_f32[2] < 0.0f)
-//		{
-//			Clip2V(self, v1, v2, v0, VSize);
-//		}
-//		else
-//		{
-//			Clip1V(self, v1, v0, v2, VSize);
-//		}
-//	}
-//	else if (v2->m128_f32[2] < 0.0f)
-//	{
-//		Clip1V(self, v2, v0, v1, VSize);
-//	}
-//	else // no near clipping necessary
-//	{
-//		_ProcessTriangle(self,v0,v1,v2);
-//	}
-//}
+//Clipper Module
+inline void Clip1V(selfptr, SVMVECTOR* v0, SVMVECTOR* v1, SVMVECTOR* v2, size_t VSize)
+{
+	// calculate alpha values for getting adjusted vertices
+	const float alphaA = (-v0->c.z) / (v1->c.z - v0->c.z);
+	const float alphaB = (-v0->c.z) / (v2->c.z - v0->c.z);
+	// interpolate to get v0a and v0b
+	void* v0a = _alloca(VSize);
+	void* v0b = _alloca(VSize);
+	if (VSize != sizeof(VMVECTOR))
+	{
+		memcpy_s(v0a, VSize, v0 + sizeof(VMVECTOR), VSize - sizeof(VMVECTOR));
+		memcpy_s(v0b, VSize, v0 + sizeof(VMVECTOR), VSize - sizeof(VMVECTOR));
+	}
 
-void _AssembleTriangles(selfptr, const void* Verts, struct IndexedTriangleList* trilist, size_t VSize, const size_t* indices, size_t indN)
+	*(VMVECTOR*)v0a = VMVectorLerp(v0->v, v1->v, alphaA);
+	*(VMVECTOR*)v0b = VMVectorLerp(v0->v, v2->v, alphaB);
+	// draw triangles
+	_ProcessTriangle(self, v0a, v1, v2);
+	_ProcessTriangle(self, v0b, v0a, v2);
+}
+inline void Clip2V(selfptr, SVMVECTOR* v0, SVMVECTOR* v1, SVMVECTOR* v2)
+{
+	// calculate alpha values for getting adjusted vertices
+	const float alpha0 = (-v0->c.z) / (v2->c.z - v0->c.z);
+	const float alpha1 = (-v1->c.z) / (v2->c.z - v1->c.z);
+	// interpolate to get v0a and v0b
+	v0->v = VMVectorLerp(v0->v, v2->v, alpha0);
+	v1->v = VMVectorLerp(v1->v, v2->v, alpha1);
+	// draw triangles
+	_ProcessTriangle(self, v0, v1, v2);
+};
+void _ClipCullTriangle(selfptr, SVMVECTOR* v0, SVMVECTOR* v1, SVMVECTOR* v2, size_t VSize)
+{
+	{
+		// cull tests
+		if (v0->c.x > v0->c.w &&
+			v1->c.x > v1->c.w &&
+			v2->c.x > v2->c.w)
+		{
+			return;
+		}
+		if (v0->c.x < -v0->c.w &&
+			v1->c.x < -v1->c.w &&
+			v2->c.x < -v2->c.w)
+		{
+			return;
+		}
+		if (v0->c.y > v0->c.w &&
+			v1->c.y > v1->c.w &&
+			v2->c.y > v2->c.w)
+		{
+			return;
+		}
+		if (v0->c.y < -v0->c.w &&
+			v1->c.y < -v1->c.w &&
+			v2->c.y < -v2->c.w)
+		{
+			return;
+		}
+		if (v0->c.z > v0->c.w &&
+			v1->c.z > v1->c.w &&
+			v2->c.z > v2->c.w)
+		{
+			return;
+		}
+		if (v0->c.z < 0.0f &&
+			v1->c.z < 0.0f &&
+			v2->c.z < 0.0f)
+		{
+			return;
+		}
+	}
+	// near clipping tests
+	if (v0->c.z < 0.0f)
+	{
+		if (v1->c.z < 0.0f)
+		{
+			Clip2V(self, v0, v1, v2);
+		}
+		else if (v2->c.z < 0.0f)
+		{
+			Clip2V(self, v0, v2, v1);
+		}
+		else
+		{
+			Clip1V(self, v0, v1, v2, VSize);
+		}
+	}
+	else if (v1->c.z < 0.0f)
+	{
+		if (v2->c.z < 0.0f)
+		{
+			Clip2V(self, v1, v2, v0);
+		}
+		else
+		{
+			Clip1V(self, v1, v0, v2, VSize);
+		}
+	}
+	else if (v2->c.z < 0.0f)
+	{
+		Clip1V(self, v2, v0, v1, VSize);
+	}
+	else // no near clipping necessary
+	{
+		_ProcessTriangle(self,v0,v1,v2);
+	}
+}
+
+void _AssembleTriangles(selfptr, const void* Verts, size_t VSize, const size_t* indices, size_t indN)
 {
 	for (size_t i = 0; i < indN; i+=3)
 	{
@@ -279,33 +276,25 @@ void _AssembleTriangles(selfptr, const void* Verts, struct IndexedTriangleList* 
 		VMVECTOR* v2p = (VMVECTOR*)v2;
 
 		ia.SV_PrimID = i/3;
-		ia.SV_PrimN = VMVector3Cross(VMVectorSubtract(*v1p, *v0p),VMVectorSubtract(*v2p, *v0p));
+		VMVECTOR Normal = VMVector3Dot(VMVector3Cross(VMVectorSubtract(*v1p, *v0p),VMVectorSubtract(*v2p, *v0p)), *v0p);
 
-		VMVECTOR Normal = VMVector3Dot(ia.SV_PrimN, *v0p);
 		// Culling by normal
 		if (Normal.m128_f32[0] <= 0.0f)
 		{
-			_ProcessTriangle(self, trilist, v0, v1, v2);
+			_ClipCullTriangle(self, v0, v1, v2, VSize);
 		}
 	}
 }
 void _ProcessVertices(selfptr, struct IndexedTriangleList* trilist)
 {
-	account(self);
-	if (!this->VS)
-	{
-		_AssembleTriangles(self, trilist, trilist->vertices, trilist->VSize, trilist->indices, trilist->numInds);
-		return;
-	}
-		
-	size_t memstore = trilist->VSize * trilist->numVerts;
-	void* VertsOut = _malloca(memstore);			// local allocation on stack
+	assert(self->VS);
+	void* VertsOut = _malloca(trilist->VSize * trilist->numVerts);			// local allocation on stack
 
 	if (VertsOut)
 	{
 		// Transform all the verts accordingly
-		this->VS->Apply(this->VS, VertsOut, trilist);
-		_AssembleTriangles(self, VertsOut, trilist, trilist->VSize, trilist->indices, trilist->numInds);
+		self->VS->Apply(self->VS, VertsOut, trilist);
+		_AssembleTriangles(self, VertsOut, trilist->VSize, trilist->indices, trilist->numInds);
 	}
 	_freea(VertsOut);
 }

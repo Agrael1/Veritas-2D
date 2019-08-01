@@ -9,4 +9,5 @@ class
 {
 	inherits(VSBase);
 	VMMATRIX ModelViewProj;
+	VMMATRIX ModelView;
 };

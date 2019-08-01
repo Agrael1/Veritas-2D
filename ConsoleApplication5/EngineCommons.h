@@ -81,6 +81,8 @@ const void* c_class = &ctab;
 
 #define operator(x) virtual(x)
 #define GENERATED_DESC const void* _class;
+
+#define offsetof(st, m) ((size_t)&(((st *)0)->m))
 #endif
 
 #undef c_class

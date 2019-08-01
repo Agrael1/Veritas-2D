@@ -1,5 +1,4 @@
 #include "Icosphere.h"
-#include "IndexedTriangleList.h"
 #include "DefaultVS.h"
 #include "Class.h"
 
@@ -9,9 +8,11 @@
 void virtual(Apply)(void* self, void* _out, struct IndexedTriangleList* _in)
 {
 	account(self);
+
 	for (int i = 0; i < _in->numVerts; i++)
 	{
 		((Vertex_Icosphere*)_out)[i].pos.v = VMVector3TransformCoord(((Vertex_Icosphere*)_in->vertices)[i].pos.v, this->ModelViewProj);
+		((Vertex_Icosphere*)_out)[i].n = VMVector3Normalize(VMVector3TransformCoord(((Vertex_Icosphere*)_in->vertices)[i].n, this->ModelView));
 	}
 }
 

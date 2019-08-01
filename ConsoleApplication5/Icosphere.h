@@ -1,8 +1,5 @@
 #pragma once
 #include "Icosahedron.h"
-#include "DefaultVS.h"
-#include "FlatLightGS.h"
-#include "ExperimentalPS.h"
 #include "Test.h"
 #include "EngineCommons.h"
 
@@ -11,6 +8,7 @@
 typedef struct
 {
 	SVMVECTOR pos;
+	VMVECTOR n;
 }virtual(Vertex);
 
 class
