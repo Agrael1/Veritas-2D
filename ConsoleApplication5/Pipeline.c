@@ -8,9 +8,9 @@
 IAOut ia;
 
 inline void DrawFlatTriangle(selfptr,
-	FVMVECTOR* it0,
-	FVMVECTOR* it1,
-	FVMVECTOR* it2,
+	SVMVECTOR* it0,
+	SVMVECTOR* it1,
+	SVMVECTOR* it2,
 	FVMVECTOR* dv0,
 	FVMVECTOR* dv1,
 	VMVECTOR itEdge1)
@@ -18,15 +18,15 @@ inline void DrawFlatTriangle(selfptr,
 	account(self);
 	
 	// create edge interpolant for left edge (always v0)
-	VMVECTOR itEdge0 = *it0;
+	VMVECTOR itEdge0 = it0->v;
 
 	// calculate start and end scanlines
-	const int yStart = max((int)ceilf(it0->m128_f32[1] - 0.5f), 0);
-	const int yEnd = min((int)ceilf(it2->m128_f32[1] - 0.5f), (int)this->gfx->nFrameHeight - 1); // the scanline AFTER the last line drawn
+	const int yStart = max((int)ceilf(it0->c.y - 0.5f), 0);
+	const int yEnd = min((int)ceilf(it2->c.y - 0.5f), (int)this->gfx->nFrameHeight - 1); // the scanline AFTER the last line drawn
 
 	// do interpolant prestep
-	const float step = ((float)yStart + 0.5f - it0->m128_f32[1]);
-	itEdge0 = VMVectorAdd( itEdge0, VMVectorScale(*dv0, step));
+	const float step = ((float)yStart + 0.5f - it0->c.y);
+	itEdge0 = VMVectorAdd(itEdge0, VMVectorScale(*dv0, step));
 	itEdge1 = VMVectorAdd(itEdge1, VMVectorScale(*dv1, step));
 
 	for (int y = yStart; y < yEnd; y++,
@@ -61,32 +61,31 @@ inline void DrawFlatTriangle(selfptr,
 		}
 	}
 }
-
-inline void DrawFlatTopTriangle2(selfptr, FVMVECTOR* it0,
-	FVMVECTOR* it1,
-	FVMVECTOR* it2)
+inline void DrawFlatTopTriangle2(selfptr, SVMVECTOR* it0,
+	SVMVECTOR* it1,
+	SVMVECTOR* it2)
 {
 	// calulcate dVertex / dy
 	// change in interpolant for every 1 change in y
-	const float delta_y = 1.0f / (it2->m128_f32[1] - it0->m128_f32[1]);
-	FVMVECTOR dit0 = VMVectorScale(VMVectorSubtract(*it2, *it0), delta_y);
-	FVMVECTOR dit1 = VMVectorScale(VMVectorSubtract(*it2, *it1), delta_y);
+	const float delta_y = 1.0f / (it2->c.y - it0->c.y);
+	FVMVECTOR dit0 = VMVectorScale(VMVectorSubtract(it2->v, it0->v), delta_y);
+	FVMVECTOR dit1 = VMVectorScale(VMVectorSubtract(it2->v, it1->v), delta_y);
 
 	// call the flat triangle render routine, right edge interpolant is it1
-	DrawFlatTriangle(self, it0, it1, it2, &dit0, &dit1, *it1);
+	DrawFlatTriangle(self, it0, it1, it2, &dit0, &dit1, it1->v);
 }
-inline void DrawFlatBottomTriangle2(selfptr, FVMVECTOR* it0,
-	FVMVECTOR* it1,
-	FVMVECTOR* it2)
+inline void DrawFlatBottomTriangle2(selfptr, SVMVECTOR* it0,
+	SVMVECTOR* it1,
+	SVMVECTOR* it2)
 {
 	// calulcate dVertex / dy
 	// change in interpolant for every 1 change in y
-	const float delta_y = 1.0f / (it2->m128_f32[1] - it0->m128_f32[1]);
-	FVMVECTOR dit0 = VMVectorScale(VMVectorSubtract(*it1, *it0), delta_y);
-	FVMVECTOR dit1 = VMVectorScale(VMVectorSubtract(*it2, *it0), delta_y);
+	const float delta_y = 1.0f / (it2->c.y - it0->c.y);
+	FVMVECTOR dit0 = VMVectorScale(VMVectorSubtract(it1->v, it0->v), delta_y);
+	FVMVECTOR dit1 = VMVectorScale(VMVectorSubtract(it2->v, it0->v), delta_y);
 
 	// call the flat triangle render routine, right edge interpolant is it0
-	DrawFlatTriangle(self, it0, it1, it2, &dit0, &dit1, *it0);
+	DrawFlatTriangle(self, it0, it1, it2, &dit0, &dit1, it0->v);
 }
 void _DrawTriangle(selfptr, SVMVECTOR* v0, SVMVECTOR* v1, SVMVECTOR* v2)
 {
@@ -109,9 +108,9 @@ void _DrawTriangle(selfptr, SVMVECTOR* v0, SVMVECTOR* v1, SVMVECTOR* v2)
 		const float alphaSplit =
 			(v1->c.y - v0->c.y) / (v2->c.y - v0->c.y);
 
-		FVMVECTOR vi = VMVectorLerp(v0->v, v2->v, alphaSplit);
+		SVMVECTOR vi = {.v = VMVectorLerp(v0->v, v2->v, alphaSplit) };
 
-		if (v1->c.x < vi.m128_f32[0])
+		if (v1->c.x < vi.c.x)
 		{
 			DrawFlatBottomTriangle2(self, v0, v1, &vi);
 			DrawFlatTopTriangle2(self, v1, &vi, v2);

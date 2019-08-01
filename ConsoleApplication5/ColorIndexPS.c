@@ -1,11 +1,12 @@
-#include "VeritasMath.h"
+#include "Pipeline.h"
 #include "ColorIndexPS.h"
 #include "Class.h"
-#include <memory.h>
 
-CHAR_INFO virtual(Apply)(selfptr, size_t primID)
+extern IAOut ia;
+
+CHAR_INFO virtual(Apply)(selfptr, void* _unused)
 {
-	return Pick(self->colors[(primID) % 8],2,0);
+	return Pick(self->colors[(ia.SV_PrimID) % 8],2,0);
 }
 
 Constructor(selfptr, va_list *ap)

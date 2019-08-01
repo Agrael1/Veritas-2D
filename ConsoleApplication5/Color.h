@@ -12,6 +12,7 @@ inline CHAR_INFO Pick(Word color, Byte sat, Byte satColor)
 {
 	switch (sat)
 	{
+	default:
 	case 0: return (CHAR_INFO) { PIXEL_NONE, BG_Black };
 	case 1: return (CHAR_INFO) { PIXEL_THREEQUARTERS, color | FG_Black };
 	case 2: return (CHAR_INFO) { PIXEL_HALF, color | FG_Black };
@@ -21,5 +22,6 @@ inline CHAR_INFO Pick(Word color, Byte sat, Byte satColor)
 	case 6: return (CHAR_INFO) { PIXEL_HALF, color | satColor};
 	case 7: return (CHAR_INFO) { PIXEL_THREEQUARTERS, color | satColor };
 	case 8: return (CHAR_INFO) { PIXEL_SOLID, color | satColor };
+
 	}
 }

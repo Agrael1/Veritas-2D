@@ -1,5 +1,6 @@
 #pragma once
 #include "VeritasMath.h"
+#include <memory.h>
 #include <assert.h>
 
 struct IndexedTriangleList
