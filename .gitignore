@@ -6,6 +6,7 @@
 *.ko
 *.obj
 *.elf
+!ConsoleApplication5/Models/*.obj
 
 # Linker output
 *.ilk
@@ -17,7 +18,7 @@
 *.pch
 
 # Libraries
-*.lib
+#*.lib
 *.a
 *.la
 *.lo
