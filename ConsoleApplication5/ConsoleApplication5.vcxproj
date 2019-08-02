@@ -76,12 +76,16 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <LibraryPath>$(ProjectDir)Assimp;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)Assimp\Include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <LibraryPath>$(ProjectDir)Assimp;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)Assimp\Include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -169,6 +173,7 @@
     <ClCompile Include="Keyboard.c" />
     <ClCompile Include="EntryMain.c" />
     <ClCompile Include="Light.c" />
+    <ClCompile Include="LoaderTest.c" />
     <ClCompile Include="Maze3D.c" />
     <ClCompile Include="MazeGen.c" />
     <ClCompile Include="Mouse.c" />
@@ -204,6 +209,7 @@
     <ClInclude Include="MathConstants.h" />
     <ClInclude Include="Maze.h" />
     <ClInclude Include="Maze3D.h" />
+    <ClInclude Include="LoaderTest.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="New.h" />
     <ClInclude Include="ColorIndexPS.h" />

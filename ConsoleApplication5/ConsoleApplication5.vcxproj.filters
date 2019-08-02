@@ -168,6 +168,9 @@
     <ClCompile Include="FlatLightGS.c">
       <Filter>Файлы исходного кода\Engine\Graphics\Shading</Filter>
     </ClCompile>
+    <ClCompile Include="LoaderTest.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BitField.h">
@@ -292,6 +295,9 @@
     </ClInclude>
     <ClInclude Include="ExperimentalPS.h">
       <Filter>Заголовочные файлы\Engine\Graphics\Shading\FlatLight</Filter>
+    </ClInclude>
+    <ClInclude Include="LoaderTest.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

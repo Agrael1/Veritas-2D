@@ -3,7 +3,7 @@
 #include <memory.h>
 #include <assert.h>
 
-struct IndexedTriangleList
+typedef struct IndexedTriangleList
 {
 	size_t numVerts;
 	size_t VSize;
@@ -11,9 +11,9 @@ struct IndexedTriangleList
 	
 	size_t numInds;
 	size_t* indices;
-};
+}IndexedTriangleList;
 
-static void CalcNormalsIndependentFlat(struct IndexedTriangleList* in, size_t normOffs)
+static void CalcNormalsIndependentFlat(IndexedTriangleList* in, size_t normOffs)
 {
 	if (in->VSize < 2 * sizeof(VMVECTOR) || normOffs < sizeof(VMVECTOR))
 		return;

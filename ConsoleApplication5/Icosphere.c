@@ -3,6 +3,7 @@
 #include "ExperimentalPS.h"
 #include "Icosphere.h"
 #include "Class.h"
+#include <stddef.h>
 
 Constructor(selfptr, va_list *ap)
 {
