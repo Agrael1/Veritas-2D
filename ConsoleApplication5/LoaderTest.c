@@ -15,9 +15,9 @@ Constructor(selfptr, va_list *ap)
 {
 	struct c_class* this = ((struct Class*)TestObject)->ctor(self, ap);
 
-	float scale = (float)va_arg(*ap, double);
+	float scale = 0.9f;
 
-	const struct aiScene* pScene = aiImportFile("Models/Cactus.obj",
+	const struct aiScene* pScene = aiImportFile("Models/maz503_dumper.obj",
 		aiProcess_Triangulate |
 		aiProcess_JoinIdenticalVertices);
 	const struct aiMesh* pMesh = pScene->mMeshes[0];
@@ -44,11 +44,13 @@ Constructor(selfptr, va_list *ap)
 	for (UINT i = 0; i < pMesh->mNumFaces; i++)
 	{
 		assert(pMesh->mFaces[i].mNumIndices == 3);
-		inds[i + 0] = pMesh->mFaces[i].mIndices[0];
-		inds[i + 1] = pMesh->mFaces[i].mIndices[1];
-		inds[i + 2] = pMesh->mFaces[i].mIndices[2];
+		inds[i * 3 + 0] = pMesh->mFaces[i].mIndices[0];
+		inds[i * 3 + 1] = pMesh->mFaces[i].mIndices[1];
+		inds[i * 3 + 2] = pMesh->mFaces[i].mIndices[2];
 	}
 	this->model.indices = inds;
+
+	aiReleaseImport(pScene);
 
 	this->VS = new(DefaultVS);
 	this->GS = new(FlatLightGS);
@@ -57,6 +59,10 @@ Constructor(selfptr, va_list *ap)
 }
 Destructor(selfptr)
 {
+	struct c_class* this = ((struct Class*)TestObject)->dtor(self);
+	delete(this->VS);
+	delete(this->GS);
+	delete(this->PS);
 	return self;
 }
 ENDCLASSDESC

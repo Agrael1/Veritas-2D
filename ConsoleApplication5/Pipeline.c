@@ -260,12 +260,12 @@ void _ClipCullTriangle(selfptr, SVMVECTOR* v0, SVMVECTOR* v1, SVMVECTOR* v2, siz
 
 void _AssembleTriangles(selfptr, const void* Verts, size_t VSize, const size_t* indices, size_t indN)
 {
+	void* v0 = _alloca(VSize);
+	void* v1 = _alloca(VSize);
+	void* v2 = _alloca(VSize);
+
 	for (size_t i = 0; i < indN; i+=3)
 	{
-		void* v0 = _alloca(VSize);
-		void* v1 = _alloca(VSize);
-		void* v2 = _alloca(VSize);
-
 		memcpy_s(v0, VSize, ((Byte*)Verts + indices[i + 0] * VSize), VSize);
 		memcpy_s(v1, VSize, ((Byte*)Verts + indices[i + 1] * VSize), VSize);
 		memcpy_s(v2, VSize, ((Byte*)Verts + indices[i + 2] * VSize), VSize);

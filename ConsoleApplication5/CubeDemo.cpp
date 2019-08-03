@@ -1,4 +1,5 @@
 #include "Icosphere.h"
+#include "LoaderTest.h"
 
 #include "DefaultVS.h"
 #include "FlatLightGS.h"
@@ -77,17 +78,17 @@ bool virtual(OnUserCreate)(void* self)
 	this->bStop = false;
 	srand((unsigned int)time(NULL));
 	
-	this->model = new(Icosphere,
-		GetRand(0.1f, 5.0f),
-		GetRand(0.1f, 5.0f),
-		GetRand(0.1f, 5.0f),
-		GetRand(0.1f, 5.0f),
-		GetRand(0.1f, 5.0f),
-		GetRand(0.1f, 5.0f),
-		GetRand(0.1f, 5.0f),
-		GetRand(0.1f, 5.0f),
-		GetRand(0.1f, 5.0f),
-		GetRand(0.1f, 5.0f));
+	this->model = new(LoaderTest,
+		0.0f,
+		0.0f,
+		0.0f,
+		0.0f,
+		0.0f,
+		0.0f,
+		0.0f,
+		0.0f,
+		-0.5f,
+		0.6f);
 	
 	this->pPl->VS = this->model->VS;
 	this->pPl->GS = this->model->GS;
@@ -111,11 +112,13 @@ bool virtual(OnUserUpdate)(void* self, double fElapsedSeconds)
 	base.Output->camera = this->pCam->method->GetViewMatrix(this->pCam);
 	base.Output->method->BeginFrame(base.Output, ' ', BG_Sky);
 	
-	this->model->_base.method->Update(this->model, (float)fElapsedSeconds);
+	//this->model->_base.method->Update(this->model, (float)fElapsedSeconds);
 	VMMATRIX Transformation = VMMatrixMultiply(this->model->_base.method->GetTransformXM(this->model), &base.Output->camera);
 	this->model->VS->ModelViewProj = VMMatrixMultiply(Transformation, &base.Output->projection);
 	this->model->VS->ModelView = VMMatrixTranspose(VMMatrixInverse(nullptr, Transformation));
 	this->pPl->method->Draw(this->pPl, &this->model->model);
+
+
 
 	return true;
 }

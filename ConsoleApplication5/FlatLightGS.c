@@ -15,7 +15,7 @@ void virtual(Apply)(selfptr, void* v0, void* v1, void* v2)
 		Vertex_Icosphere* v0p = v0;
 		VMVECTOR n = VMVector3Dot(self->light->LightCBuf.dir.v, VMVectorNegate(v0p->n));
 
-		gs.color = Pick(BG_Dark_Magenta, (Byte)(n.m128_f32[0]*4.0f), self->light->LightCBuf.diffuse);
+		gs.color = Pick(BG_Ditry_Gray, (Byte)(n.m128_f32[0]*4.0f), self->light->LightCBuf.diffuse);
 	}
 	else
 		gs.color = Pick(BG_Moon_White, 4, FG_Dark_Blue);
