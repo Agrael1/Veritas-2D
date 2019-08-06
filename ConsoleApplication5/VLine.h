@@ -1,13 +1,14 @@
 #pragma once
 #include "Frame.h"
+#include "Pipeline.h"
 #include "EngineCommons.h"
 
 #define c_class VLine
 
-typedef struct
-{
-	size_t SV_PrimID;
-}IAOut;
+//typedef struct
+//{
+//	size_t SV_PrimID;
+//}IAOut;
 
 class
 {

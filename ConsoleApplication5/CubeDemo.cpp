@@ -87,7 +87,7 @@ bool virtual(OnUserCreate)(void* self)
 	this->bStop = false;
 	srand((unsigned int)time(NULL));
 	
-	this->model = new(Triangle,
+	this->model = new(LoaderTest,
 		0.0f,
 		0.0f,
 		0.0f,
@@ -97,7 +97,8 @@ bool virtual(OnUserCreate)(void* self)
 		0.0f,
 		0.0f,
 		0.0f,
-		0.0f);	//scale
+		0.0f,
+		0.9f);	//scale
 	
 	this->pPl->VS = this->model->VS;
 	this->pPl->GS = this->model->GS;

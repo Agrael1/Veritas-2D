@@ -1,7 +1,6 @@
 #pragma once
 #include "VeritasEngine.h"
 #include "VTypes.h"
-#include "IndexedTriangleList.h"
 #include "VLine.h"
 #include "Light.h"
 #include "Camera.h"
@@ -19,5 +18,5 @@ class
 	struct DirectionalLight* pLight;
 
 	bool bStop;
-	struct Triangle* model;
+	struct LoaderTest* model;
 };

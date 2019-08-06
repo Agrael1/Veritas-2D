@@ -4,10 +4,10 @@
 #include "VeritasMath.h"
 #include "EngineCommons.h"
 
-//typedef struct
-//{
-//	size_t SV_PrimID;
-//}IAOut;
+typedef struct
+{
+	size_t SV_PrimID;
+}IAOut;
 
 #define c_class Pipeline
 

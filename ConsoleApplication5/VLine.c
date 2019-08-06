@@ -38,7 +38,7 @@ inline void DrawFlatTriangle(selfptr,
 
 	for (int y = yStart; y < yEnd; y++,
 		VSOutAdd(itEdge0, itEdge0, dv0,size),
-		VSOutAdd(itEdge1, itEdge0, dv1,size))
+		VSOutAdd(itEdge1, itEdge1, dv1,size))
 	{
 		// calculate start and end pixels
 		const int xStart = max((int)ceilf(itEdge0->m128_f32[0] - 0.5f), 0);
@@ -164,12 +164,11 @@ inline void Transform(const selfptr, SVMVECTOR* v)
 	// perform homo -> ndc on xyz / perspective-correct interpolative divide on all other attributes
 	const float wInv = 1.0f / v->c.w;
 	VSOutScale(v, v, wInv, self->VS->VSOutSize);
-		//TODO: fix that schitt
 	const float HalfViewportWidth = self->gfx->nFrameLength * 0.5f;
 	const float HalfViewportHeight = self->gfx->nFrameHeight * 0.5f;
 
-	VMVECTOR Scale = VMVectorSet(HalfViewportWidth, -HalfViewportHeight, 0.0f, 0.0f);
-	VMVECTOR Offset = VMVectorSet(HalfViewportWidth, HalfViewportHeight, 0.0f, 0.0f);
+	VMVECTOR Scale = VMVectorSet(HalfViewportWidth, -HalfViewportHeight, 1.0f, 0.0f);
+	VMVECTOR Offset = VMVectorSet(HalfViewportWidth, HalfViewportHeight, 1.0f, 0.0f);
 	v->v = VMVectorMultiplyAdd(v->v, Scale, Offset);
 	v->c.w = wInv;
 }
@@ -208,19 +207,24 @@ inline void Clip1V(selfptr, SVMVECTOR* v0, SVMVECTOR* v1, SVMVECTOR* v2, size_t 
 	const float alphaA = (-v0->c.z) / (v1->c.z - v0->c.z);
 	const float alphaB = (-v0->c.z) / (v2->c.z - v0->c.z);
 	// interpolate to get v0a and v0b
-	void* v0a = _alloca(VSize);
+	void* v0a1 = _alloca(VSize);
+	void* v0a2 = _alloca(VSize);
 	void* v0b = _alloca(VSize);
+	void* v2b = _alloca(VSize);
 	if (VSize != sizeof(VMVECTOR))
 	{
-		memcpy_s(v0a, VSize, v0 + sizeof(VMVECTOR), VSize - sizeof(VMVECTOR));
+		memcpy_s(v0a1, VSize, v0 + sizeof(VMVECTOR), VSize - sizeof(VMVECTOR));
 		memcpy_s(v0b, VSize, v0 + sizeof(VMVECTOR), VSize - sizeof(VMVECTOR));
 	}
-	VSOutInterpolate(v0a, v0, v1, alphaA, VSize);
+	VSOutInterpolate(v0a1, v0, v1, alphaA, VSize);
 	VSOutInterpolate(v0b, v0, v2, alphaB, VSize);
 
+	memcpy_s(v0a2, VSize, v0a1, VSize);
+	memcpy_s(v2b, VSize, v2, VSize);
+
 	// draw triangles
-	V_ProcessTriangle(self, v0a, v1, v2);
-	V_ProcessTriangle(self, v0b, v0a, v2);
+	V_ProcessTriangle(self, v0a1, v1, v2);
+	V_ProcessTriangle(self, v0b, v0a2, v2b);
 }
 inline void Clip2V(selfptr, SVMVECTOR* v0, SVMVECTOR* v1, SVMVECTOR* v2, size_t VSize)
 {

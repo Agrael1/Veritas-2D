@@ -1,92 +1,93 @@
 //#include "GSBase.h"
 //#include "VSBase.h"
 //#include "PSBase.h"
+//#include "Color.h"
 //#include "Standard.h"
 //#include "Pipeline.h"
 //#include "Class.h"
 //
-////IAOut ia;
+//IAOut ia;
 //
-////inline void DrawFlatTriangle(selfptr,
-////	SVMVECTOR* it0,
-////	SVMVECTOR* it1,
-////	SVMVECTOR* it2,
-////	FVMVECTOR* dv0,
-////	FVMVECTOR* dv1,
-////	VMVECTOR itEdge1)
-////{
-////	account(self);
-////	
-////	// create edge interpolant for left edge (always v0)
-////	VMVECTOR itEdge0 = it0->v;
-////
-////	// calculate start and end scanlines
-////	const int yStart = max((int)ceilf(it0->c.y - 0.5f), 0);
-////	const int yEnd = min((int)ceilf(it2->c.y - 0.5f), (int)this->gfx->nFrameHeight - 1); // the scanline AFTER the last line drawn
-////
-////	// do interpolant prestep
-////	const float step = ((float)yStart + 0.5f - it0->c.y);
-////	itEdge0 = VMVectorAdd(itEdge0, VMVectorScale(*dv0, step));
-////	itEdge1 = VMVectorAdd(itEdge1, VMVectorScale(*dv1, step));
-////
-////	for (int y = yStart; y < yEnd; y++,
-////		itEdge0 = VMVectorAdd(itEdge0, *dv0), 
-////		itEdge1 = VMVectorAdd(itEdge1, *dv1))
-////	{
-////		// calculate start and end pixels
-////		const int xStart = max((int)ceilf(itEdge0.m128_f32[0] - 0.5f),0);
-////		const int xEnd = min((int)ceilf(itEdge1.m128_f32[0] - 0.5f), (int)this->gfx->nFrameLength-1); // the pixel AFTER the last pixel drawn
-////
-////														  // create scanline interpolant startpoint
-////														  // (some waste for interpolating x,y,z, but makes life easier not having
-////														  //  to split them off, and z will be needed in the future anyways...)
-////		SVMVECTOR iLine = { .v = itEdge0 };
-////
-////		//// calculate delta scanline interpolant / dx
-////		const float dx = itEdge1.m128_f32[0] - itEdge0.m128_f32[0];
-////		FVMVECTOR diLine = VMVectorScale( VMVectorSubtract(itEdge1, iLine.v), 1.0f / dx);
-////
-////		// prestep scanline interpolant
-////		iLine.v = VMVectorAdd(iLine.v, VMVectorScale(diLine, ((float)xStart + 0.5f - itEdge0.m128_f32[0])));
-////
-////		for (int x = xStart; x < xEnd; x++, 
-////			iLine.v = VMVectorAdd(iLine.v,diLine))
-////		{
-////			if (self->gfx->method->DepthTest(self->gfx, x, y, iLine.c.z))
-////			{
-////				// invoke pixel shader with interpolated vertex attributes
-////				// and use result to set the pixel color on the screen
-////				this->gfx->method->PrintFrame(this->gfx, x, y, self->PS->Apply(self->PS, nullptr));
-////			}
-////		}
-////	}
-////}
-////inline void DrawFlatTopTriangle2(selfptr, SVMVECTOR* it0,
-////	SVMVECTOR* it1,
-////	SVMVECTOR* it2)
-////{
-////	// calulcate dVertex / dy
-////	// change in interpolant for every 1 change in y
-////	const float delta_y = 1.0f / (it2->c.y - it0->c.y);
-////	FVMVECTOR dit0 = VMVectorScale(VMVectorSubtract(it2->v, it0->v), delta_y);
-////	FVMVECTOR dit1 = VMVectorScale(VMVectorSubtract(it2->v, it1->v), delta_y);
-////
-////	// call the flat triangle render routine, right edge interpolant is it1
-////	DrawFlatTriangle(self, it0, it1, it2, &dit0, &dit1, it1->v);
-////}
-////inline void DrawFlatBottomTriangle2(selfptr, SVMVECTOR* it0,
-////	SVMVECTOR* it1,
-////	SVMVECTOR* it2)
-////{
-////	// calulcate dVertex / dy
-////	// change in interpolant for every 1 change in y
-////	const float delta_y = 1.0f / (it2->c.y - it0->c.y);
-////	FVMVECTOR dit0 = VMVectorScale(VMVectorSubtract(it1->v, it0->v), delta_y);
-////	FVMVECTOR dit1 = VMVectorScale(VMVectorSubtract(it2->v, it0->v), delta_y);
-////
-////	// call the flat triangle render routine, right edge interpolant is it0
-////	DrawFlatTriangle(self, it0, it1, it2, &dit0, &dit1, it0->v);
-////}
+//inline void DrawFlatTriangle(selfptr,
+//	SVMVECTOR* it0,
+//	SVMVECTOR* it1,
+//	SVMVECTOR* it2,
+//	FVMVECTOR* dv0,
+//	FVMVECTOR* dv1,
+//	VMVECTOR itEdge1)
+//{
+//	account(self);
+//	
+//	// create edge interpolant for left edge (always v0)
+//	VMVECTOR itEdge0 = it0->v;
+//
+//	// calculate start and end scanlines
+//	const int yStart = max((int)ceilf(it0->c.y - 0.5f), 0);
+//	const int yEnd = min((int)ceilf(it2->c.y - 0.5f), (int)this->gfx->nFrameHeight - 1); // the scanline AFTER the last line drawn
+//
+//	// do interpolant prestep
+//	const float step = ((float)yStart + 0.5f - it0->c.y);
+//	itEdge0 = VMVectorAdd(itEdge0, VMVectorScale(*dv0, step));
+//	itEdge1 = VMVectorAdd(itEdge1, VMVectorScale(*dv1, step));
+//
+//	for (int y = yStart; y < yEnd; y++,
+//		itEdge0 = VMVectorAdd(itEdge0, *dv0), 
+//		itEdge1 = VMVectorAdd(itEdge1, *dv1))
+//	{
+//		// calculate start and end pixels
+//		const int xStart = max((int)ceilf(itEdge0.m128_f32[0] - 0.5f),0);
+//		const int xEnd = min((int)ceilf(itEdge1.m128_f32[0] - 0.5f), (int)this->gfx->nFrameLength-1); // the pixel AFTER the last pixel drawn
+//
+//														  // create scanline interpolant startpoint
+//														  // (some waste for interpolating x,y,z, but makes life easier not having
+//														  //  to split them off, and z will be needed in the future anyways...)
+//		SVMVECTOR iLine = { .v = itEdge0 };
+//
+//		//// calculate delta scanline interpolant / dx
+//		const float dx = itEdge1.m128_f32[0] - itEdge0.m128_f32[0];
+//		FVMVECTOR diLine = VMVectorScale( VMVectorSubtract(itEdge1, iLine.v), 1.0f / dx);
+//
+//		// prestep scanline interpolant
+//		iLine.v = VMVectorAdd(iLine.v, VMVectorScale(diLine, ((float)xStart + 0.5f - itEdge0.m128_f32[0])));
+//
+//		for (int x = xStart; x < xEnd; x++, 
+//			iLine.v = VMVectorAdd(iLine.v,diLine))
+//		{
+//			if (self->gfx->method->DepthTest(self->gfx, x, y, iLine.c.z))
+//			{
+//				// invoke pixel shader with interpolated vertex attributes
+//				// and use result to set the pixel color on the screen
+//				this->gfx->method->PrintFrame(this->gfx, x, y, self->PS->Apply(self->PS, nullptr));
+//			}
+//		}
+//	}
+//}
+//inline void DrawFlatTopTriangle2(selfptr, SVMVECTOR* it0,
+//	SVMVECTOR* it1,
+//	SVMVECTOR* it2)
+//{
+//	// calulcate dVertex / dy
+//	// change in interpolant for every 1 change in y
+//	const float delta_y = 1.0f / (it2->c.y - it0->c.y);
+//	FVMVECTOR dit0 = VMVectorScale(VMVectorSubtract(it2->v, it0->v), delta_y);
+//	FVMVECTOR dit1 = VMVectorScale(VMVectorSubtract(it2->v, it1->v), delta_y);
+//
+//	// call the flat triangle render routine, right edge interpolant is it1
+//	DrawFlatTriangle(self, it0, it1, it2, &dit0, &dit1, it1->v);
+//}
+//inline void DrawFlatBottomTriangle2(selfptr, SVMVECTOR* it0,
+//	SVMVECTOR* it1,
+//	SVMVECTOR* it2)
+//{
+//	// calulcate dVertex / dy
+//	// change in interpolant for every 1 change in y
+//	const float delta_y = 1.0f / (it2->c.y - it0->c.y);
+//	FVMVECTOR dit0 = VMVectorScale(VMVectorSubtract(it1->v, it0->v), delta_y);
+//	FVMVECTOR dit1 = VMVectorScale(VMVectorSubtract(it2->v, it0->v), delta_y);
+//
+//	// call the flat triangle render routine, right edge interpolant is it0
+//	DrawFlatTriangle(self, it0, it1, it2, &dit0, &dit1, it0->v);
+//}
 //void _DrawTriangle(selfptr, SVMVECTOR* v0, SVMVECTOR* v1, SVMVECTOR* v2)
 //{
 //	if (v1->c.y < v0->c.y) swapptr(&v0, &v1);
@@ -152,28 +153,33 @@
 //inline void Clip1V(selfptr, SVMVECTOR* v0, SVMVECTOR* v1, SVMVECTOR* v2, size_t VSize)
 //{
 //	// calculate alpha values for getting adjusted vertices
-//	const float alphaA = (-v0->c.z) / (v1->c.z - v0->c.z);
-//	const float alphaB = (-v0->c.z) / (v2->c.z - v0->c.z);
+//	const float alphaA = (2.0f-v0->c.z) / (v1->c.z - v0->c.z);
+//	const float alphaB = (2.0f-v0->c.z) / (v2->c.z - v0->c.z);
 //	// interpolate to get v0a and v0b
-//	void* v0a = _alloca(VSize);
-//	void* v0b = _alloca(VSize);
+//	VMVECTOR* v0a1 = _alloca(VSize);
+//	VMVECTOR* v0a2 = _alloca(VSize);
+//	VMVECTOR* v0b = _alloca(VSize);
+//	VMVECTOR* v2b = _alloca(VSize);
 //	if (VSize != sizeof(VMVECTOR))
 //	{
-//		memcpy_s(v0a, VSize, v0 + sizeof(VMVECTOR), VSize - sizeof(VMVECTOR));
+//		memcpy_s(v0a1, VSize, v0 + sizeof(VMVECTOR), VSize - sizeof(VMVECTOR));
+//		memcpy_s(v0a2, VSize, v0 + sizeof(VMVECTOR), VSize - sizeof(VMVECTOR));
 //		memcpy_s(v0b, VSize, v0 + sizeof(VMVECTOR), VSize - sizeof(VMVECTOR));
+//		memcpy_s(v2b, VSize, v2 , VSize);
 //	}
 //
-//	*(VMVECTOR*)v0a = VMVectorLerp(v0->v, v1->v, alphaA);
-//	*(VMVECTOR*)v0b = VMVectorLerp(v0->v, v2->v, alphaB);
+//	*v0a1 = VMVectorLerp(v0->v, v1->v, alphaA);
+//	*v0a2 = *v0a1;
+//	*v0b = VMVectorLerp(v0->v, v2->v, alphaB);
 //	// draw triangles
-//	_ProcessTriangle(self, v0a, v1, v2);
-//	_ProcessTriangle(self, v0b, v0a, v2);
+//	_ProcessTriangle(self, v0a1, v1, v2);
+//	_ProcessTriangle(self, v0b, v0a2, v2b);
 //}
 //inline void Clip2V(selfptr, SVMVECTOR* v0, SVMVECTOR* v1, SVMVECTOR* v2)
 //{
 //	// calculate alpha values for getting adjusted vertices
-//	const float alpha0 = (-v0->c.z) / (v2->c.z - v0->c.z);
-//	const float alpha1 = (-v1->c.z) / (v2->c.z - v1->c.z);
+//	const float alpha0 = (2.0f - v0->c.z) / (v2->c.z - v0->c.z);
+//	const float alpha1 = (2.0f - v1->c.z) / (v2->c.z - v1->c.z);
 //	// interpolate to get v0a and v0b
 //	v0->v = VMVectorLerp(v0->v, v2->v, alpha0);
 //	v1->v = VMVectorLerp(v1->v, v2->v, alpha1);
@@ -214,21 +220,21 @@
 //		{
 //			return;
 //		}
-//		if (v0->c.z < 0.0f &&
-//			v1->c.z < 0.0f &&
-//			v2->c.z < 0.0f)
+//		if (v0->c.z < 2.0f &&
+//			v1->c.z < 2.0f &&
+//			v2->c.z < 2.0f)
 //		{
 //			return;
 //		}
 //	}
 //	// near clipping tests
-//	if (v0->c.z < 0.0f)
+//	if (v0->c.z < 2.0f)
 //	{
-//		if (v1->c.z < 0.0f)
+//		if (v1->c.z < 2.0f)
 //		{
 //			Clip2V(self, v0, v1, v2);
 //		}
-//		else if (v2->c.z < 0.0f)
+//		else if (v2->c.z < 2.0f)
 //		{
 //			Clip2V(self, v0, v2, v1);
 //		}
@@ -237,9 +243,9 @@
 //			Clip1V(self, v0, v1, v2, VSize);
 //		}
 //	}
-//	else if (v1->c.z < 0.0f)
+//	else if (v1->c.z < 2.0f)
 //	{
-//		if (v2->c.z < 0.0f)
+//		if (v2->c.z < 2.0f)
 //		{
 //			Clip2V(self, v1, v2, v0);
 //		}
@@ -248,7 +254,7 @@
 //			Clip1V(self, v1, v0, v2, VSize);
 //		}
 //	}
-//	else if (v2->c.z < 0.0f)
+//	else if (v2->c.z < 2.0f)
 //	{
 //		Clip1V(self, v2, v0, v1, VSize);
 //	}
