@@ -1,6 +1,6 @@
 #pragma once
 #include "GSBase.h"
-#include "Pipeline.h"
+#include "VLine.h"
 #include "EngineCommons.h"
 
 #define c_class FlatLightGS

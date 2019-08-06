@@ -1,5 +1,6 @@
 #include "Icosphere.h"
 #include "LoaderTest.h"
+#include "Triangle.h"
 
 #include "DefaultVS.h"
 #include "FlatLightGS.h"
@@ -36,7 +37,7 @@ void virtual(HandleControls)(void* self, const struct Keyboard* kbd, double fEla
 	account(self);
 	if (kbd->method->KeyPressed(kbd, 'W'))
 	{
-		if(this->pCam->r > 5.0f)
+		if(this->pCam->r > 1.0f)
 			this->pCam->r -= 8.0f*(float)fElapsedTime;
 	}
 	if (kbd->method->KeyPressed(kbd, 'S'))
@@ -44,12 +45,20 @@ void virtual(HandleControls)(void* self, const struct Keyboard* kbd, double fEla
 		if (this->pCam->r < 40.0f)
 			this->pCam->r += 8.0f*(float)fElapsedTime;
 	}
+	if (kbd->method->KeyPressed(kbd, 'A'))
+	{
+		this->pCam->theta += 8.0f*(float)fElapsedTime;
+	}
+	if (kbd->method->KeyPressed(kbd, 'D'))
+	{
+		this->pCam->theta -= 8.0f*(float)fElapsedTime;
+	}
 }
 bool virtual(OnUserCreate)(void* self)
 {
 	account(self);
 	this->pCam = new(Camera); // Create an instance of a camera
-	this->pPl = new(Pipeline, base.Output);
+	this->pPl = new(VLine, base.Output);
 	this->pLight = new(DirectionalLight);
 
 	// using DB16 - DawnBringer's 16 Col Palette v1.0
@@ -78,7 +87,7 @@ bool virtual(OnUserCreate)(void* self)
 	this->bStop = false;
 	srand((unsigned int)time(NULL));
 	
-	this->model = new(LoaderTest,
+	this->model = new(Triangle,
 		0.0f,
 		0.0f,
 		0.0f,
@@ -87,19 +96,15 @@ bool virtual(OnUserCreate)(void* self)
 		0.0f,
 		0.0f,
 		0.0f,
-		-0.5f,
-		0.6f);
+		0.0f,
+		0.0f);	//scale
 	
 	this->pPl->VS = this->model->VS;
 	this->pPl->GS = this->model->GS;
 	this->pPl->PS = this->model->PS;
 
 	base.Output->projection = VMMatrixPerspectiveLH(1.0f, (float)base.Output->nFrameHeight / (float)base.Output->nFrameLength, 0.5f, 40.0f);
-
 	this->model->GS->light = this->pLight;
-	
-	// Setting up projection matrix and camera
-
 	return true;
 }
 bool virtual(OnUserUpdate)(void* self, double fElapsedSeconds)
@@ -113,13 +118,11 @@ bool virtual(OnUserUpdate)(void* self, double fElapsedSeconds)
 	base.Output->method->BeginFrame(base.Output, ' ', BG_Sky);
 	
 	//this->model->_base.method->Update(this->model, (float)fElapsedSeconds);
-	VMMATRIX Transformation = VMMatrixMultiply(this->model->_base.method->GetTransformXM(this->model), &base.Output->camera);
+	VMMATRIX Rotation = this->model->_base.method->GetTransformXM(this->model);
+	VMMATRIX Transformation = VMMatrixMultiply(Rotation, &base.Output->camera);
 	this->model->VS->ModelViewProj = VMMatrixMultiply(Transformation, &base.Output->projection);
-	this->model->VS->ModelView = VMMatrixTranspose(VMMatrixInverse(nullptr, Transformation));
 	this->pPl->method->Draw(this->pPl, &this->model->model);
-
-
-
+	
 	return true;
 }
 bool virtual(OnUserDestroy)(void* self)

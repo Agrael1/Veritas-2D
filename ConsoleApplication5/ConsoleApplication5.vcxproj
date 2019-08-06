@@ -169,6 +169,8 @@
     <ClCompile Include="ExperimentalPS.c" />
     <ClCompile Include="FlatLightGS.c" />
     <ClCompile Include="Frame.c" />
+    <ClCompile Include="GouraudPS.c" />
+    <ClCompile Include="GouraudVS.c" />
     <ClCompile Include="Icosphere.c" />
     <ClCompile Include="Keyboard.c" />
     <ClCompile Include="EntryMain.c" />
@@ -180,7 +182,9 @@
     <ClCompile Include="Pipeline.c" />
     <ClCompile Include="StringStream.c" />
     <ClCompile Include="Test.c" />
+    <ClCompile Include="Triangle.c" />
     <ClCompile Include="VeritasEngine.c" />
+    <ClCompile Include="VLine.c" />
     <ClCompile Include="Window.c" />
   </ItemGroup>
   <ItemGroup>
@@ -200,10 +204,16 @@
     <ClInclude Include="FlatLightGS.h" />
     <ClInclude Include="Frame.h" />
     <ClInclude Include="BitStack.h" />
+    <ClInclude Include="GouraudPS.h" />
+    <ClInclude Include="GouraudVS.h" />
     <ClInclude Include="GSBase.h" />
     <ClInclude Include="Icosahedron.h" />
     <ClInclude Include="Icosphere.h" />
     <ClInclude Include="IndexedTriangleList.h" />
+    <ClInclude Include="ShaderCommons.h" />
+    <ClInclude Include="Tri.h" />
+    <ClInclude Include="Triangle.h" />
+    <ClInclude Include="VLine.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="MathConstants.h" />

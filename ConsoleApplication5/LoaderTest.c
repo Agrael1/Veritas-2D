@@ -15,9 +15,9 @@ Constructor(selfptr, va_list *ap)
 {
 	struct c_class* this = ((struct Class*)TestObject)->ctor(self, ap);
 
-	float scale = 0.9f;
+	float scale = (float)va_arg(*ap, double);
 
-	const struct aiScene* pScene = aiImportFile("Models/maz503_dumper.obj",
+	const struct aiScene* pScene = aiImportFile("Models/suzanne.obj",
 		aiProcess_Triangulate |
 		aiProcess_JoinIdenticalVertices);
 	const struct aiMesh* pMesh = pScene->mMeshes[0];

@@ -91,6 +91,15 @@
     <Filter Include="Заголовочные файлы\Engine\Graphics\Shading\FlatLight">
       <UniqueIdentifier>{dadd845a-a2cd-469f-99af-36b478ffbc2c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Заголовочные файлы\Engine\Graphics\Shading\Gouraud">
+      <UniqueIdentifier>{dc6cb959-4f38-4135-8dec-02af5d1e80f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\Engine\Graphics\Shading\Flat">
+      <UniqueIdentifier>{6d763fe2-3942-42aa-9866-6a5d6ff8ba59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\Engine\Graphics\Shading\Gouraud">
+      <UniqueIdentifier>{6c4bc3af-d01f-416c-97b8-e04d8041b092}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MazeGen.c">
@@ -147,9 +156,6 @@
     <ClCompile Include="ColorIndexPS.c">
       <Filter>Файлы исходного кода\Engine\Graphics\Shading</Filter>
     </ClCompile>
-    <ClCompile Include="ExperimentalPS.c">
-      <Filter>Файлы исходного кода\Engine\Graphics\Shading</Filter>
-    </ClCompile>
     <ClCompile Include="EventQueue.c">
       <Filter>Файлы исходного кода\Engine\Framework\Containers</Filter>
     </ClCompile>
@@ -159,16 +165,31 @@
     <ClCompile Include="Icosphere.c">
       <Filter>Файлы исходного кода\Engine\Graphics\Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="DefaultVS.c">
-      <Filter>Файлы исходного кода\Engine\Graphics\Shading</Filter>
-    </ClCompile>
     <ClCompile Include="Light.c">
       <Filter>Файлы исходного кода\Engine\Graphics\Shading</Filter>
     </ClCompile>
-    <ClCompile Include="FlatLightGS.c">
-      <Filter>Файлы исходного кода\Engine\Graphics\Shading</Filter>
-    </ClCompile>
     <ClCompile Include="LoaderTest.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="DefaultVS.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\Shading\Flat</Filter>
+    </ClCompile>
+    <ClCompile Include="ExperimentalPS.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\Shading\Flat</Filter>
+    </ClCompile>
+    <ClCompile Include="FlatLightGS.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\Shading\Flat</Filter>
+    </ClCompile>
+    <ClCompile Include="GouraudVS.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\Shading\Gouraud</Filter>
+    </ClCompile>
+    <ClCompile Include="GouraudPS.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\Shading\Gouraud</Filter>
+    </ClCompile>
+    <ClCompile Include="VLine.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="Triangle.c">
       <Filter>Файлы исходного кода\Engine\Graphics\Scenes</Filter>
     </ClCompile>
   </ItemGroup>
@@ -298,6 +319,24 @@
     </ClInclude>
     <ClInclude Include="LoaderTest.h">
       <Filter>Заголовочные файлы\Engine\Graphics\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="GouraudVS.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Shading\Gouraud</Filter>
+    </ClInclude>
+    <ClInclude Include="GouraudPS.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Shading\Gouraud</Filter>
+    </ClInclude>
+    <ClInclude Include="VLine.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderCommons.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Triangle.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Tri.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Primitives</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

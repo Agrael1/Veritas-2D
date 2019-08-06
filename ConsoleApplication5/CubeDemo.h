@@ -2,7 +2,7 @@
 #include "VeritasEngine.h"
 #include "VTypes.h"
 #include "IndexedTriangleList.h"
-#include "Pipeline.h"
+#include "VLine.h"
 #include "Light.h"
 #include "Camera.h"
 #include "EngineCommons.h"
@@ -15,9 +15,9 @@ class
 	
 	float fTheta;
 	struct Camera* pCam;
-	struct Pipeline* pPl;
+	struct VLine* pPl;
 	struct DirectionalLight* pLight;
 
 	bool bStop;
-	struct Icosphere* model;
+	struct Triangle* model;
 };

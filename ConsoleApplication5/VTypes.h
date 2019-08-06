@@ -84,13 +84,3 @@ typedef union
 	VMFLOAT4 c;
 	VMVECTOR v;
 }SVMVECTOR;
-
-typedef struct
-{
-	VMVECTOR p[3];
-}Triangle;
-
-typedef struct
-{
-	Triangle *p;
-}mesh;

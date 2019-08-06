@@ -206,3 +206,66 @@ inline VMVECTOR __vectorcall VMVector3Project
 
 	return Result;
 }
+
+// Transforms normal, ignoring 4th component of the matrix
+inline VMVECTOR __vectorcall VMVector3TransformNormal
+(
+	FVMVECTOR V,
+	FXMMATRIX M
+)
+{
+	VMVECTOR vResult = XM_PERMUTE_PS(V, _MM_SHUFFLE(0, 0, 0, 0));
+	vResult = _mm_mul_ps(vResult, M.r[0]);
+	VMVECTOR vTemp = XM_PERMUTE_PS(V, _MM_SHUFFLE(1, 1, 1, 1));
+	vTemp = _mm_mul_ps(vTemp, M.r[1]);
+	vResult = _mm_add_ps(vResult, vTemp);
+	vTemp = XM_PERMUTE_PS(V, _MM_SHUFFLE(2, 2, 2, 2));
+	vTemp = _mm_mul_ps(vTemp, M.r[2]);
+	vResult = _mm_add_ps(vResult, vTemp);
+	return vResult;
+}
+
+// Compares 2 vectors <=
+inline bool __vectorcall VMVector3LessOrEqual
+(
+	FVMVECTOR V1,
+	FVMVECTOR V2
+)
+{
+	VMVECTOR vTemp = _mm_cmple_ps(V1, V2);
+	return (((_mm_movemask_ps(vTemp) & 7) == 7) != 0);
+}
+
+inline bool __vectorcall VMVector3InBounds
+(
+	FVMVECTOR V,
+	FVMVECTOR from,
+	FVMVECTOR to
+)
+{
+	// Test if less than or equal
+	VMVECTOR vTemp1 = _mm_cmple_ps(V, to);
+	// Test if greater or equal (Reversed)
+	VMVECTOR vTemp2 = _mm_cmple_ps(from, V);
+	// Blend answers
+	vTemp1 = _mm_and_ps(vTemp1, vTemp2);
+	// x,y and z in bounds? (w is don't care)
+	return (((_mm_movemask_ps(vTemp1) & 0x7) == 0x7) != 0);
+}
+
+inline bool __vectorcall VMVector3OutOfBounds
+(
+	FVMVECTOR V,
+	FVMVECTOR from,
+	FVMVECTOR to
+)
+{
+	// Test if less than or equal
+	VMVECTOR vTemp1 = _mm_cmple_ps(V, from);
+	// Test if greater or equal (Reversed)
+	VMVECTOR vTemp2 = _mm_cmple_ps(to, V);
+	// Blend answers
+	vTemp1 = _mm_or_ps(vTemp1, vTemp2);
+	// x,y and z in bounds? (w is don't care)
+	return (((_mm_movemask_ps(vTemp1) & 0x7) == 0x7) != 0);
+}

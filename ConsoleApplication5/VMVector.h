@@ -317,6 +317,7 @@ inline VMVECTOR __vectorcall VMVectorLerp
 	return _mm_add_ps(Result, V0);
 }
 
+// Dot Product between 2 4-component vectors
 inline VMVECTOR __vectorcall VMVector4Dot
 (
 	FVMVECTOR V1,
@@ -330,4 +331,27 @@ inline VMVECTOR __vectorcall VMVector4Dot
 	vTemp = _mm_shuffle_ps(vTemp, vTemp2, _MM_SHUFFLE(0, 3, 0, 0));  // Copy W to the Z position
 	vTemp = _mm_add_ps(vTemp, vTemp2);           // Add Z and W together
 	return XM_PERMUTE_PS(vTemp, _MM_SHUFFLE(2, 2, 2, 2));    // Splat Z and return
+}
+
+inline VMVECTOR __vectorcall VMVector4Transform
+(
+	FVMVECTOR V,
+	FXMMATRIX M
+)
+{
+	// Splat x,y,z and w
+	VMVECTOR vTempX = XM_PERMUTE_PS(V, _MM_SHUFFLE(0, 0, 0, 0));
+	VMVECTOR vTempY = XM_PERMUTE_PS(V, _MM_SHUFFLE(1, 1, 1, 1));
+	VMVECTOR vTempZ = XM_PERMUTE_PS(V, _MM_SHUFFLE(2, 2, 2, 2));
+	VMVECTOR vTempW = XM_PERMUTE_PS(V, _MM_SHUFFLE(3, 3, 3, 3));
+	// Mul by the matrix
+	vTempX = _mm_mul_ps(vTempX, M.r[0]);
+	vTempY = _mm_mul_ps(vTempY, M.r[1]);
+	vTempZ = _mm_mul_ps(vTempZ, M.r[2]);
+	vTempW = _mm_mul_ps(vTempW, M.r[3]);
+	// Add them all together
+	vTempX = _mm_add_ps(vTempX, vTempY);
+	vTempZ = _mm_add_ps(vTempZ, vTempW);
+	vTempX = _mm_add_ps(vTempX, vTempZ);
+	return vTempX;
 }
