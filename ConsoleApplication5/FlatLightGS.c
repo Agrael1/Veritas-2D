@@ -13,7 +13,7 @@ void virtual(Apply)(selfptr, void* v0, void* v1, void* v2)
 	if (self->light)
 	{
 		Vertex_Icosphere* v0p = v0;
-		VMVECTOR n = VMVector3Dot(self->light->LightCBuf.dir.v, VMVectorNegate(v0p->n));
+		VMVECTOR n = VMVector3Dot(self->light->LightCBuf.dir.v, VMVector3Normalize(VMVectorNegate(v0p->n)));
 
 		gs.color = Pick(BG_Ditry_Gray, (Byte)(n.m128_f32[0]*4.0f), self->light->LightCBuf.diffuse);
 	}

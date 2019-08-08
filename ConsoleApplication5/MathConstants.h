@@ -186,3 +186,20 @@ XMGLOBALCONST XMVECTORF32 g_XMLgE = { +1.442695f, +1.442695f, +1.442695f, +1.442
 XMGLOBALCONST XMVECTORF32 g_XMInvLgE = { +6.93147182e-1f, +6.93147182e-1f, +6.93147182e-1f, +6.93147182e-1f };
 
 #define XM_PERMUTE_PS( v, c ) _mm_shuffle_ps( v, v, c )
+#define XM3UNPACK3INTO4(l1,l2,l3) \
+    VMVECTOR V3 = _mm_shuffle_ps(l2,l3,_MM_SHUFFLE(0,0,3,2));\
+    VMVECTOR V2 = _mm_shuffle_ps(l2,l1,_MM_SHUFFLE(3,3,1,0));\
+    V2 = XM_PERMUTE_PS(V2,_MM_SHUFFLE(1,1,0,2));\
+    VMVECTOR V4 = _mm_castsi128_ps( _mm_srli_si128(_mm_castps_si128(L3),32/8) );
+#define XM3PACK4INTO3(v2x) \
+    v2x = _mm_shuffle_ps(V2,V3,_MM_SHUFFLE(1,0,2,1));\
+    V2 = _mm_shuffle_ps(V2,V1,_MM_SHUFFLE(2,2,0,0));\
+    V1 = _mm_shuffle_ps(V1,V2,_MM_SHUFFLE(0,2,1,0));\
+    V3 = _mm_shuffle_ps(V3,V4,_MM_SHUFFLE(0,0,2,2));\
+    V3 = _mm_shuffle_ps(V3,V4,_MM_SHUFFLE(2,1,2,0));
+
+#if defined(_XM_NO_MOVNT_)
+#define XM_STREAM_PS( p, a ) _mm_store_ps( p, a )
+#else
+#define XM_STREAM_PS( p, a ) _mm_stream_ps( p, a )
+#endif

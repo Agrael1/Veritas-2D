@@ -236,36 +236,508 @@ inline bool __vectorcall VMVector3LessOrEqual
 	return (((_mm_movemask_ps(vTemp) & 7) == 7) != 0);
 }
 
-inline bool __vectorcall VMVector3InBounds
+// Transforms coordinates in stream fashion
+inline VMFLOAT4* __vectorcall VMVector3TransformStream
 (
-	FVMVECTOR V,
-	FVMVECTOR from,
-	FVMVECTOR to
+	VMFLOAT4*       pOutputStream,
+	size_t          OutputStride,
+	const VMFLOAT3* pInputStream,
+	size_t          InputStride,
+	size_t          VectorCount,
+	FXMMATRIX       M
 )
 {
-	// Test if less than or equal
-	VMVECTOR vTemp1 = _mm_cmple_ps(V, to);
-	// Test if greater or equal (Reversed)
-	VMVECTOR vTemp2 = _mm_cmple_ps(from, V);
-	// Blend answers
-	vTemp1 = _mm_and_ps(vTemp1, vTemp2);
-	// x,y and z in bounds? (w is don't care)
-	return (((_mm_movemask_ps(vTemp1) & 0x7) == 0x7) != 0);
+	assert(pOutputStream != nullptr);
+	assert(pInputStream != nullptr);
+
+	assert(InputStride >= sizeof(VMFLOAT3));
+	_Analysis_assume_(InputStride >= sizeof(VMFLOAT3));
+
+	assert(OutputStride >= sizeof(VMFLOAT4));
+	_Analysis_assume_(OutputStride >= sizeof(VMFLOAT4));
+
+
+	const uint8_t* pInputVector = (const uint8_t*)pInputStream;
+	uint8_t* pOutputVector = (uint8_t*)pOutputStream;
+
+	FVMVECTOR row0 = M.r[0];
+	FVMVECTOR row1 = M.r[1];
+	FVMVECTOR row2 = M.r[2];
+	FVMVECTOR row3 = M.r[3];
+
+	size_t i = 0;
+	size_t four = VectorCount >> 2;
+	if (four > 0)
+	{
+		if (InputStride == sizeof(VMFLOAT3))
+		{
+			if (!((uintptr_t)pOutputStream & 0xF) && !(OutputStride & 0xF))
+			{
+				// Packed input, aligned output
+				for (size_t j = 0; j < four; ++j)
+				{
+					__m128 V1 = _mm_loadu_ps((const float*)(pInputVector));
+					__m128 L2 = _mm_loadu_ps((const float*)(pInputVector + 16));
+					__m128 L3 = _mm_loadu_ps((const float*)(pInputVector + 32));
+					pInputVector += sizeof(VMFLOAT3) * 4;
+
+					// Unpack the 4 vectors (.w components are junk)
+					XM3UNPACK3INTO4(V1, L2, L3);
+
+					// Result 1
+					VMVECTOR Z = XM_PERMUTE_PS(V1, _MM_SHUFFLE(2, 2, 2, 2));
+					VMVECTOR Y = XM_PERMUTE_PS(V1, _MM_SHUFFLE(1, 1, 1, 1));
+					VMVECTOR X = XM_PERMUTE_PS(V1, _MM_SHUFFLE(0, 0, 0, 0));
+
+					VMVECTOR vTemp = _mm_mul_ps(Z, row2);
+					VMVECTOR vTemp2 = _mm_mul_ps(Y, row1);
+					VMVECTOR vTemp3 = _mm_mul_ps(X, row0);
+					vTemp = _mm_add_ps(vTemp, row3);
+					vTemp = _mm_add_ps(vTemp, vTemp2);
+					vTemp = _mm_add_ps(vTemp, vTemp3);
+					XM_STREAM_PS((float*)(pOutputVector), vTemp);
+					pOutputVector += OutputStride;
+
+					// Result 2
+					Z = XM_PERMUTE_PS(V2, _MM_SHUFFLE(2, 2, 2, 2));
+					Y = XM_PERMUTE_PS(V2, _MM_SHUFFLE(1, 1, 1, 1));
+					X = XM_PERMUTE_PS(V2, _MM_SHUFFLE(0, 0, 0, 0));
+
+					vTemp = _mm_mul_ps(Z, row2);
+					vTemp2 = _mm_mul_ps(Y, row1);
+					vTemp3 = _mm_mul_ps(X, row0);
+					vTemp = _mm_add_ps(vTemp, row3);
+					vTemp = _mm_add_ps(vTemp, vTemp2);
+					vTemp = _mm_add_ps(vTemp, vTemp3);
+					XM_STREAM_PS((float*)(pOutputVector), vTemp);
+					pOutputVector += OutputStride;
+
+					// Result 3
+					Z = XM_PERMUTE_PS(V3, _MM_SHUFFLE(2, 2, 2, 2));
+					Y = XM_PERMUTE_PS(V3, _MM_SHUFFLE(1, 1, 1, 1));
+					X = XM_PERMUTE_PS(V3, _MM_SHUFFLE(0, 0, 0, 0));
+
+					vTemp = _mm_mul_ps(Z, row2);
+					vTemp2 = _mm_mul_ps(Y, row1);
+					vTemp3 = _mm_mul_ps(X, row0);
+					vTemp = _mm_add_ps(vTemp, row3);
+					vTemp = _mm_add_ps(vTemp, vTemp2);
+					vTemp = _mm_add_ps(vTemp, vTemp3);
+					XM_STREAM_PS((float*)(pOutputVector), vTemp);
+					pOutputVector += OutputStride;
+
+					// Result 4
+					Z = XM_PERMUTE_PS(V4, _MM_SHUFFLE(2, 2, 2, 2));
+					Y = XM_PERMUTE_PS(V4, _MM_SHUFFLE(1, 1, 1, 1));
+					X = XM_PERMUTE_PS(V4, _MM_SHUFFLE(0, 0, 0, 0));
+
+					vTemp = _mm_mul_ps(Z, row2);
+					vTemp2 = _mm_mul_ps(Y, row1);
+					vTemp3 = _mm_mul_ps(X, row0);
+					vTemp = _mm_add_ps(vTemp, row3);
+					vTemp = _mm_add_ps(vTemp, vTemp2);
+					vTemp = _mm_add_ps(vTemp, vTemp3);
+					XM_STREAM_PS((float*)(pOutputVector), vTemp);
+					pOutputVector += OutputStride;
+
+					i += 4;
+				}
+			}
+			else
+			{
+				// Packed input, unaligned output
+				for (size_t j = 0; j < four; ++j)
+				{
+					__m128 V1 = _mm_loadu_ps((const float*)(pInputVector));
+					__m128 L2 = _mm_loadu_ps((const float*)(pInputVector + 16));
+					__m128 L3 = _mm_loadu_ps((const float*)(pInputVector + 32));
+					pInputVector += sizeof(VMFLOAT3) * 4;
+
+					// Unpack the 4 vectors (.w components are junk)
+					XM3UNPACK3INTO4(V1, L2, L3);
+
+					// Result 1
+					VMVECTOR Z = XM_PERMUTE_PS(V1, _MM_SHUFFLE(2, 2, 2, 2));
+					VMVECTOR Y = XM_PERMUTE_PS(V1, _MM_SHUFFLE(1, 1, 1, 1));
+					VMVECTOR X = XM_PERMUTE_PS(V1, _MM_SHUFFLE(0, 0, 0, 0));
+
+					VMVECTOR vTemp = _mm_mul_ps(Z, row2);
+					VMVECTOR vTemp2 = _mm_mul_ps(Y, row1);
+					VMVECTOR vTemp3 = _mm_mul_ps(X, row0);
+					vTemp = _mm_add_ps(vTemp, row3);
+					vTemp = _mm_add_ps(vTemp, vTemp2);
+					vTemp = _mm_add_ps(vTemp, vTemp3);
+					_mm_storeu_ps((float*)(pOutputVector), vTemp);
+					pOutputVector += OutputStride;
+
+					// Result 2
+					Z = XM_PERMUTE_PS(V2, _MM_SHUFFLE(2, 2, 2, 2));
+					Y = XM_PERMUTE_PS(V2, _MM_SHUFFLE(1, 1, 1, 1));
+					X = XM_PERMUTE_PS(V2, _MM_SHUFFLE(0, 0, 0, 0));
+
+					vTemp = _mm_mul_ps(Z, row2);
+					vTemp2 = _mm_mul_ps(Y, row1);
+					vTemp3 = _mm_mul_ps(X, row0);
+					vTemp = _mm_add_ps(vTemp, row3);
+					vTemp = _mm_add_ps(vTemp, vTemp2);
+					vTemp = _mm_add_ps(vTemp, vTemp3);
+					_mm_storeu_ps((float*)(pOutputVector), vTemp);
+					pOutputVector += OutputStride;
+
+					// Result 3
+					Z = XM_PERMUTE_PS(V3, _MM_SHUFFLE(2, 2, 2, 2));
+					Y = XM_PERMUTE_PS(V3, _MM_SHUFFLE(1, 1, 1, 1));
+					X = XM_PERMUTE_PS(V3, _MM_SHUFFLE(0, 0, 0, 0));
+
+					vTemp = _mm_mul_ps(Z, row2);
+					vTemp2 = _mm_mul_ps(Y, row1);
+					vTemp3 = _mm_mul_ps(X, row0);
+					vTemp = _mm_add_ps(vTemp, row3);
+					vTemp = _mm_add_ps(vTemp, vTemp2);
+					vTemp = _mm_add_ps(vTemp, vTemp3);
+					_mm_storeu_ps((float*)(pOutputVector), vTemp);
+					pOutputVector += OutputStride;
+
+					// Result 4
+					Z = XM_PERMUTE_PS(V4, _MM_SHUFFLE(2, 2, 2, 2));
+					Y = XM_PERMUTE_PS(V4, _MM_SHUFFLE(1, 1, 1, 1));
+					X = XM_PERMUTE_PS(V4, _MM_SHUFFLE(0, 0, 0, 0));
+
+					vTemp = _mm_mul_ps(Z, row2);
+					vTemp2 = _mm_mul_ps(Y, row1);
+					vTemp3 = _mm_mul_ps(X, row0);
+					vTemp = _mm_add_ps(vTemp, row3);
+					vTemp = _mm_add_ps(vTemp, vTemp2);
+					vTemp = _mm_add_ps(vTemp, vTemp3);
+					_mm_storeu_ps((float*)(pOutputVector), vTemp);
+					pOutputVector += OutputStride;
+
+					i += 4;
+				}
+			}
+		}
+	}
+
+	if (!((uintptr_t)pOutputStream & 0xF) && !(OutputStride & 0xF))
+	{
+		// Aligned output
+		for (; i < VectorCount; ++i)
+		{
+#pragma prefast( suppress : 26019, "PREfast noise: Esp:1307" )
+			VMVECTOR V = VMLoadFloat3((const VMFLOAT3*)(pInputVector));
+			pInputVector += InputStride;
+
+			VMVECTOR Z = XM_PERMUTE_PS(V, _MM_SHUFFLE(2, 2, 2, 2));
+			VMVECTOR Y = XM_PERMUTE_PS(V, _MM_SHUFFLE(1, 1, 1, 1));
+			VMVECTOR X = XM_PERMUTE_PS(V, _MM_SHUFFLE(0, 0, 0, 0));
+
+			VMVECTOR vTemp = _mm_mul_ps(Z, row2);
+			VMVECTOR vTemp2 = _mm_mul_ps(Y, row1);
+			VMVECTOR vTemp3 = _mm_mul_ps(X, row0);
+			vTemp = _mm_add_ps(vTemp, row3);
+			vTemp = _mm_add_ps(vTemp, vTemp2);
+			vTemp = _mm_add_ps(vTemp, vTemp3);
+
+			XM_STREAM_PS((float*)(pOutputVector), vTemp);
+			pOutputVector += OutputStride;
+		}
+	}
+	else
+	{
+		// Unaligned output
+		for (; i < VectorCount; ++i)
+		{
+#pragma prefast( suppress : 26019, "PREfast noise: Esp:1307" )
+			VMVECTOR V = VMLoadFloat3((const VMFLOAT3*)(pInputVector));
+			pInputVector += InputStride;
+
+			VMVECTOR Z = XM_PERMUTE_PS(V, _MM_SHUFFLE(2, 2, 2, 2));
+			VMVECTOR Y = XM_PERMUTE_PS(V, _MM_SHUFFLE(1, 1, 1, 1));
+			VMVECTOR X = XM_PERMUTE_PS(V, _MM_SHUFFLE(0, 0, 0, 0));
+
+			VMVECTOR vTemp = _mm_mul_ps(Z, row2);
+			VMVECTOR vTemp2 = _mm_mul_ps(Y, row1);
+			VMVECTOR vTemp3 = _mm_mul_ps(X, row0);
+			vTemp = _mm_add_ps(vTemp, row3);
+			vTemp = _mm_add_ps(vTemp, vTemp2);
+			vTemp = _mm_add_ps(vTemp, vTemp3);
+
+			_mm_storeu_ps((float*)(pOutputVector), vTemp);
+			pOutputVector += OutputStride;
+		}
+	}
+
+	return pOutputStream;
 }
 
-inline bool __vectorcall VMVector3OutOfBounds
+// Transforms array of normals 
+inline VMFLOAT3* __vectorcall VMVector3TransformNormalStream
 (
-	FVMVECTOR V,
-	FVMVECTOR from,
-	FVMVECTOR to
+	VMFLOAT3*       pOutputStream,
+	size_t          OutputStride,
+	const VMFLOAT3* pInputStream,
+	size_t          InputStride,
+	size_t          VectorCount,
+	FXMMATRIX       M
 )
 {
-	// Test if less than or equal
-	VMVECTOR vTemp1 = _mm_cmple_ps(V, from);
-	// Test if greater or equal (Reversed)
-	VMVECTOR vTemp2 = _mm_cmple_ps(to, V);
-	// Blend answers
-	vTemp1 = _mm_or_ps(vTemp1, vTemp2);
-	// x,y and z in bounds? (w is don't care)
-	return (((_mm_movemask_ps(vTemp1) & 0x7) == 0x7) != 0);
+	assert(pOutputStream != nullptr);
+	assert(pInputStream != nullptr);
+
+	assert(InputStride >= sizeof(VMFLOAT3));
+	_Analysis_assume_(InputStride >= sizeof(VMFLOAT3));
+
+	assert(OutputStride >= sizeof(VMFLOAT3));
+	_Analysis_assume_(OutputStride >= sizeof(VMFLOAT3));
+
+
+	const uint8_t* pInputVector = (const uint8_t*)pInputStream;
+	uint8_t* pOutputVector = (uint8_t*)pOutputStream;
+
+	FVMVECTOR row0 = M.r[0];
+	FVMVECTOR row1 = M.r[1];
+	FVMVECTOR row2 = M.r[2];
+
+	size_t i = 0;
+	size_t four = VectorCount >> 2;
+	if (four > 0)
+	{
+		if (InputStride == sizeof(VMFLOAT3))
+		{
+			if (OutputStride == sizeof(VMFLOAT3))
+			{
+				if (!((uintptr_t)pOutputStream & 0xF))
+				{
+					// Packed input, aligned & packed output
+					for (size_t j = 0; j < four; ++j)
+					{
+						__m128 V1 = _mm_loadu_ps((const float*)(pInputVector));
+						__m128 L2 = _mm_loadu_ps((const float*)(pInputVector + 16));
+						__m128 L3 = _mm_loadu_ps((const float*)(pInputVector + 32));
+						pInputVector += sizeof(VMFLOAT3) * 4;
+
+						// Unpack the 4 vectors (.w components are junk)
+						XM3UNPACK3INTO4(V1, L2, L3);
+
+						// Result 1
+						VMVECTOR Z = XM_PERMUTE_PS(V1, _MM_SHUFFLE(2, 2, 2, 2));
+						VMVECTOR Y = XM_PERMUTE_PS(V1, _MM_SHUFFLE(1, 1, 1, 1));
+						VMVECTOR X = XM_PERMUTE_PS(V1, _MM_SHUFFLE(0, 0, 0, 0));
+
+						VMVECTOR vTemp = _mm_mul_ps(Z, row2);
+						VMVECTOR vTemp2 = _mm_mul_ps(Y, row1);
+						VMVECTOR vTemp3 = _mm_mul_ps(X, row0);
+						vTemp = _mm_add_ps(vTemp, vTemp2);
+						V1 = _mm_add_ps(vTemp, vTemp3);
+
+						// Result 2
+						Z = XM_PERMUTE_PS(V2, _MM_SHUFFLE(2, 2, 2, 2));
+						Y = XM_PERMUTE_PS(V2, _MM_SHUFFLE(1, 1, 1, 1));
+						X = XM_PERMUTE_PS(V2, _MM_SHUFFLE(0, 0, 0, 0));
+
+						vTemp = _mm_mul_ps(Z, row2);
+						vTemp2 = _mm_mul_ps(Y, row1);
+						vTemp3 = _mm_mul_ps(X, row0);
+						vTemp = _mm_add_ps(vTemp, vTemp2);
+						V2 = _mm_add_ps(vTemp, vTemp3);
+
+						// Result 3
+						Z = XM_PERMUTE_PS(V3, _MM_SHUFFLE(2, 2, 2, 2));
+						Y = XM_PERMUTE_PS(V3, _MM_SHUFFLE(1, 1, 1, 1));
+						X = XM_PERMUTE_PS(V3, _MM_SHUFFLE(0, 0, 0, 0));
+
+						vTemp = _mm_mul_ps(Z, row2);
+						vTemp2 = _mm_mul_ps(Y, row1);
+						vTemp3 = _mm_mul_ps(X, row0);
+						vTemp = _mm_add_ps(vTemp, vTemp2);
+						V3 = _mm_add_ps(vTemp, vTemp3);
+
+						// Result 4
+						Z = XM_PERMUTE_PS(V4, _MM_SHUFFLE(2, 2, 2, 2));
+						Y = XM_PERMUTE_PS(V4, _MM_SHUFFLE(1, 1, 1, 1));
+						X = XM_PERMUTE_PS(V4, _MM_SHUFFLE(0, 0, 0, 0));
+
+						vTemp = _mm_mul_ps(Z, row2);
+						vTemp2 = _mm_mul_ps(Y, row1);
+						vTemp3 = _mm_mul_ps(X, row0);
+						vTemp = _mm_add_ps(vTemp, vTemp2);
+						V4 = _mm_add_ps(vTemp, vTemp3);
+
+						// Pack and store the vectors
+						XM3PACK4INTO3(vTemp);
+						XM_STREAM_PS((float*)(pOutputVector), V1);
+						XM_STREAM_PS((float*)(pOutputVector + 16), vTemp);
+						XM_STREAM_PS((float*)(pOutputVector + 32), V3);
+						pOutputVector += sizeof(VMFLOAT3) * 4;
+						i += 4;
+					}
+				}
+				else
+				{
+					// Packed input, unaligned & packed output
+					for (size_t j = 0; j < four; ++j)
+					{
+						__m128 V1 = _mm_loadu_ps((const float*)(pInputVector));
+						__m128 L2 = _mm_loadu_ps((const float*)(pInputVector + 16));
+						__m128 L3 = _mm_loadu_ps((const float*)(pInputVector + 32));
+						pInputVector += sizeof(VMFLOAT3) * 4;
+
+						// Unpack the 4 vectors (.w components are junk)
+						XM3UNPACK3INTO4(V1, L2, L3);
+
+						// Result 1
+						VMVECTOR Z = XM_PERMUTE_PS(V1, _MM_SHUFFLE(2, 2, 2, 2));
+						VMVECTOR Y = XM_PERMUTE_PS(V1, _MM_SHUFFLE(1, 1, 1, 1));
+						VMVECTOR X = XM_PERMUTE_PS(V1, _MM_SHUFFLE(0, 0, 0, 0));
+
+						VMVECTOR vTemp = _mm_mul_ps(Z, row2);
+						VMVECTOR vTemp2 = _mm_mul_ps(Y, row1);
+						VMVECTOR vTemp3 = _mm_mul_ps(X, row0);
+						vTemp = _mm_add_ps(vTemp, vTemp2);
+						V1 = _mm_add_ps(vTemp, vTemp3);
+
+						// Result 2
+						Z = XM_PERMUTE_PS(V2, _MM_SHUFFLE(2, 2, 2, 2));
+						Y = XM_PERMUTE_PS(V2, _MM_SHUFFLE(1, 1, 1, 1));
+						X = XM_PERMUTE_PS(V2, _MM_SHUFFLE(0, 0, 0, 0));
+
+						vTemp = _mm_mul_ps(Z, row2);
+						vTemp2 = _mm_mul_ps(Y, row1);
+						vTemp3 = _mm_mul_ps(X, row0);
+						vTemp = _mm_add_ps(vTemp, vTemp2);
+						V2 = _mm_add_ps(vTemp, vTemp3);
+
+						// Result 3
+						Z = XM_PERMUTE_PS(V3, _MM_SHUFFLE(2, 2, 2, 2));
+						Y = XM_PERMUTE_PS(V3, _MM_SHUFFLE(1, 1, 1, 1));
+						X = XM_PERMUTE_PS(V3, _MM_SHUFFLE(0, 0, 0, 0));
+
+						vTemp = _mm_mul_ps(Z, row2);
+						vTemp2 = _mm_mul_ps(Y, row1);
+						vTemp3 = _mm_mul_ps(X, row0);
+						vTemp = _mm_add_ps(vTemp, vTemp2);
+						V3 = _mm_add_ps(vTemp, vTemp3);
+
+						// Result 4
+						Z = XM_PERMUTE_PS(V4, _MM_SHUFFLE(2, 2, 2, 2));
+						Y = XM_PERMUTE_PS(V4, _MM_SHUFFLE(1, 1, 1, 1));
+						X = XM_PERMUTE_PS(V4, _MM_SHUFFLE(0, 0, 0, 0));
+
+						vTemp = _mm_mul_ps(Z, row2);
+						vTemp2 = _mm_mul_ps(Y, row1);
+						vTemp3 = _mm_mul_ps(X, row0);
+						vTemp = _mm_add_ps(vTemp, vTemp2);
+						V4 = _mm_add_ps(vTemp, vTemp3);
+
+						// Pack and store the vectors
+						XM3PACK4INTO3(vTemp);
+						_mm_storeu_ps((float*)(pOutputVector), V1);
+						_mm_storeu_ps((float*)(pOutputVector + 16), vTemp);
+						_mm_storeu_ps((float*)(pOutputVector + 32), V3);
+						pOutputVector += sizeof(VMFLOAT3) * 4;
+						i += 4;
+					}
+				}
+			}
+			else
+			{
+				// Packed input, unpacked output
+				for (size_t j = 0; j < four; ++j)
+				{
+					__m128 V1 = _mm_loadu_ps((const float*)(pInputVector));
+					__m128 L2 = _mm_loadu_ps((const float*)(pInputVector + 16));
+					__m128 L3 = _mm_loadu_ps((const float*)(pInputVector + 32));
+					pInputVector += sizeof(VMFLOAT3) * 4;
+
+					// Unpack the 4 vectors (.w components are junk)
+					XM3UNPACK3INTO4(V1, L2, L3);
+
+					// Result 1
+					VMVECTOR Z = XM_PERMUTE_PS(V1, _MM_SHUFFLE(2, 2, 2, 2));
+					VMVECTOR Y = XM_PERMUTE_PS(V1, _MM_SHUFFLE(1, 1, 1, 1));
+					VMVECTOR X = XM_PERMUTE_PS(V1, _MM_SHUFFLE(0, 0, 0, 0));
+
+					VMVECTOR vTemp = _mm_mul_ps(Z, row2);
+					VMVECTOR vTemp2 = _mm_mul_ps(Y, row1);
+					VMVECTOR vTemp3 = _mm_mul_ps(X, row0);
+					vTemp = _mm_add_ps(vTemp, vTemp2);
+					vTemp = _mm_add_ps(vTemp, vTemp3);
+
+#pragma prefast( suppress : 26015, "PREfast noise: Esp:1307" )
+					VMStoreFloat3((VMFLOAT3*)(pOutputVector), vTemp);
+					pOutputVector += OutputStride;
+
+					// Result 2
+					Z = XM_PERMUTE_PS(V2, _MM_SHUFFLE(2, 2, 2, 2));
+					Y = XM_PERMUTE_PS(V2, _MM_SHUFFLE(1, 1, 1, 1));
+					X = XM_PERMUTE_PS(V2, _MM_SHUFFLE(0, 0, 0, 0));
+
+					vTemp = _mm_mul_ps(Z, row2);
+					vTemp2 = _mm_mul_ps(Y, row1);
+					vTemp3 = _mm_mul_ps(X, row0);
+					vTemp = _mm_add_ps(vTemp, vTemp2);
+					vTemp = _mm_add_ps(vTemp, vTemp3);
+
+#pragma prefast( suppress : 26015, "PREfast noise: Esp:1307" )
+					VMStoreFloat3((VMFLOAT3*)(pOutputVector), vTemp);
+					pOutputVector += OutputStride;
+
+					// Result 3
+					Z = XM_PERMUTE_PS(V3, _MM_SHUFFLE(2, 2, 2, 2));
+					Y = XM_PERMUTE_PS(V3, _MM_SHUFFLE(1, 1, 1, 1));
+					X = XM_PERMUTE_PS(V3, _MM_SHUFFLE(0, 0, 0, 0));
+
+					vTemp = _mm_mul_ps(Z, row2);
+					vTemp2 = _mm_mul_ps(Y, row1);
+					vTemp3 = _mm_mul_ps(X, row0);
+					vTemp = _mm_add_ps(vTemp, vTemp2);
+					vTemp = _mm_add_ps(vTemp, vTemp3);
+
+#pragma prefast( suppress : 26015, "PREfast noise: Esp:1307" )
+					VMStoreFloat3((VMFLOAT3*)(pOutputVector), vTemp);
+					pOutputVector += OutputStride;
+
+					// Result 4
+					Z = XM_PERMUTE_PS(V4, _MM_SHUFFLE(2, 2, 2, 2));
+					Y = XM_PERMUTE_PS(V4, _MM_SHUFFLE(1, 1, 1, 1));
+					X = XM_PERMUTE_PS(V4, _MM_SHUFFLE(0, 0, 0, 0));
+
+					vTemp = _mm_mul_ps(Z, row2);
+					vTemp2 = _mm_mul_ps(Y, row1);
+					vTemp3 = _mm_mul_ps(X, row0);
+					vTemp = _mm_add_ps(vTemp, vTemp2);
+					vTemp = _mm_add_ps(vTemp, vTemp3);
+
+#pragma prefast( suppress : 26015, "PREfast noise: Esp:1307" )
+					VMStoreFloat3((VMFLOAT3*)(pOutputVector), vTemp);
+					pOutputVector += OutputStride;
+
+					i += 4;
+				}
+			}
+		}
+	}
+
+	for (; i < VectorCount; i++)
+	{
+#pragma prefast( suppress : 26019, "PREfast noise: Esp:1307" )
+		VMVECTOR V = VMLoadFloat3((const VMFLOAT3*)(pInputVector));
+		pInputVector += InputStride;
+
+		VMVECTOR Z = XM_PERMUTE_PS(V, _MM_SHUFFLE(2, 2, 2, 2));
+		VMVECTOR Y = XM_PERMUTE_PS(V, _MM_SHUFFLE(1, 1, 1, 1));
+		VMVECTOR X = XM_PERMUTE_PS(V, _MM_SHUFFLE(0, 0, 0, 0));
+
+		VMVECTOR vTemp = _mm_mul_ps(Z, row2);
+		VMVECTOR vTemp2 = _mm_mul_ps(Y, row1);
+		VMVECTOR vTemp3 = _mm_mul_ps(X, row0);
+		vTemp = _mm_add_ps(vTemp, vTemp2);
+		vTemp = _mm_add_ps(vTemp, vTemp3);
+
+#pragma prefast( suppress : 26015, "PREfast noise: Esp:1307" )
+		VMStoreFloat3((VMFLOAT3*)(pOutputVector), vTemp);
+		pOutputVector += OutputStride;
+	}
+
+	return pOutputStream;
 }

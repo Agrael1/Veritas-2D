@@ -1,6 +1,7 @@
 #pragma once
 
 #include <xmmintrin.h>
+#include <emmintrin.h>
 #include <stdint.h>
 typedef __m128 VMVECTOR;
 typedef const VMVECTOR FVMVECTOR;
