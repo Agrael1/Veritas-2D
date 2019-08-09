@@ -440,5 +440,17 @@ inline VMMATRIX __vectorcall VMMatrixInverse
 	mResult.r[3] = _mm_mul_ps(C6, vTemp);
 	return mResult;
 }
+inline VMMATRIX __vectorcall VMMatrixScalingFromVector
+(
+	FVMVECTOR Scale
+)
+{
+	VMMATRIX M;
+	M.r[0] = _mm_and_ps(Scale, g_XMMaskX.v);
+	M.r[1] = _mm_and_ps(Scale, g_XMMaskY.v);
+	M.r[2] = _mm_and_ps(Scale, g_XMMaskZ.v);
+	M.r[3] = g_XMIdentityR3.v;
+	return M;
+}
 #pragma endregion
 

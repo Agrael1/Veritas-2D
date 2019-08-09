@@ -159,56 +159,62 @@ void V_DrawTriangle(selfptr, SVMVECTOR* v0, SVMVECTOR* v1, SVMVECTOR* v2)
 	}
 }
 
-inline void Transform(const selfptr, SVMVECTOR* v)
+void _ProcessTriangle(selfptr, VMVECTOR* v0, VMVECTOR* v1, VMVECTOR* v2)
 {
 	// perform homo -> ndc on xyz / perspective-correct interpolative divide on all other attributes
-	const float wInv = 1.0f / v->c.w;
-	VSOutScale(v, v, wInv, self->VS->VSOutSize);
-	const float HalfViewportWidth = self->gfx->nFrameLength * 0.5f;
-	const float HalfViewportHeight = self->gfx->nFrameHeight * 0.5f;
+	VMVECTOR wInv = _mm_rcp_ps(_mm_shuffle_ps( _mm_unpackhi_ps(*v0, *v1), *v2, _MM_SHUFFLE(3, 3, 3, 2)));
+	VMMATRIX X;
+		X.r[0] = VMVectorSplatX( _mm_and_ps(wInv, g_XMMaskX.v));
+		X.r[1] = VMVectorSplatY( _mm_and_ps(wInv, g_XMMaskY.v));
+		X.r[2] = VMVectorSplatZ( _mm_and_ps(wInv, g_XMMaskZ.v));
 
-	VMVECTOR Scale = VMVectorSet(HalfViewportWidth, -HalfViewportHeight, 1.0f, 0.0f);
-	VMVECTOR Offset = VMVectorSet(HalfViewportWidth, HalfViewportHeight, 1.0f, 0.0f);
-	v->v = VMVectorMultiplyAdd(v->v, Scale, Offset);
-	v->c.w = wInv;
-}
-void V_ProcessTriangle(selfptr, void* v0, void* v1, void* v2)
-{
-	Transform(self, v0);
-	Transform(self, v1);
-	Transform(self, v2);
+	*v0 = VMVectorMultiplyAdd(_mm_mul_ps(*v0, X.r[0]), self->Global.Scale, self->Global.Offset); _mm_store_ss((float*)v0 + 3, X.r[0]);
+	*v1 = VMVectorMultiplyAdd(_mm_mul_ps(*v1, X.r[1]), self->Global.Scale, self->Global.Offset); _mm_store_ss((float*)v1 + 3, X.r[1]);
+	*v2 = VMVectorMultiplyAdd(_mm_mul_ps(*v2, X.r[2]), self->Global.Scale, self->Global.Offset); _mm_store_ss((float*)v2 + 3, X.r[2]);
+
+	for (unsigned i = 1; i < self->VS->VSOutSize / 16; i++)
+	{
+		v0[i] = _mm_mul_ps(v0[i], X.r[0]);
+		v1[i] = _mm_mul_ps(v1[i], X.r[1]);
+		v2[i] = _mm_mul_ps(v2[i], X.r[2]);
+	}
 
 	if (self->GS)
 		self->GS->Apply(self->GS, v0, v1, v2);
 	V_DrawTriangle(self, v0, v1, v2);
 }
 
-inline void Clip1V(selfptr, SVMVECTOR* v0, SVMVECTOR* v1, SVMVECTOR* v2, size_t VSize)
+void Clip1V(selfptr, SVMVECTOR* v0, SVMVECTOR* v1, SVMVECTOR* v2, size_t VSize)
 {
 	// calculate alpha values for getting adjusted vertices
 	const float alphaA = (-v0->c.z) / (v1->c.z - v0->c.z);
 	const float alphaB = (-v0->c.z) / (v2->c.z - v0->c.z);
+
 	// interpolate to get v0a and v0b
-	void* v0a1 = _alloca(VSize);
-	void* v0a2 = _alloca(VSize);
-	void* v0b = _alloca(VSize);
-	void* v2b = _alloca(VSize);
+	VMVECTOR* v0a1 = _alloca(VSize);
+	VMVECTOR* v0a2 = _alloca(VSize);
+	VMVECTOR* v0b = _alloca(VSize);
+	VMVECTOR* v2b = _alloca(VSize);
+
 	if (VSize != sizeof(VMVECTOR))
 	{
-		memcpy_s(v0a1, VSize, v0 + sizeof(VMVECTOR), VSize - sizeof(VMVECTOR));
-		memcpy_s(v0b, VSize, v0 + sizeof(VMVECTOR), VSize - sizeof(VMVECTOR));
+		memcpy(v0a1, v0 + 1, VSize - sizeof(VMVECTOR));
+		memcpy(v0b, v0 + 1, VSize - sizeof(VMVECTOR));
 	}
-	VSOutInterpolate(v0a1, v0, v1, alphaA, VSize);
-	VSOutInterpolate(v0b, v0, v2, alphaB, VSize);
+	for (unsigned i = 0; i < VSize / 16; i++)
+	{
+		v0a1[i] = VMVectorLerp(v0[i].v, v1[i].v, alphaA);
+		v0b[i] = VMVectorLerp(v0[i].v, v2[i].v, alphaB);
+	}
 
-	memcpy_s(v0a2, VSize, v0a1, VSize);
-	memcpy_s(v2b, VSize, v2, VSize);
+	memcpy(v0a2, v0a1, VSize);
+	memcpy(v2b, v2, VSize);
 
 	// draw triangles
-	V_ProcessTriangle(self, v0a1, v1, v2);
-	V_ProcessTriangle(self, v0b, v0a2, v2b);
+	_ProcessTriangle(self, v0a1, (void*)v1, (void*)v2);
+	_ProcessTriangle(self, v0b, v0a2, v2b);
 }
-inline void Clip2V(selfptr, SVMVECTOR* v0, SVMVECTOR* v1, SVMVECTOR* v2, size_t VSize)
+void Clip2V(selfptr, SVMVECTOR* v0, SVMVECTOR* v1, SVMVECTOR* v2, size_t VSize)
 {
 	// calculate alpha values for getting adjusted vertices
 	const float alpha0 = (-v0->c.z) / (v2->c.z - v0->c.z);
@@ -217,20 +223,23 @@ inline void Clip2V(selfptr, SVMVECTOR* v0, SVMVECTOR* v1, SVMVECTOR* v2, size_t 
 	VSOutInterpolate(v0, v0, v2, alpha0, VSize);
 	VSOutInterpolate(v1, v1, v2, alpha1, VSize);
 	// draw triangles
-	V_ProcessTriangle(self, v0, v1, v2);
+	_ProcessTriangle(self, (void*)v0, (void*)v1, (void*)v2);
 };
-inline void _ClipCullTriangle(selfptr, VMVECTOR* v0, VMVECTOR* v1, VMVECTOR* v2, size_t VSize)
+inline void _ClipCullTriangle(selfptr, void* v0, void* v1, void* v2, size_t VSize)
 {	
 	const XMVECTORF32 VNegVector2 = { -1.0f,-1.0f, 0.0f, 0.0f };
+	VMVECTOR V0 = _mm_load_ps(v0);
+	VMVECTOR V1 = _mm_load_ps(v0);
+	VMVECTOR V2 = _mm_load_ps(v0);
 
 	// Compare againgst W value
-	VMVECTOR CT0 = VMVectorSplatW(*v0);
-	VMVECTOR CT1 = VMVectorSplatW(*v1);
-	VMVECTOR CT2 = VMVectorSplatW(*v2);
+	VMVECTOR CT0 = VMVectorSplatW(V0);
+	VMVECTOR CT1 = VMVectorSplatW(V1);
+	VMVECTOR CT2 = VMVectorSplatW(V2);
 
-	VMVECTOR R01 = _mm_cmplt_ps(CT0, *v0);
-	VMVECTOR R11 = _mm_cmplt_ps(CT1, *v1);
-	VMVECTOR R21 = _mm_cmplt_ps(CT2, *v2);
+	VMVECTOR R01 = _mm_cmplt_ps(CT0, V0);
+	VMVECTOR R11 = _mm_cmplt_ps(CT1, V1);
+	VMVECTOR R21 = _mm_cmplt_ps(CT2, V2);
 
 	VMVECTOR RR1 = _mm_and_ps(_mm_and_ps(R01, R11), R21);
 	if (_mm_movemask_ps(RR1) != 0) return;
@@ -239,15 +248,15 @@ inline void _ClipCullTriangle(selfptr, VMVECTOR* v0, VMVECTOR* v1, VMVECTOR* v2,
 	CT1 = _mm_mul_ps(CT1, VNegVector2.v);
 	CT2 = _mm_mul_ps(CT2, VNegVector2.v);
 
-	VMVECTOR R02 = _mm_cmplt_ps(*v0, CT0);
-	VMVECTOR R12 = _mm_cmplt_ps(*v1, CT1);	
-	VMVECTOR R22 = _mm_cmplt_ps(*v2, CT2);
+	VMVECTOR R02 = _mm_cmplt_ps(V0, CT0);
+	VMVECTOR R12 = _mm_cmplt_ps(V1, CT1);
+	VMVECTOR R22 = _mm_cmplt_ps(V2, CT2);
 	VMVECTOR RR2 = _mm_and_ps(_mm_and_ps(R02, R12), R22);
 	if (_mm_movemask_ps(RR2) != 0) return;
 	if (RR2.m128_f32[3] != 0)
 	{
 		RR1 = _mm_unpackhi_ps(R12, R02);
-		RR2 = _mm_shuffle_ps(R22, RR1, _MM_SHUFFLE(3, 3, 2, 3));
+		RR2 = _mm_shuffle_ps(RR1, R22, _MM_SHUFFLE(3, 3, 3, 2));
 		int selector = _mm_movemask_ps(RR2);
 		switch (selector)
 		{
@@ -260,7 +269,7 @@ inline void _ClipCullTriangle(selfptr, VMVECTOR* v0, VMVECTOR* v1, VMVECTOR* v2,
 		}
 	}
 	else
-		V_ProcessTriangle(self, v0, v1, v2);
+		_ProcessTriangle(self, v0, v1, v2);
 }
 
 void _AssembleTriangles(selfptr, const void* Verts, size_t VSize, const size_t* indices, size_t indN)
@@ -318,6 +327,12 @@ Constructor(selfptr, va_list *ap)
 {
 	assignMethodTable(self);
 	self->gfx = va_arg(*ap, struct Frame*);
+
+	const float HalfViewportWidth = self->gfx->nFrameLength * 0.5f;
+	const float HalfViewportHeight = self->gfx->nFrameHeight * 0.5f;
+	self->Global.Scale = VMVectorSet(HalfViewportWidth, -HalfViewportHeight, 1.0f, 0.0f);
+	self->Global.Offset = VMVectorSet(HalfViewportWidth, HalfViewportHeight, 1.0f, 0.0f);
+
 	return self;
 }
 Destructor(selfptr)

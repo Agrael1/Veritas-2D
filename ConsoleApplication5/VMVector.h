@@ -5,6 +5,34 @@
 #include "MathConstants.h"
 #include "EngineCommons.h"
 
+//------------------------------------------------------------------------------
+// Return the X component in an FPU register. 
+inline float __vectorcall VMVectorGetX(FVMVECTOR V)
+{
+	return _mm_cvtss_f32(V);
+}
+
+// Return the Y component in an FPU register. 
+inline float __vectorcall VMVectorGetY(FVMVECTOR V)
+{
+	VMVECTOR vTemp = XM_PERMUTE_PS(V, _MM_SHUFFLE(1, 1, 1, 1));
+	return _mm_cvtss_f32(vTemp);
+}
+
+// Return the Z component in an FPU register. 
+inline float __vectorcall VMVectorGetZ(FVMVECTOR V)
+{
+	VMVECTOR vTemp = XM_PERMUTE_PS(V, _MM_SHUFFLE(2, 2, 2, 2));
+	return _mm_cvtss_f32(vTemp);
+}
+
+// Return the W component in an FPU register. 
+inline float __vectorcall VMVectorGetW(FVMVECTOR V)
+{
+	VMVECTOR vTemp = XM_PERMUTE_PS(V, _MM_SHUFFLE(3, 3, 3, 3));
+	return _mm_cvtss_f32(vTemp);
+}
+
 // Loads a zero vector
 inline VMVECTOR __vectorcall VMVectorZero()
 {
@@ -315,6 +343,14 @@ inline VMVECTOR __vectorcall VMVectorLerp
 	VMVECTOR S = _mm_set_ps1(t);
 	VMVECTOR Result = _mm_mul_ps(L, S);
 	return _mm_add_ps(Result, V0);
+}
+
+inline VMVECTOR __vectorcall VMVectorReciprocalEst
+(
+	FVMVECTOR V
+)
+{
+	return _mm_rcp_ps(V);
 }
 
 // Dot Product between 2 4-component vectors

@@ -80,7 +80,7 @@ typedef struct
 }VMFLOAT4;
 
 // Standardized Vector
-typedef union
+typedef __declspec(align(16)) union
 {
 	VMFLOAT4 c;
 	VMVECTOR v;
