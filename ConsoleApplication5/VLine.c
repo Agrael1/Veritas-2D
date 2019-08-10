@@ -78,46 +78,54 @@ inline void DrawFlatTriangle(selfptr,
 		}
 	}
 }
-inline void DrawFlatTopTriangle2(selfptr, SVMVECTOR* it0,
-	SVMVECTOR* it1,
-	SVMVECTOR* it2)
+void _DrawFlatTopTriangle(selfptr, VMVECTOR* it0, VMVECTOR* it1, VMVECTOR* it2)
 {
+	const UINT Size = self->VS->VSOutSize;
+	VMVECTOR* _P = _alloca(Size);
+	VMVECTOR* dit0 = _alloca(Size);
+	VMVECTOR* dit1 = _alloca(Size);
+
 	// calulcate dVertex / dy
 	// change in interpolant for every 1 change in y
-	const float delta_y = 1.0f / (it2->c.y - it0->c.y);
+	VMVECTOR d21 = _mm_sub_ps(*it2, *it1);
+	VMVECTOR d20 = _mm_sub_ps(*it2, *it0);
+	FVMVECTOR delta_Y = VMVectorSplatY(_mm_rcp_ps(d20));
 
-	VMVECTOR* _P = _alloca(self->VS->VSOutSize);
-	VSOutSubtract(_P, it2, it0, self->VS->VSOutSize);
-	FVMVECTOR* dit0 = _alloca(self->VS->VSOutSize);
-	VSOutScale(dit0, _P, delta_y, self->VS->VSOutSize);
+	*dit1 = _mm_mul_ps(d20, delta_Y);
+	*dit0 = _mm_mul_ps(d21, delta_Y);
 
-	VSOutSubtract(_P, it2, it1, self->VS->VSOutSize);
-	FVMVECTOR* dit1 = _alloca(self->VS->VSOutSize);
-	VSOutScale(dit1, _P, delta_y, self->VS->VSOutSize);
-
-	memcpy_s(_P, self->VS->VSOutSize, it1, self->VS->VSOutSize);
+	for (unsigned i = 1; i < Size / 16; i++)
+	{
+		dit1[i] = _mm_mul_ps(_mm_sub_ps(it2[i], it0[i]), delta_Y);
+		dit0[i] = _mm_mul_ps(_mm_sub_ps(it2[i], it1[i]), delta_Y);
+	}
+	memcpy(_P, it1, Size);
 
 	// call the flat triangle render routine, right edge interpolant is it1
-	DrawFlatTriangle(self, it0, it1, it2, dit0, dit1, _P);
+	DrawFlatTriangle(self, it0, it1, it2, dit1, dit0, _P);
 }
-inline void DrawFlatBottomTriangle2(selfptr, SVMVECTOR* it0,
-	SVMVECTOR* it1,
-	SVMVECTOR* it2)
+void _DrawFlatBottomTriangle(selfptr, VMVECTOR* it0, VMVECTOR* it1, VMVECTOR* it2)
 {
+	const UINT Size = self->VS->VSOutSize;
+	VMVECTOR* _P = _alloca(Size);
+	VMVECTOR* dit0 = _alloca(Size);
+	VMVECTOR* dit1 = _alloca(Size);
+
 	// calulcate dVertex / dy
 	// change in interpolant for every 1 change in y
-	const float delta_y = 1.0f / (it2->c.y - it0->c.y);
+	VMVECTOR d10 = _mm_sub_ps(*it1, *it0);
+	VMVECTOR d20 = _mm_sub_ps(*it2, *it0);
+	FVMVECTOR delta_Y = VMVectorSplatY(_mm_rcp_ps(d20));
 
-	VMVECTOR* _P = _alloca(self->VS->VSOutSize);
-	VSOutSubtract(_P, it1, it0, self->VS->VSOutSize);
-	FVMVECTOR* dit0 = _alloca(self->VS->VSOutSize);
-	VSOutScale(dit0, _P, delta_y, self->VS->VSOutSize);
+	*dit1 = _mm_mul_ps(d20, delta_Y);
+	*dit0 = _mm_mul_ps(d10, delta_Y);
 
-	VSOutSubtract(_P, it2, it0, self->VS->VSOutSize);
-	FVMVECTOR* dit1 = _alloca(self->VS->VSOutSize);
-	VSOutScale(dit1, _P, delta_y, self->VS->VSOutSize);
-
-	memcpy_s(_P, self->VS->VSOutSize, it0, self->VS->VSOutSize);
+	for (unsigned i = 1; i < Size / 16; i++)
+	{
+		dit1[i] = _mm_mul_ps(_mm_sub_ps(it2[i], it0[i]), delta_Y);
+		dit0[i] = _mm_mul_ps(_mm_sub_ps(it1[i], it0[i]), delta_Y);
+	}
+	memcpy(_P, it0, Size);
 
 	// call the flat triangle render routine, right edge interpolant is it0
 	DrawFlatTriangle(self, it0, it1, it2, dit0, dit1, _P);
@@ -131,12 +139,12 @@ void V_DrawTriangle(selfptr, SVMVECTOR* v0, SVMVECTOR* v1, SVMVECTOR* v2)
 	if (v0->c.y == v1->c.y)	// Flat Top
 	{
 		if (v1->c.x < v0->c.x) swapptr(&v0, &v1);
-		DrawFlatTopTriangle2(self, v0, v1, v2);
+		_DrawFlatTopTriangle(self, v0, v1, v2);
 	}
 	if (v1->c.y == v2->c.y)	// Flat Bottom
 	{
 		if (v2->c.x < v1->c.x) swapptr(&v1, &v2);
-		DrawFlatBottomTriangle2(self, v0, v1, v2);
+		_DrawFlatBottomTriangle(self, v0, v1, v2);
 	}
 	else // General
 	{
@@ -148,13 +156,13 @@ void V_DrawTriangle(selfptr, SVMVECTOR* v0, SVMVECTOR* v1, SVMVECTOR* v2)
 
 		if (v1->c.x < vi->c.x)
 		{
-			DrawFlatBottomTriangle2(self, v0, v1, vi);
-			DrawFlatTopTriangle2(self, v1, vi, v2);
+			_DrawFlatBottomTriangle(self, (void*)v0, (void*)v1, (void*)vi);
+			_DrawFlatTopTriangle(self, v1, vi, v2);
 		}
 		else
 		{
-			DrawFlatBottomTriangle2(self, v0, vi, v1);
-			DrawFlatTopTriangle2(self, vi, v1, v2);
+			_DrawFlatBottomTriangle(self, (void*)v0, (void*)vi, (void*)v1);
+			_DrawFlatTopTriangle(self, vi, v1, v2);
 		}
 	}
 }
@@ -181,7 +189,7 @@ void _ProcessTriangle(selfptr, VMVECTOR* v0, VMVECTOR* v1, VMVECTOR* v2)
 
 	if (self->GS)
 		self->GS->Apply(self->GS, v0, v1, v2);
-	V_DrawTriangle(self, v0, v1, v2);
+	V_DrawTriangle(self, (void*)v0, (void*)v1, (void*)v2);
 }
 
 void Clip1V(selfptr, SVMVECTOR* v0, SVMVECTOR* v1, SVMVECTOR* v2, size_t VSize)
@@ -196,11 +204,6 @@ void Clip1V(selfptr, SVMVECTOR* v0, SVMVECTOR* v1, SVMVECTOR* v2, size_t VSize)
 	VMVECTOR* v0b = _alloca(VSize);
 	VMVECTOR* v2b = _alloca(VSize);
 
-	if (VSize != sizeof(VMVECTOR))
-	{
-		memcpy(v0a1, v0 + 1, VSize - sizeof(VMVECTOR));
-		memcpy(v0b, v0 + 1, VSize - sizeof(VMVECTOR));
-	}
 	for (unsigned i = 0; i < VSize / 16; i++)
 	{
 		v0a1[i] = VMVectorLerp(v0[i].v, v1[i].v, alphaA);
@@ -225,12 +228,12 @@ void Clip2V(selfptr, SVMVECTOR* v0, SVMVECTOR* v1, SVMVECTOR* v2, size_t VSize)
 	// draw triangles
 	_ProcessTriangle(self, (void*)v0, (void*)v1, (void*)v2);
 };
-inline void _ClipCullTriangle(selfptr, void* v0, void* v1, void* v2, size_t VSize)
+void _ClipCullTriangle(selfptr, void* v0, void* v1, void* v2, size_t VSize)
 {	
-	const XMVECTORF32 VNegVector2 = { -1.0f,-1.0f, 0.0f, 0.0f };
+	const XMVECTORF32 VNegVector2 = { -1.0f,-1.0f, 0.0f, 1.0f };
 	VMVECTOR V0 = _mm_load_ps(v0);
-	VMVECTOR V1 = _mm_load_ps(v0);
-	VMVECTOR V2 = _mm_load_ps(v0);
+	VMVECTOR V1 = _mm_load_ps(v1);
+	VMVECTOR V2 = _mm_load_ps(v2);
 
 	// Compare againgst W value
 	VMVECTOR CT0 = VMVectorSplatW(V0);
@@ -253,23 +256,20 @@ inline void _ClipCullTriangle(selfptr, void* v0, void* v1, void* v2, size_t VSiz
 	VMVECTOR R22 = _mm_cmplt_ps(V2, CT2);
 	VMVECTOR RR2 = _mm_and_ps(_mm_and_ps(R02, R12), R22);
 	if (_mm_movemask_ps(RR2) != 0) return;
-	if (RR2.m128_f32[3] != 0)
+
+	RR1 = _mm_unpackhi_ps(R02, R12);
+	RR2 = _mm_shuffle_ps(RR1, R22, _MM_SHUFFLE(3, 2, 1, 0));
+	int selector = _mm_movemask_ps(RR2);
+	switch (selector)
 	{
-		RR1 = _mm_unpackhi_ps(R12, R02);
-		RR2 = _mm_shuffle_ps(RR1, R22, _MM_SHUFFLE(3, 3, 3, 2));
-		int selector = _mm_movemask_ps(RR2);
-		switch (selector)
-		{
-		case 1: Clip1V(self, v0, v1, v2, VSize); break;
-		case 2: Clip1V(self, v1, v0, v2, VSize); break;
-		case 3: Clip2V(self, v0, v1, v2, VSize); break;
-		case 4: Clip1V(self, v2, v0, v1, VSize); break;
-		case 5: Clip2V(self, v0, v2, v1, VSize); break;
-		case 6: Clip2V(self, v0, v1, v2, VSize); break;
-		}
-	}
-	else
-		_ProcessTriangle(self, v0, v1, v2);
+	case 0: _ProcessTriangle(self, v0, v1, v2); break;
+	case 1: Clip1V(self, v0, v1, v2, VSize); break;
+	case 2: Clip1V(self, v1, v0, v2, VSize); break;
+	case 3: Clip2V(self, v0, v1, v2, VSize); break;
+	case 4: Clip1V(self, v2, v0, v1, VSize); break;
+	case 5: Clip2V(self, v0, v2, v1, VSize); break;
+	case 6: Clip2V(self, v1, v2, v0, VSize); break;
+	}	
 }
 
 void _AssembleTriangles(selfptr, const void* Verts, size_t VSize, const size_t* indices, size_t indN)

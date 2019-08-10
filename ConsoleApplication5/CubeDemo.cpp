@@ -97,7 +97,7 @@ bool virtual(OnUserCreate)(void* self)
 		0.0f,
 		0.0f,
 		0.0f,
-		0.0f,
+		3.0f,
 		0.9f);	//scale
 	
 	this->pPl->VS = this->model->VS;
