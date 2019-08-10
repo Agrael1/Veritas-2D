@@ -14,8 +14,7 @@ typedef struct
 class
 {
 	inherits(TestObject);
-	struct DefaultVS* VS;
-	struct FlatLightGS* GS;
-	struct ExperimentalPS* PS;
+	struct GouraudVS* VS;
+	struct GouraudPS* PS;
 	struct IndexedTriangleList model;
 };

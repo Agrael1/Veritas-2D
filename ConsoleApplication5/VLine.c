@@ -9,56 +9,55 @@
 
 IAOut ia;
 
-inline void DrawFlatTriangle(selfptr,
+void DrawFlatTriangle(selfptr,
 	SVMVECTOR* it0,
-	SVMVECTOR* it1,
 	SVMVECTOR* it2,
 	FVMVECTOR* dv0,
 	FVMVECTOR* dv1,
 	VMVECTOR* itEdge1)
 {
 	const UINT size = self->VS->VSOutSize;
-	VMVECTOR* _P = _alloca(size);
-
+	
 	// create edge interpolant for left edge (always v0)
 	VMVECTOR* itEdge0 = _alloca(size);
-	memcpy_s(itEdge0, self->VS->VSOutSize, it0, size);
+	VMVECTOR* iLine = _alloca(size);
+	VMVECTOR* diLine = _alloca(size);
+	VMVECTOR* _P = _alloca(size);
+
+	memcpy(itEdge0, it0, size);
 
 	// calculate start and end scanlines
-	const int yStart = max((int)ceilf(it0->c.y - 0.5f), 0);
-	const int yEnd = min((int)ceilf(it2->c.y - 0.5f), (int)self->gfx->nFrameHeight - 1); // the scanline AFTER the last line drawn
+	const int yStart = max((int)ceil(it0->c.y - 0.5f), 0);
+	const int yEnd = min((int)ceil(it2->c.y - 0.5f), (int)self->gfx->nFrameHeight - 1); // the scanline AFTER the last line drawn
 																						 // do interpolant prestep
-	const float step = ((float)yStart + 0.5f - it0->c.y);
-	VSOutScale(_P, dv0, step, size);
-	VSOutAdd(itEdge0, itEdge0, _P, size);
+	FVMVECTOR step = _mm_set_ps1(((float)yStart + 0.5f - it0->c.y));
+	for (unsigned i = 0; i < size / 16; i++)
+	{
+		itEdge0[i] = _mm_add_ps(itEdge0[i], _mm_mul_ps(dv0[i], step));
+		itEdge1[i] = _mm_add_ps(itEdge1[i], _mm_mul_ps(dv1[i], step));
+	}
 
-	VSOutScale(_P, dv1, step, size);
-	VSOutAdd(itEdge1, itEdge1, _P, size);
-
-
-	for (int y = yStart; y < yEnd; y++,
-		VSOutAdd(itEdge0, itEdge0, dv0,size),
-		VSOutAdd(itEdge1, itEdge1, dv1,size))
+	for (int y = yStart; y < yEnd; y++)
 	{
 		// calculate start and end pixels
-		const int xStart = max((int)ceilf(itEdge0->m128_f32[0] - 0.5f), 0);
-		const int xEnd = min((int)ceilf(itEdge1->m128_f32[0] - 0.5f), (int)self->gfx->nFrameLength - 1); // the pixel AFTER the last pixel drawn
-
+		const int xStart = max((int)ceil(itEdge0->m128_f32[0] - 0.5f), 0);
+		const int xEnd = min((int)ceil(itEdge1->m128_f32[0] - 0.5f), (int)self->gfx->nFrameLength - 1); // the pixel AFTER the last pixel drawn
 																										// create scanline interpolant startpoint
 																										// (some waste for interpolating x,y,z, but makes life easier not having
 																										//  to split them off, and z will be needed in the future anyways...)
-		VMVECTOR* iLine = _alloca(size);
-		memcpy_s(iLine, self->VS->VSOutSize, itEdge0, size);
-
+		memcpy(iLine, itEdge0, size);
 		//// calculate delta scanline interpolant / dx
-		const float dx = itEdge1->m128_f32[0] - itEdge0->m128_f32[0];
-		VMVECTOR* diLine = _alloca(size);
-		VSOutSubtract(_P, itEdge1, iLine, size);
-		VSOutScale(diLine, _P, 1.0f / dx, size);
+		FVMVECTOR step2 = _mm_set_ps1((float)xStart + 0.5f - itEdge0->m128_f32[0]);
+		FVMVECTOR Delta_X = _mm_sub_ps(*itEdge1, *itEdge0);
+		FVMVECTOR dx = VMVectorSplatX(_mm_rcp_ps(Delta_X));
+		*diLine = _mm_mul_ps(Delta_X, dx);
+		*iLine = _mm_add_ps(*iLine, _mm_mul_ps(*diLine, step2));
 
-		// prestep scanline interpolant
-		VSOutScale(_P, diLine, ((float)xStart + 0.5f - itEdge0->m128_f32[0]),size);
-		VSOutAdd(iLine, iLine, _P, size);
+		for (unsigned i = 1; i < size / 16; i++)
+		{
+			diLine[i] = _mm_mul_ps(_mm_sub_ps(itEdge1[i], itEdge0[i]), dx);
+			iLine[i] = _mm_add_ps(iLine[i], _mm_mul_ps(diLine[i], step2));
+		}
 
 		for (int x = xStart; x < xEnd; x++,
 			VSOutAdd(iLine, iLine, diLine, size))
@@ -67,14 +66,17 @@ inline void DrawFlatTriangle(selfptr,
 			{
 				// recover interpolated z from interpolated 1/z
 				const float w = 1.0f / iLine->m128_f32[3];
-				// recover interpolated attributes
-				// (wasted effort in multiplying pos (x,y,z) here, but
-				//  not a huge deal, not worth the code complication to fix)
-				VSOutScale(_P, iLine, w, size);
+				for (unsigned i = 1; i < size / 16; i++)
+					_P[i] = VMVectorScale(iLine[i], w);
 				// invoke pixel shader with interpolated vertex attributes
 				// and use result to set the pixel color on the screen
 				self->gfx->method->PrintFrame(self->gfx, x, y, self->PS->Apply(self->PS, _P));
 			}
+		}
+		for (unsigned i = 0; i < size / 16; i++)
+		{
+			itEdge0[i] = _mm_add_ps(itEdge0[i], dv0[i]);
+			itEdge1[i] = _mm_add_ps(itEdge1[i], dv1[i]);
 		}
 	}
 }
@@ -87,8 +89,8 @@ void _DrawFlatTopTriangle(selfptr, VMVECTOR* it0, VMVECTOR* it1, VMVECTOR* it2)
 
 	// calulcate dVertex / dy
 	// change in interpolant for every 1 change in y
-	VMVECTOR d21 = _mm_sub_ps(*it2, *it1);
 	VMVECTOR d20 = _mm_sub_ps(*it2, *it0);
+	VMVECTOR d21 = _mm_sub_ps(*it2, *it1);
 	FVMVECTOR delta_Y = VMVectorSplatY(_mm_rcp_ps(d20));
 
 	*dit1 = _mm_mul_ps(d20, delta_Y);
@@ -102,7 +104,7 @@ void _DrawFlatTopTriangle(selfptr, VMVECTOR* it0, VMVECTOR* it1, VMVECTOR* it2)
 	memcpy(_P, it1, Size);
 
 	// call the flat triangle render routine, right edge interpolant is it1
-	DrawFlatTriangle(self, it0, it1, it2, dit1, dit0, _P);
+	DrawFlatTriangle(self, it0, it2, dit1, dit0, _P);
 }
 void _DrawFlatBottomTriangle(selfptr, VMVECTOR* it0, VMVECTOR* it1, VMVECTOR* it2)
 {
@@ -128,7 +130,7 @@ void _DrawFlatBottomTriangle(selfptr, VMVECTOR* it0, VMVECTOR* it1, VMVECTOR* it
 	memcpy(_P, it0, Size);
 
 	// call the flat triangle render routine, right edge interpolant is it0
-	DrawFlatTriangle(self, it0, it1, it2, dit0, dit1, _P);
+	DrawFlatTriangle(self, it0, it2, dit0, dit1, _P);
 }
 void V_DrawTriangle(selfptr, SVMVECTOR* v0, SVMVECTOR* v1, SVMVECTOR* v2)
 {

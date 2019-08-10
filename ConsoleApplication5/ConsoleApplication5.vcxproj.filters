@@ -308,9 +308,6 @@
     <ClInclude Include="GSBase.h">
       <Filter>Заголовочные файлы\Engine\Graphics\Shading</Filter>
     </ClInclude>
-    <ClInclude Include="Light.h">
-      <Filter>Заголовочные файлы\Engine\Graphics\Shading\FlatLight</Filter>
-    </ClInclude>
     <ClInclude Include="PSBase.h">
       <Filter>Заголовочные файлы\Engine\Graphics\Shading</Filter>
     </ClInclude>
@@ -329,14 +326,14 @@
     <ClInclude Include="VLine.h">
       <Filter>Заголовочные файлы\Engine\Graphics\Pipeline</Filter>
     </ClInclude>
-    <ClInclude Include="ShaderCommons.h">
-      <Filter>Заголовочные файлы\Engine\Graphics\Pipeline</Filter>
-    </ClInclude>
     <ClInclude Include="Triangle.h">
       <Filter>Заголовочные файлы\Engine\Graphics\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="Tri.h">
       <Filter>Заголовочные файлы\Engine\Graphics\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Shading</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

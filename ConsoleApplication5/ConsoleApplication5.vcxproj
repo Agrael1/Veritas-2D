@@ -210,7 +210,6 @@
     <ClInclude Include="Icosahedron.h" />
     <ClInclude Include="Icosphere.h" />
     <ClInclude Include="IndexedTriangleList.h" />
-    <ClInclude Include="ShaderCommons.h" />
     <ClInclude Include="Tri.h" />
     <ClInclude Include="Triangle.h" />
     <ClInclude Include="VLine.h" />

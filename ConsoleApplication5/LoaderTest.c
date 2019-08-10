@@ -3,9 +3,9 @@
 #include "Assimp\Include\assimp\scene.h"
 #include "IndexedTriangleList.h"
 
-#include "DefaultVS.h"
-#include "FlatLightGS.h"
-#include "ExperimentalPS.h"
+#include "GouraudPS.h"
+#include "GouraudVS.h"
+
 #include "LoaderTest.h"
 #include "Class.h"
 
@@ -24,7 +24,7 @@ Constructor(selfptr, va_list *ap)
 
 	// Load Verts
 	virtual(Vertex)* pVerts = malloc(sizeof(virtual(Vertex))*pMesh->mNumVertices);
-	for (UINT i = 0; i < pMesh->mNumVertices; i++)
+	for (unsigned i = 0; i < pMesh->mNumVertices; i++)
 	{
 		pVerts[i].pos = (SVMVECTOR) {
 				pMesh->mVertices[i].x*scale,
@@ -41,7 +41,7 @@ Constructor(selfptr, va_list *ap)
 
 	//Load Inds
 	size_t* inds = malloc(sizeof(size_t) * pMesh->mNumFaces * 3);
-	for (UINT i = 0; i < pMesh->mNumFaces; i++)
+	for (unsigned i = 0; i < pMesh->mNumFaces; i++)
 	{
 		assert(pMesh->mFaces[i].mNumIndices == 3);
 		inds[i * 3 + 0] = pMesh->mFaces[i].mIndices[0];
@@ -52,16 +52,14 @@ Constructor(selfptr, va_list *ap)
 
 	aiReleaseImport(pScene);
 
-	this->VS = new(DefaultVS);
-	this->GS = new(FlatLightGS);
-	this->PS = new(ExperimentalPS);
+	this->VS = new(GouraudVS);
+	this->PS = new(GouraudPS);
 	return this;
 }
 Destructor(selfptr)
 {
 	struct c_class* this = ((struct Class*)TestObject)->dtor(self);
 	delete(this->VS);
-	delete(this->GS);
 	delete(this->PS);
 	return self;
 }

@@ -2,8 +2,8 @@
 #include "LoaderTest.h"
 #include "Triangle.h"
 
-#include "DefaultVS.h"
-#include "FlatLightGS.h"
+#include "GouraudPS.h"
+#include "GouraudVS.h"
 
 #include "Class.h"
 #include "CubeDemo.h"
@@ -101,11 +101,11 @@ bool virtual(OnUserCreate)(void* self)
 		0.9f);	//scale
 	
 	this->pPl->VS = this->model->VS;
-	this->pPl->GS = this->model->GS;
+	this->pPl->GS = nullptr;
 	this->pPl->PS = this->model->PS;
 
 	base.Output->projection = VMMatrixPerspectiveLH(1.0f, (float)base.Output->nFrameHeight / (float)base.Output->nFrameLength, 0.5f, 40.0f);
-	this->model->GS->light = this->pLight;
+	this->model->VS->light = this->pLight;
 	return true;
 }
 bool virtual(OnUserUpdate)(void* self, double fElapsedSeconds)
