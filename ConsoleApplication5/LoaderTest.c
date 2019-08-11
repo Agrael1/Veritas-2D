@@ -54,7 +54,7 @@ Constructor(selfptr, va_list *ap)
 
 	this->VS = new(GouraudVS);
 	this->PS = new(GouraudPS);
-	return this;
+	return this; 
 }
 Destructor(selfptr)
 {

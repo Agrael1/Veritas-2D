@@ -4,15 +4,16 @@
 #include "GouraudVS.h"
 #include "Class.h"
 
+
 virtual(cBuf)GVSCB;
 
 void virtual(Apply)(void* self, void* _out, struct IndexedTriangleList* _in)
 {
 	account(self);
+	VMVector3TransformStream(_out, base.VSOutSize, _in->vertices, _in->VSize, _in->numVerts, this->ModelViewProj);
 
 	for (int i = 0; i < _in->numVerts; i++)
 	{
-		((Vertex_LoaderTest*)_out)[i].pos.v = VMVector3TransformCoord(((Vertex_LoaderTest*)_in->vertices)[i].pos.v, this->ModelViewProj);
 		VMVECTOR normal = VMVector3Normalize(VMVector3TransformNormal(((Vertex_LoaderTest*)_in->vertices)[i].n, this->ModelViewProj));
 		((Vertex_LoaderTest*)_out)[i].n = VMVector3Dot(this->light->LightCBuf.dir.v, VMVectorNegate(normal));
 	}

@@ -1,6 +1,5 @@
 #pragma once
 #include "VeritasMath.h"
-#include "ShaderCommons.h"
 
 #define c_class VSBase
 
