@@ -36,7 +36,7 @@ class
 	bool bCursor;
 
 	methods(
-		bool(*CreateConsole)(selfptr, Word width, Word height, Byte fontw, Byte fonth);
+		COORD(*CreateConsole)(selfptr, Word width, Word height, Byte fontw, Byte fonth);
 		bool(*SetCursor)(selfptr, bool value);
 		bool(*Restore)(const selfptr);
 		void(*OutputToScreen)(selfptr, CHAR_INFO* buffer);

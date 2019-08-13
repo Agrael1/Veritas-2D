@@ -41,7 +41,7 @@ bool _SetCursor(selfptr, bool value)
 		return false;
 	return true;
 }
-bool _CreateConsole(selfptr, Word width, Word height, Byte fontw, Byte fonth)
+COORD _CreateConsole(selfptr, Word width, Word height, Byte fontw, Byte fonth)
 {
 	account(self);
 
@@ -68,17 +68,18 @@ bool _CreateConsole(selfptr, Word width, Word height, Byte fontw, Byte fonth)
 
 	COORD coordLargest = GetLargestConsoleWindowSize(this->hOut);
 	if (height > coordLargest.Y)
-		this->Height = height = coordLargest.Y;
+		this->Height = coordLargest.Y;
 	if (width > coordLargest.X)
-		this->Width = width = coordLargest.X;
+		this->Width =  coordLargest.X;
+	coordLargest = (COORD) { this->Width, this->Height};
 
 	// Set size of buffer
-	WND_CALL_INFO(SetConsoleScreenBufferSize(this->hOut, (COORD) { width, height }));
+	WND_CALL_INFO(SetConsoleScreenBufferSize(this->hOut, coordLargest));
 
 	// Set Physical Console Window Size
-	this->rWindowRect = (SMALL_RECT){ 0, 0, (short)width - 1, (short)height - 1 };
+	this->rWindowRect = (SMALL_RECT){ 0, 0, (short)this->Width - 1, (short)this->Height - 1 };
 	WND_CALL_INFO(SetConsoleWindowInfo(this->hOut, TRUE, &this->rWindowRect));
-	return true;
+	return coordLargest;
 }
 void _BlockCursor(selfptr, bool blocked)
 {

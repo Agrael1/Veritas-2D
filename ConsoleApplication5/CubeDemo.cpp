@@ -47,11 +47,11 @@ void virtual(HandleControls)(void* self, const struct Keyboard* kbd, double fEla
 	}
 	if (kbd->method->KeyPressed(kbd, 'A'))
 	{
-		this->pCam->theta += 8.0f*(float)fElapsedTime;
+		this->pCam->theta += 2.0f*(float)fElapsedTime;
 	}
 	if (kbd->method->KeyPressed(kbd, 'D'))
 	{
-		this->pCam->theta -= 8.0f*(float)fElapsedTime;
+		this->pCam->theta -= 2.0f*(float)fElapsedTime;
 	}
 }
 bool virtual(OnUserCreate)(void* self)
@@ -97,7 +97,7 @@ bool virtual(OnUserCreate)(void* self)
 		0.0f,
 		0.0f,
 		0.0f,
-		3.0f,
+		0.0f,
 		0.9f);	//scale
 	
 	this->pPl->VS = this->model->VS;

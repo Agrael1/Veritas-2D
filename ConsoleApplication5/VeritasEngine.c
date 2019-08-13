@@ -32,20 +32,15 @@ void _Show(selfptr)
 {
 	self->Window->method->OutputToScreen(self->Window, self->Output->localFrame);
 }
-bool _SetupScreen(selfptr, Word width, Word height, Byte fontw, Byte fonth)
+void _SetupScreen(selfptr, Word width, Word height, Byte fontw, Byte fonth)
 {
 	account(self);
 
 	// default setup for fast access
-	if (this->Window->method->CreateConsole(this->Window, width, height, fontw, fonth))
-	{
-		this->Output = new(Frame, width, height);
-		SetConsoleTitleA(this->AppName);
-		_Show(this);
+	COORD frame = this->Window->method->CreateConsole(this->Window, width, height, fontw, fonth);
 
-		return true;
-	}
-	return false;
+	this->Output = new(Frame, frame.X, frame.Y);
+	_Show(this);
 }
 DWORD _stdcall _GameThread(selfptr)
 {

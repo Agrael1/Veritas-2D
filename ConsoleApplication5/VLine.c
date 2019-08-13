@@ -19,12 +19,10 @@ void DrawFlatTriangle(selfptr,
 	const UINT size = self->VS->VSOutSize;
 	
 	// create edge interpolant for left edge (always v0)
-	VMVECTOR* itEdge0 = _alloca(size);
+	VMVECTOR* itEdge0 = it0;
 	VMVECTOR* iLine = _alloca(size);
 	VMVECTOR* diLine = _alloca(size);
 	VMVECTOR* _P = _alloca(size);
-
-	memcpy(itEdge0, it0, size);
 
 	// calculate start and end scanlines
 	const int yStart = max((int)ceil(it0->c.y - 0.5f), 0);
@@ -49,7 +47,7 @@ void DrawFlatTriangle(selfptr,
 		//// calculate delta scanline interpolant / dx
 		FVMVECTOR step2 = _mm_set_ps1((float)xStart + 0.5f - itEdge0->m128_f32[0]);
 		FVMVECTOR Delta_X = _mm_sub_ps(*itEdge1, *itEdge0);
-		FVMVECTOR dx = VMVectorSplatX(_mm_rcp_ps(Delta_X));
+		FVMVECTOR dx = VMVectorSplatX(_mm_rcp_ss(Delta_X));
 		*diLine = _mm_mul_ps(Delta_X, dx);
 		*iLine = _mm_add_ps(*iLine, _mm_mul_ps(*diLine, step2));
 
@@ -59,18 +57,20 @@ void DrawFlatTriangle(selfptr,
 			iLine[i] = _mm_add_ps(iLine[i], _mm_mul_ps(diLine[i], step2));
 		}
 
+		const UINT premulI = y*self->gfx->nFrameLength;
+
 		for (int x = xStart; x < xEnd; x++,
 			VSOutAdd(iLine, iLine, diLine, size))
 		{
-			if (self->gfx->method->DepthTest(self->gfx, x, y, iLine->m128_f32[2]))
+			if (self->gfx->method->DepthTest(self->gfx, iLine))
 			{
 				// recover interpolated z from interpolated 1/z
-				const float w = 1.0f / iLine->m128_f32[3];
+				FVMVECTOR w = _mm_rcp_ps(VMVectorSplatW(*iLine));
 				for (unsigned i = 1; i < size / 16; i++)
-					_P[i] = VMVectorScale(iLine[i], w);
+					_P[i] = _mm_mul_ps(iLine[i], w);
 				// invoke pixel shader with interpolated vertex attributes
 				// and use result to set the pixel color on the screen
-				self->gfx->method->PrintFrame(self->gfx, x, y, self->PS->Apply(self->PS, _P));
+				self->gfx->localFrame[premulI + x] = self->PS->Apply(self->PS, _P);
 			}
 		}
 		for (unsigned i = 0; i < size / 16; i++)

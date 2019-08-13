@@ -8,8 +8,8 @@ int main(void)
 	try
 	{
 		Demo = new(CubeDemo);
-		if (Demo->_base.method->SetupScreen(Demo, 640, 360, 2, 2))
-			Demo->_base.method->Start(Demo);
+		Demo->_base.method->SetupScreen(Demo, 640, 360, 2, 2);
+		Demo->_base.method->Start(Demo);
 	}
 	catch (Exception, e)
 	{

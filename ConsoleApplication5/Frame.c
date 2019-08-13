@@ -16,12 +16,13 @@ void _PrintFrame(selfptr, Word x, Word y, CHAR_INFO color)
 {
 	self->localFrame[y*self->nFrameLength + x] = color;
 }
-bool _DepthTest(selfptr, Word x, Word y, float z)
+bool _DepthTest(selfptr, void* interpLine)
 {
-	float *zv = self->ZBuffer+y*self->nFrameLength + x;
-	if (z < *zv)
+	VMFLOAT4A* iLine = interpLine;
+	float *zv = self->ZBuffer+(UINT)iLine->y*self->nFrameLength + (UINT)iLine->x;
+	if (iLine->z < *zv)
 	{
-		*zv = z;
+		*zv = iLine->z;
 		return true;
 	}
 	return false;
@@ -164,7 +165,7 @@ Constructor(selfptr, va_list *ap)
 	this->nFrameHeight = va_arg(*ap, Word);
 
 	this->localFrame = malloc(this->nFrameLength * this->nFrameHeight * sizeof(CHAR_INFO));
-	this->ZBuffer = malloc(this->nFrameLength*this->nFrameHeight * sizeof(UINT));
+	this->ZBuffer = malloc(this->nFrameLength*this->nFrameHeight * sizeof(float));
 
 	if (this->ZBuffer)
 		_ClearDepth(this);

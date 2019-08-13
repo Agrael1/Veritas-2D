@@ -8,7 +8,7 @@
 extern IAOut ia;
 extern GSOut gs;
 
-CHAR_INFO virtual(Apply)(selfptr, void* _in)
+CHAR_INFO virtual(Apply)(void* self, void* _in)
 {
 	return gs.color;
 }

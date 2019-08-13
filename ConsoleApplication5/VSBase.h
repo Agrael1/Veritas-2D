@@ -1,5 +1,6 @@
 #pragma once
 #include "VeritasMath.h"
+#include "EngineCommons.h"
 
 #define c_class VSBase
 

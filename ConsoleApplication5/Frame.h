@@ -7,7 +7,7 @@
 
 class
 {
-	const void* _class;
+	GENERATED_DESC
 
 	CHAR_INFO *localFrame;
 	float* ZBuffer;
@@ -16,7 +16,7 @@ class
 	Word nFrameHeight;
 
 	methods(
-		bool (*DepthTest)(selfptr, Word x, Word y, float z);
+		bool (*DepthTest)(selfptr, void* interpLine);
 		void (*ClearFrame)(selfptr, wchar_t c, Word col);
 		void (*BeginFrame)(selfptr, wchar_t c, Word col);
 		void (*DrawTriangleWireframe)(selfptr, Word x1, Word y1, Word x2, Word y2, Word x3, Word y3, wchar_t c, Word col);

@@ -26,7 +26,7 @@ class
 		void(*HandleControls)(void* self, const struct Keyboard* kbd, double fElapsedTime);
 
 		// Internals
-		bool(*SetupScreen)(selfptr, Word width, Word height, Byte fontw, Byte fonth);
+		void(*SetupScreen)(selfptr, Word width, Word height, Byte fontw, Byte fonth);
 		void(*Start)(selfptr);
 		void(*Show)(selfptr);
 		);

@@ -78,7 +78,13 @@ typedef struct
 	float z;
 	float w;
 }VMFLOAT4;
-
+typedef __declspec(align(16)) struct
+{
+	float x;
+	float y;
+	float z;
+	float w;
+}VMFLOAT4A;
 // Standardized Vector
 typedef __declspec(align(16)) union
 {
