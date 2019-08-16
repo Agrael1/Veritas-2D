@@ -13,6 +13,20 @@ typedef struct IndexedTriangleList
 	size_t* indices;
 }IndexedTriangleList;
 
+static void MakeIndependent(struct IndexedTriangleList* temp)
+{
+	void* ReVertices = malloc(temp->numInds * temp->VSize);
+	
+	for (unsigned i = 0; i < temp->numInds; i++)
+	{
+		memcpy((char*)ReVertices + i*temp->VSize, (char*)temp->vertices + (temp->indices[i] * temp->VSize), temp->VSize);
+		temp->indices[i] = i;
+	}
+
+	free(temp->vertices);
+	temp->vertices = ReVertices;
+	temp->numVerts = temp->numInds;
+};
 static void CalcNormalsIndependentFlat(IndexedTriangleList* in, size_t normOffs)
 {
 	if (in->VSize < 2 * sizeof(VMVECTOR) || normOffs < sizeof(VMVECTOR))

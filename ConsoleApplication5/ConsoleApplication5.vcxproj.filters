@@ -192,6 +192,15 @@
     <ClCompile Include="Triangle.c">
       <Filter>Файлы исходного кода\Engine\Graphics\Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="CubeSceneTex.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="GouraudPST.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\Shading\Gouraud</Filter>
+    </ClCompile>
+    <ClCompile Include="GouraudVST.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\Shading\Gouraud</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BitField.h">
@@ -334,6 +343,18 @@
     </ClInclude>
     <ClInclude Include="Light.h">
       <Filter>Заголовочные файлы\Engine\Graphics\Shading</Filter>
+    </ClInclude>
+    <ClInclude Include="Header.h">
+      <Filter>Файлы ресурсов</Filter>
+    </ClInclude>
+    <ClInclude Include="CubeSceneTex.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="GouraudPST.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Shading\Gouraud</Filter>
+    </ClInclude>
+    <ClInclude Include="GouraudVST.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Shading\Gouraud</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,9 +1,10 @@
 #include "Icosphere.h"
 #include "LoaderTest.h"
+#include "CubeSceneTex.h"
 #include "Triangle.h"
 
-#include "GouraudPS.h"
-#include "GouraudVS.h"
+#include "GouraudPST.h"
+#include "GouraudVST.h"
 
 #include "Class.h"
 #include "CubeDemo.h"
@@ -87,7 +88,7 @@ bool virtual(OnUserCreate)(void* self)
 	this->bStop = false;
 	srand((unsigned int)time(NULL));
 	
-	this->model = new(LoaderTest,
+	this->model = new(CubeTex,
 		0.0f,
 		0.0f,
 		0.0f,

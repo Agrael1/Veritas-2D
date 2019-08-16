@@ -4,7 +4,7 @@
 
 #define c_class TestObject
 
-class
+; class
 {
 	GENERATED_DESC
 	methods(

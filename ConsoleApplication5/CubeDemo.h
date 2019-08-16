@@ -18,5 +18,5 @@ class
 	struct DirectionalLight* pLight;
 
 	bool bStop;
-	struct LoaderTest* model;
+	struct CubeTex* model;
 };

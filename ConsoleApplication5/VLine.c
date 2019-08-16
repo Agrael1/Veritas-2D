@@ -1,4 +1,3 @@
-#include "Color.h"
 #include "GSBase.h"
 #include "PSBase.h"
 #include "VSBase.h"
@@ -19,7 +18,7 @@ void DrawFlatTriangle(selfptr,
 	const UINT size = self->VS->VSOutSize;
 	
 	// create edge interpolant for left edge (always v0)
-	VMVECTOR* itEdge0 = it0;
+	VMVECTOR* itEdge0 = (VMVECTOR*)it0;
 	VMVECTOR* iLine = _alloca(size);
 	VMVECTOR* diLine = _alloca(size);
 	VMVECTOR* _P = _alloca(size);
