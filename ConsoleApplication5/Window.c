@@ -6,6 +6,7 @@
 // namespace ConsoleWindow
 #define c_class ConsoleWindow
 
+
 bool _Restore(const selfptr)
 {
 	const account(self);
@@ -81,20 +82,7 @@ COORD _CreateConsole(selfptr, Word width, Word height, Byte fontw, Byte fonth)
 	WND_CALL_INFO(SetConsoleWindowInfo(this->hOut, TRUE, &this->rWindowRect));
 	return coordLargest;
 }
-void _BlockCursor(selfptr, bool blocked)
-{
-	if (blocked)
-	{
-		RECT rekt;
-		GetWindowRect(self->consoleWindow, &rekt);
-		rekt.right = rekt.left + 1;
-		ClipCursor(&rekt);
-	}
-	else
-	{
-		ClipCursor(NULL);
-	}
-}
+
 void _OutputToScreen(selfptr, CHAR_INFO* buffer)
 {
 	WriteConsoleOutputW(self->hOut, buffer, (COORD) { (short)self->Width, (short)self->Height}, (COORD) { 0, 0 }, &self->rWindowRect);
@@ -109,13 +97,27 @@ void _SetPalette(selfptr, COLORREF palette[16])
 	SetConsoleScreenBufferInfoEx(self->hOut, &csbiex);
 }
 
+void _BlockCursor(selfptr)
+{
+	RECT rekt;
+	GetWindowRect(self->consoleWindow, &rekt);
+	rekt.right = rekt.left + 1;
+	ClipCursor(&rekt);
+}
+void _ReleaseCursor(selfptr)
+{
+	ClipCursor(NULL);
+}
+
 constructMethodTable(
 	.CreateConsole = _CreateConsole,
 	.SetCursor = _SetCursor,
 	.Restore = _Restore,
 	.OutputToScreen = _OutputToScreen,
+	
+	.SetPalette = _SetPalette,
 	.BlockCursor = _BlockCursor,
-	.SetPalette = _SetPalette
+	.ReleaseCursor = _ReleaseCursor
 );
 
 Constructor(selfptr, va_list* ap)
@@ -127,8 +129,6 @@ Constructor(selfptr, va_list* ap)
 	this->hIn = GetStdHandle(STD_INPUT_HANDLE);
 	this->hOriginalConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	this->hOut = this->hOriginalConsole;
-	this->bMouse = false;
-	this->bCursor = true;
 
 	return this;
 }

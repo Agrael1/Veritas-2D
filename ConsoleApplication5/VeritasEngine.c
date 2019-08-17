@@ -46,6 +46,7 @@ DWORD _stdcall _GameThread(selfptr)
 {
 	account(self);
 	this->Control = new(MessageWindow, this->Window->consoleWindow);
+	this->Control->refCon = this->Window;
 	int gResult;
 
 	if (!this->method->OnUserCreate(this))
@@ -67,6 +68,10 @@ DWORD _stdcall _GameThread(selfptr)
 		QueryPerformanceCounter(&EndingTime);
 		fElapsedSeconds = (double)(EndingTime.QuadPart - StartingTime.QuadPart) / (double)Frequency.QuadPart;
 		StartingTime = EndingTime;
+
+		// Catch a focus if not in it
+		if(!self->Control->bInFocus)
+			self->Control->method->CatchFocus(self->Control);
 
 		// Read Messages
 		if (gResult = ProcessMessages() != 0)

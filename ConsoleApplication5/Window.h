@@ -19,10 +19,10 @@ class
 
 class 
 {
-	const void* _class;
+	GENERATED_DESC
 
-	HANDLE hOut;	// for output
-	HANDLE hIn;		// for mouse
+	HANDLE hOut;	
+	HANDLE hIn;	
 
 	HANDLE hOriginalConsole;
 	SMALL_RECT rWindowRect;
@@ -32,16 +32,14 @@ class
 	Word Width;
 	Word Height;
 
-	bool bMouse;
-	bool bCursor;
-
 	methods(
 		COORD(*CreateConsole)(selfptr, Word width, Word height, Byte fontw, Byte fonth);
 		bool(*SetCursor)(selfptr, bool value);
 		bool(*Restore)(const selfptr);
 		void(*OutputToScreen)(selfptr, CHAR_INFO* buffer);
-		void(*BlockCursor)(selfptr, bool blocked);
 		void(*SetPalette)(selfptr, COLORREF palette[16]);
+		void(*BlockCursor)(selfptr);
+		void(*ReleaseCursor)(selfptr);
 	);
 };
 

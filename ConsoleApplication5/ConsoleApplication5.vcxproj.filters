@@ -22,9 +22,6 @@
     <Filter Include="Заголовочные файлы\Engine\Framework">
       <UniqueIdentifier>{b6d2c2ef-bc61-4f80-8d16-6ae2b6213a0b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Заголовочные файлы\Engine\Input">
-      <UniqueIdentifier>{6e1acdf1-ea0a-451f-8519-5c3b72eced9c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Заголовочные файлы\Engine\Console">
       <UniqueIdentifier>{21b6d209-ada9-41a5-89f7-2f2af4900d9b}</UniqueIdentifier>
     </Filter>
@@ -33,9 +30,6 @@
     </Filter>
     <Filter Include="Файлы исходного кода\Engine\Framework">
       <UniqueIdentifier>{d0db9896-f2f1-49fc-9d1e-427a00b73e62}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Файлы исходного кода\Engine\Input">
-      <UniqueIdentifier>{46c6ccda-a6b2-4a96-aecc-35ad480aa22d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Заголовочные файлы\Engine\Graphics">
       <UniqueIdentifier>{22374a9d-ce13-4982-9cf5-e0bca2c2308d}</UniqueIdentifier>
@@ -100,6 +94,12 @@
     <Filter Include="Файлы исходного кода\Engine\Graphics\Shading\Gouraud">
       <UniqueIdentifier>{6c4bc3af-d01f-416c-97b8-e04d8041b092}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Заголовочные файлы\Engine\Console\Input">
+      <UniqueIdentifier>{6e1acdf1-ea0a-451f-8519-5c3b72eced9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\Engine\Console\Input">
+      <UniqueIdentifier>{46c6ccda-a6b2-4a96-aecc-35ad480aa22d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MazeGen.c">
@@ -130,13 +130,13 @@
       <Filter>Файлы исходного кода\Engine\Framework</Filter>
     </ClCompile>
     <ClCompile Include="Control.c">
-      <Filter>Файлы исходного кода\Engine\Input</Filter>
+      <Filter>Файлы исходного кода\Engine\Console\Input</Filter>
     </ClCompile>
     <ClCompile Include="Keyboard.c">
-      <Filter>Файлы исходного кода\Engine\Input</Filter>
+      <Filter>Файлы исходного кода\Engine\Console\Input</Filter>
     </ClCompile>
     <ClCompile Include="Mouse.c">
-      <Filter>Файлы исходного кода\Engine\Input</Filter>
+      <Filter>Файлы исходного кода\Engine\Console\Input</Filter>
     </ClCompile>
     <ClCompile Include="EntryMain.c">
       <Filter>Файлы исходного кода</Filter>
@@ -225,13 +225,13 @@
       <Filter>Заголовочные файлы\Engine\Framework</Filter>
     </ClInclude>
     <ClInclude Include="Mouse.h">
-      <Filter>Заголовочные файлы\Engine\Input</Filter>
+      <Filter>Заголовочные файлы\Engine\Console\Input</Filter>
     </ClInclude>
     <ClInclude Include="Keyboard.h">
-      <Filter>Заголовочные файлы\Engine\Input</Filter>
+      <Filter>Заголовочные файлы\Engine\Console\Input</Filter>
     </ClInclude>
     <ClInclude Include="Control.h">
-      <Filter>Заголовочные файлы\Engine\Input</Filter>
+      <Filter>Заголовочные файлы\Engine\Console\Input</Filter>
     </ClInclude>
     <ClInclude Include="VeritasEngine.h">
       <Filter>Заголовочные файлы\Engine\Console</Filter>

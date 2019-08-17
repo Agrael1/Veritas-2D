@@ -8,6 +8,12 @@
 class
 {
 	GENERATED_DESC
+	methods(
+		LRESULT(*HandleMsg)(void* self, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+		void(*CatchFocus)(selfptr);
+	);
+
+	struct ConsoleWindow* refCon;
 	LPCWSTR wndClassName;
 	HINSTANCE hInst;
 	HWND Window;
@@ -15,10 +21,7 @@ class
 	// Embedded classes
 	struct Keyboard kbd;
 	struct Mouse mouse;
-
-	methods(
-		LRESULT(*HandleMsg)(void* self, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-	);
+	bool bInFocus;
 };
 
 static DWord ProcessMessages()
