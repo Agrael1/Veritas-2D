@@ -38,8 +38,6 @@ class
 		bool(*Restore)(const selfptr);
 		void(*OutputToScreen)(selfptr, CHAR_INFO* buffer);
 		void(*SetPalette)(selfptr, COLORREF palette[16]);
-		void(*BlockCursor)(selfptr);
-		void(*ReleaseCursor)(selfptr);
 	);
 };
 

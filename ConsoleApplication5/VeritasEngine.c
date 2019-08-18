@@ -45,8 +45,7 @@ void _SetupScreen(selfptr, Word width, Word height, Byte fontw, Byte fonth)
 DWORD _stdcall _GameThread(selfptr)
 {
 	account(self);
-	this->Control = new(MessageWindow, this->Window->consoleWindow);
-	this->Control->refCon = this->Window;
+	this->Control = new(MessageWindow, this->Window);
 	int gResult;
 
 	if (!this->method->OnUserCreate(this))
@@ -70,7 +69,7 @@ DWORD _stdcall _GameThread(selfptr)
 		StartingTime = EndingTime;
 
 		// Catch a focus if not in it
-		if(!self->Control->bInFocus)
+		if (!self->Control->bInFocus)
 			self->Control->method->CatchFocus(self->Control);
 
 		// Read Messages
@@ -86,7 +85,7 @@ DWORD _stdcall _GameThread(selfptr)
 			this->method->HandleMouse(this, &this->Control->mouse, fElapsedSeconds);
 
 		// Process continuous input
-		if(this->method->HandleControls)
+		if (this->method->HandleControls)
 			this->method->HandleControls(this, &this->Control->kbd, fElapsedSeconds);
 
 		// render frame

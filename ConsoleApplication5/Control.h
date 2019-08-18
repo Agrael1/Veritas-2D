@@ -11,6 +11,8 @@ class
 	methods(
 		LRESULT(*HandleMsg)(void* self, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 		void(*CatchFocus)(selfptr);
+		void(*BlockCursor)(selfptr);
+		void(*ReleaseCursor)(selfptr);
 	);
 
 	struct ConsoleWindow* refCon;

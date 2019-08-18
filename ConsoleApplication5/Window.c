@@ -97,18 +97,6 @@ void _SetPalette(selfptr, COLORREF palette[16])
 	SetConsoleScreenBufferInfoEx(self->hOut, &csbiex);
 }
 
-void _BlockCursor(selfptr)
-{
-	RECT rekt;
-	GetWindowRect(self->consoleWindow, &rekt);
-	rekt.right = rekt.left + 1;
-	ClipCursor(&rekt);
-}
-void _ReleaseCursor(selfptr)
-{
-	ClipCursor(NULL);
-}
-
 constructMethodTable(
 	.CreateConsole = _CreateConsole,
 	.SetCursor = _SetCursor,
@@ -116,8 +104,6 @@ constructMethodTable(
 	.OutputToScreen = _OutputToScreen,
 	
 	.SetPalette = _SetPalette,
-	.BlockCursor = _BlockCursor,
-	.ReleaseCursor = _ReleaseCursor
 );
 
 Constructor(selfptr, va_list* ap)

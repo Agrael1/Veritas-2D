@@ -21,6 +21,19 @@ void _CatchFocus(selfptr)
 	}
 	_freea(records);
 }
+void _BlockCursor(selfptr)
+{
+	RECT rekt;
+	GetWindowRect(self->refCon->consoleWindow, &rekt);
+	rekt.right = rekt.left + 1;
+	ClipCursor(&rekt);
+	while (ShowCursor(false)>0);
+}
+void _ReleaseCursor(selfptr)
+{
+	while (ShowCursor(true)<0);
+	ClipCursor(NULL);
+}
 
 LRESULT _HandleMsg(selfptr, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {	
@@ -28,8 +41,10 @@ LRESULT _HandleMsg(selfptr, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	switch (msg)
 	{
 	case WM_KILLFOCUS:
-		//SetFocus(hWnd);
+	{
+		_ReleaseCursor(self);
 		break;
+	}
 	case WM_KEYDOWN:
 	case WM_SYSKEYDOWN:
 		if (!(lParam & 0x40000000))
@@ -60,6 +75,7 @@ LRESULT _HandleMsg(selfptr, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_ACTIVATE:
 	{
 		self->bInFocus = (bool)wParam;
+		_BlockCursor(self);
 		break;
 	}
 	}
@@ -88,7 +104,7 @@ LRESULT HandleMessageSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	}
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
-inline void _CreateControl(selfptr, HWND parent)
+inline void _CreateControl(selfptr)
 {
 	WNDCLASSEX wx = {0};
 	wx.cbSize = sizeof(WNDCLASSEX);
@@ -98,11 +114,11 @@ inline void _CreateControl(selfptr, HWND parent)
 
 	if (RegisterClassEx(&wx)) 
 	{
-		self->Window = CreateWindowExW(0,
+		self->Window = CreateWindow(
 			self->wndClassName,
 			L"dummy_name",
 			WS_CHILD, 0, 0, 0, 0,
-			parent,
+			self->refCon->consoleWindow,
 			NULL, self->hInst, self);
 		
 		SetFocus(self->Window);
@@ -111,17 +127,20 @@ inline void _CreateControl(selfptr, HWND parent)
 
 constructMethodTable(
 	.HandleMsg = _HandleMsg,
-	.CatchFocus = _CatchFocus
+	.CatchFocus = _CatchFocus,
+	.BlockCursor = _BlockCursor,
+	.ReleaseCursor = _ReleaseCursor
 );
 
 Constructor(selfptr, va_list *ap)
 {
 	assignMethodTable(self);
 
+	self->refCon = va_arg(*ap, void*);
 	self->wndClassName = L"DUMMY_CLASS";
 	self->hInst = GetModuleHandle(NULL);
 
-	_CreateControl(self, va_arg(*ap, HWND));
+	_CreateControl(self);
 
 	// Create controls and bind mouse to the window
 	construct(&self->kbd, Keyboard);
