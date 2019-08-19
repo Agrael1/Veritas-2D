@@ -27,12 +27,14 @@ void _BlockCursor(selfptr)
 	GetWindowRect(self->refCon->consoleWindow, &rekt);
 	rekt.right = rekt.left + 1;
 	ClipCursor(&rekt);
-	while (ShowCursor(false)>0);
+	while (ShowCursor(false)>=0);
+	self->bCursorEnabled = false;
 }
 void _ReleaseCursor(selfptr)
 {
 	while (ShowCursor(true)<0);
 	ClipCursor(NULL);
+	self->bCursorEnabled = true;
 }
 
 LRESULT _HandleMsg(selfptr, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -42,6 +44,7 @@ LRESULT _HandleMsg(selfptr, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_KILLFOCUS:
 	{
+		self->bInFocus = false;
 		_ReleaseCursor(self);
 		break;
 	}
@@ -75,7 +78,6 @@ LRESULT _HandleMsg(selfptr, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_ACTIVATE:
 	{
 		self->bInFocus = (bool)wParam;
-		_BlockCursor(self);
 		break;
 	}
 	}
@@ -139,6 +141,8 @@ Constructor(selfptr, va_list *ap)
 	self->refCon = va_arg(*ap, void*);
 	self->wndClassName = L"DUMMY_CLASS";
 	self->hInst = GetModuleHandle(NULL);
+	self->bCursorEnabled = true;
+	self->bInFocus = true;
 
 	_CreateControl(self);
 

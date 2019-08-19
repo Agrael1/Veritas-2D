@@ -16,6 +16,12 @@ inline bool XMScalarNearEqual
 	return (fabsf(Delta) <= Epsilon);
 }
 
+inline VMVECTOR __vectorcall VMLoadFloat3A(VMFLOAT3A* pSource)
+{
+	__m128 V = _mm_load_ps(&pSource->x);
+	return _mm_and_ps(V, g_XMMask3.v);
+}
+
 #include "VMVector3.h"
 
 #pragma region Matrix
@@ -451,6 +457,20 @@ inline VMMATRIX __vectorcall VMMatrixScalingFromVector
 	M.r[2] = _mm_and_ps(Scale, g_XMMaskZ.v);
 	M.r[3] = g_XMIdentityR3.v;
 	return M;
+}
+inline VMMATRIX __vectorcall VMMatrixScale
+(
+	FXMMATRIX M, 
+	float factor
+)
+{
+	VMVECTOR S = _mm_load_ps1(&factor);
+	VMMATRIX R;
+	R.r[0] = _mm_mul_ps(M.r[0], S);
+	R.r[1] = _mm_mul_ps(M.r[1], S);
+	R.r[2] = _mm_mul_ps(M.r[2], S);
+	R.r[3] = _mm_mul_ps(M.r[3], S);
+	return R;
 }
 #pragma endregion
 

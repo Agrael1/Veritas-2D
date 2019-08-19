@@ -29,6 +29,17 @@ bool virtual(HandleInputEvents)(void* self, const KeyboardEvent* event)
 		case VK_SPACE:
 			this->bStop ^= true;
 			break;
+		case VK_INSERT:
+		{
+			if (base.Control->bCursorEnabled)
+			{
+				base.Control->method->BlockCursor(base.Control);
+			}
+			else
+			{
+				base.Control->method->ReleaseCursor(base.Control);
+			}
+		}
 		}
 	}
 	return true;
@@ -38,21 +49,37 @@ void virtual(HandleControls)(void* self, const struct Keyboard* kbd, double fEla
 	account(self);
 	if (kbd->method->KeyPressed(kbd, 'W'))
 	{
-		if(this->pCam->r > 1.0f)
-			this->pCam->r -= 8.0f*(float)fElapsedTime;
+		this->pCam->method->Translate(this->pCam, (VMFLOAT3A) { 0.0f, 0.0f, (float)fElapsedTime });
 	}
 	if (kbd->method->KeyPressed(kbd, 'S'))
 	{
-		if (this->pCam->r < 40.0f)
-			this->pCam->r += 8.0f*(float)fElapsedTime;
+		this->pCam->method->Translate(this->pCam, (VMFLOAT3A) { 0.0f, 0.0f, -(float)fElapsedTime });
 	}
 	if (kbd->method->KeyPressed(kbd, 'A'))
 	{
-		this->pCam->theta += 2.0f*(float)fElapsedTime;
+		this->pCam->method->Translate(this->pCam, (VMFLOAT3A) { -(float)fElapsedTime, 0.0f, 0.0f });
 	}
 	if (kbd->method->KeyPressed(kbd, 'D'))
 	{
-		this->pCam->theta -= 2.0f*(float)fElapsedTime;
+		this->pCam->method->Translate(this->pCam, (VMFLOAT3A) { (float)fElapsedTime, 0.0f, 0.0f });
+	}
+	if (kbd->method->KeyPressed(kbd, 'R'))
+	{
+		this->pCam->method->Translate(this->pCam, (VMFLOAT3A) {  0.0f, (float)fElapsedTime, 0.0f });
+	}
+	if (kbd->method->KeyPressed(kbd, 'F'))
+	{
+		this->pCam->method->Translate(this->pCam, (VMFLOAT3A) {  0.0f, -(float)fElapsedTime, 0.0f });
+	}
+}
+void virtual(HandleMouse)(void* self, struct Mouse* mouse, const double fElapsedTime)
+{
+	account(self);
+	if (!base.Control->bCursorEnabled)
+	{
+		int X; int Y;
+		mouse->method->ReadMouseMovement(mouse, &X, &Y);
+		this->pCam->method->Rotate(this->pCam, X, Y);
 	}
 }
 bool virtual(OnUserCreate)(void* self)
@@ -150,6 +177,7 @@ Constructor(void* self, va_list *ap)
 	base.method->OnUserUpdate = virtual(OnUserUpdate);
 	base.method->HandleInputEvents = virtual(HandleInputEvents);
 	base.method->OnUserDestroy = virtual(OnUserDestroy);
+	base.method->HandleMouse = virtual(HandleMouse);
 	return this;
 }
 Destructor(void* self)

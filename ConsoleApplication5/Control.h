@@ -24,6 +24,7 @@ class
 	struct Keyboard kbd;
 	struct Mouse mouse;
 	bool bInFocus;
+	bool bCursorEnabled;
 };
 
 static DWord ProcessMessages()

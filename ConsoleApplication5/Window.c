@@ -103,7 +103,7 @@ constructMethodTable(
 	.Restore = _Restore,
 	.OutputToScreen = _OutputToScreen,
 	
-	.SetPalette = _SetPalette,
+	.SetPalette = _SetPalette
 );
 
 Constructor(selfptr, va_list* ap)
