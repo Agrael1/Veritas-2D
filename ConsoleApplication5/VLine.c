@@ -1,12 +1,15 @@
 #include "GSBase.h"
 #include "PSBase.h"
 #include "VSBase.h"
+#include "Window.h"
 #include "IndexedTriangleList.h"
 #include "VLine.h"
 #include "Class.h"
 #include "Standard.h"
 
 IAOut ia;
+
+#pragma warning(disable:4133)
 
 void DrawFlatTriangle(selfptr,
 	SVMVECTOR* it0,
@@ -43,7 +46,7 @@ void DrawFlatTriangle(selfptr,
 																										// (some waste for interpolating x,y,z, but makes life easier not having
 																										//  to split them off, and z will be needed in the future anyways...)
 		memcpy(iLine, itEdge0, size);
-		//// calculate delta scanline interpolant / dx
+		// calculate delta scanline interpolant / dx
 		FVMVECTOR step2 = _mm_set_ps1((float)xStart + 0.5f - itEdge0->m128_f32[0]);
 		FVMVECTOR Delta_X = _mm_sub_ps(*itEdge1, *itEdge0);
 		FVMVECTOR dx = VMVectorSplatX(_mm_rcp_ss(Delta_X));
@@ -61,7 +64,7 @@ void DrawFlatTriangle(selfptr,
 		for (int x = xStart; x < xEnd; x++,
 			VSOutAdd(iLine, iLine, diLine, size))
 		{
-			if (self->gfx->method->DepthTest(self->gfx, iLine))
+			if (self->gfx->method->DepthTest(self->gfx, x, y, iLine->m128_f32[2]))
 			{
 				// recover interpolated z from interpolated 1/z
 				FVMVECTOR w = _mm_rcp_ps(VMVectorSplatW(*iLine));
@@ -78,6 +81,7 @@ void DrawFlatTriangle(selfptr,
 			itEdge1[i] = _mm_add_ps(itEdge1[i], dv1[i]);
 		}
 	}
+	
 }
 void _DrawFlatTopTriangle(selfptr, VMVECTOR* it0, VMVECTOR* it1, VMVECTOR* it2)
 {
@@ -90,7 +94,7 @@ void _DrawFlatTopTriangle(selfptr, VMVECTOR* it0, VMVECTOR* it1, VMVECTOR* it2)
 	// change in interpolant for every 1 change in y
 	VMVECTOR d20 = _mm_sub_ps(*it2, *it0);
 	VMVECTOR d21 = _mm_sub_ps(*it2, *it1);
-	FVMVECTOR delta_Y = VMVectorSplatY(_mm_rcp_ps(d20));
+	FVMVECTOR delta_Y = VMVectorSplatY(VMVectorDivide(g_XMOne.v, d20));
 
 	*dit1 = _mm_mul_ps(d20, delta_Y);
 	*dit0 = _mm_mul_ps(d21, delta_Y);
@@ -116,7 +120,7 @@ void _DrawFlatBottomTriangle(selfptr, VMVECTOR* it0, VMVECTOR* it1, VMVECTOR* it
 	// change in interpolant for every 1 change in y
 	VMVECTOR d10 = _mm_sub_ps(*it1, *it0);
 	VMVECTOR d20 = _mm_sub_ps(*it2, *it0);
-	FVMVECTOR delta_Y = VMVectorSplatY(_mm_rcp_ps(d20));
+	FVMVECTOR delta_Y = VMVectorSplatY(VMVectorDivide(g_XMOne.v, d20)); // minimize div (reciprocal is not good enough)
 
 	*dit1 = _mm_mul_ps(d20, delta_Y);
 	*dit0 = _mm_mul_ps(d10, delta_Y);
@@ -142,7 +146,7 @@ void V_DrawTriangle(selfptr, SVMVECTOR* v0, SVMVECTOR* v1, SVMVECTOR* v2)
 		if (v1->c.x < v0->c.x) swapptr(&v0, &v1);
 		_DrawFlatTopTriangle(self, v0, v1, v2);
 	}
-	if (v1->c.y == v2->c.y)	// Flat Bottom
+	else if (v1->c.y == v2->c.y)	// Flat Bottom
 	{
 		if (v2->c.x < v1->c.x) swapptr(&v1, &v2);
 		_DrawFlatBottomTriangle(self, v0, v1, v2);
@@ -277,9 +281,10 @@ void _AssembleTriangles(selfptr, const void* Verts, size_t VSize, const size_t* 
 {
 	FVMVECTOR eyepos = VMVector4Transform((XMVECTORF32){ 0.0f,0.0f,0.0f,1.0f }.v, self->gfx->projection);
 
-	VMVECTOR* v0p = _alloca(VSize);
-	VMVECTOR* v1p = _alloca(VSize);
-	VMVECTOR* v2p = _alloca(VSize);
+	VMVECTOR* Triangle = _alloca(VSize * 3);	//Opt triangle repr
+	VMVECTOR* v0p = (Byte*)Triangle + 0 * VSize;
+	VMVECTOR* v1p = (Byte*)Triangle + 1 * VSize;
+	VMVECTOR* v2p = (Byte*)Triangle + 2 * VSize;
 
 	for (size_t i = 0; i < indN; i += 3)
 	{

@@ -16,7 +16,7 @@ class
 	Word nFrameHeight;
 
 	methods(
-		bool (*DepthTest)(selfptr, void* interpLine);
+		bool (*DepthTest)(selfptr, unsigned x, unsigned y, float zValue);
 		void (*ClearFrame)(selfptr, wchar_t c, Word col);
 		void (*BeginFrame)(selfptr, wchar_t c, Word col);
 		void (*DrawTriangleWireframe)(selfptr, Word x1, Word y1, Word x2, Word y2, Word x3, Word y3, wchar_t c, Word col);

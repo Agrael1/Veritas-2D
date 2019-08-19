@@ -2,7 +2,7 @@
 #include "VeritasMath.h"
 #include "EngineCommons.h"
 
-#define TravelSpeed 12.0f
+#define TravelSpeed 1.0f
 #define RotationSpeed 0.004f
 
 #define c_class Camera

@@ -29,7 +29,7 @@ VMMATRIX _GetViewMatrix(selfptr)
 }
 void virtual(Reset)(selfptr)
 {
-	self->pos = (VMFLOAT3A){ 0.0f, 0.5f, -18.0f };
+	self->pos = (VMFLOAT3A){ 0.0f, 0.5f, -3.998f };
 	self->pitch = 0.0f;
 	self->yaw = 0.0f;
 }

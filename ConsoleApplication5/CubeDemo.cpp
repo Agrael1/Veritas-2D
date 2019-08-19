@@ -11,6 +11,7 @@
 #include "Color.scheme"
 #include <stdlib.h>
 
+
 float GetRand(float min, float max)
 {
 	return ((float)rand() / (float)(RAND_MAX)) * max - min;
@@ -134,6 +135,7 @@ bool virtual(OnUserCreate)(void* self)
 
 	base.Output->projection = VMMatrixPerspectiveLH(1.0f, (float)base.Output->nFrameHeight / (float)base.Output->nFrameLength, 0.5f, 40.0f);
 	this->model->VS->light = this->pLight;
+	this->pPl->wndDbg = base.Window;
 	return true;
 }
 bool virtual(OnUserUpdate)(void* self, double fElapsedSeconds)

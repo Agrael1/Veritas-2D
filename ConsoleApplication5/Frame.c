@@ -1,4 +1,3 @@
-#include "VeritasMath.h"
 #include "Color.h"
 #include "Frame.h"
 #include "Class.h"
@@ -16,13 +15,12 @@ void _PrintFrame(selfptr, Word x, Word y, CHAR_INFO color)
 {
 	self->localFrame[y*self->nFrameLength + x] = color;
 }
-bool _DepthTest(selfptr, void* interpLine)
+bool _DepthTest(selfptr, unsigned x, unsigned y, float zValue)
 {
-	VMFLOAT4A* iLine = interpLine;
-	float *zv = self->ZBuffer+(UINT)iLine->y*self->nFrameLength + (UINT)iLine->x;
-	if (iLine->z < *zv)
+	float *zv = self->ZBuffer+y*self->nFrameLength + x;
+	if (zValue < *zv)
 	{
-		*zv = iLine->z;
+		*zv = zValue;
 		return true;
 	}
 	return false;
