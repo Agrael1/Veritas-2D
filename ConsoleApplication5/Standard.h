@@ -17,7 +17,7 @@ inline double clamp(double d, double min, double max) {
 inline float wrap_angle(float theta)
 {
 	const float modded = (const float)fmod(theta, XM_2PI);
-	return (modded > (float)M_PI) ?
+	return (modded > XM_PI) ?
 		(modded - XM_2PI) :
 		modded;
 }

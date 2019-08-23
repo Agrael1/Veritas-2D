@@ -14,7 +14,7 @@ void virtual(Apply)(void* self, void* _out, struct IndexedTriangleList* _in)
 	Vertex_CubeTex* r = (Vertex_CubeTex*)_in;
 	for (int i = 0; i < _in->numVerts; i++)
 	{
-		VMVECTOR normal = VMVector3Normalize(VMVector3TransformNormal(((Vertex_CubeTex*)_in->vertices)[i].n, this->ModelViewProj));
+		VMVECTOR normal = VMVector3TransformNormal(((Vertex_CubeTex*)_in->vertices)[i].n, this->ModelViewProj);
 		((Vertex_CubeTex*)_out)[i].n = VMVector3Dot(this->light->LightCBuf.dir.v, VMVectorNegate(normal));
 		((Vertex_CubeTex*)_out)[i].tc = ((Vertex_CubeTex*)_in->vertices)[i].tc;
 	}

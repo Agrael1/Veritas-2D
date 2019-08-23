@@ -186,6 +186,7 @@
     <ClCompile Include="StringStream.c" />
     <ClCompile Include="Test.c" />
     <ClCompile Include="Triangle.c" />
+    <ClCompile Include="VActor.c" />
     <ClCompile Include="VeritasEngine.c" />
     <ClCompile Include="VLine.c" />
     <ClCompile Include="Window.c" />
@@ -219,6 +220,7 @@
     <ClInclude Include="IndexedTriangleList.h" />
     <ClInclude Include="Tri.h" />
     <ClInclude Include="Triangle.h" />
+    <ClInclude Include="VActor.h" />
     <ClInclude Include="VLine.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="Light.h" />

@@ -2,6 +2,7 @@
 #include "LoaderTest.h"
 #include "CubeSceneTex.h"
 #include "Triangle.h"
+#include "VActor.h"
 
 #include "GouraudPST.h"
 #include "GouraudVST.h"
@@ -72,6 +73,22 @@ void virtual(HandleControls)(void* self, const struct Keyboard* kbd, double fEla
 	{
 		this->pCam->method->Translate(this->pCam, (VMFLOAT3A) {  0.0f, -(float)fElapsedTime, 0.0f });
 	}
+	if (kbd->method->KeyPressed(kbd, VK_UP))
+	{
+		this->actor->method->Move(this->actor, (VMFLOAT3A) { 0.0f,  0.0f, (float)fElapsedTime });
+	}
+	if (kbd->method->KeyPressed(kbd, VK_DOWN))
+	{
+		this->actor->method->Move(this->actor, (VMFLOAT3A) { 0.0f, 0.0f, -(float)fElapsedTime});
+	}
+	if (kbd->method->KeyPressed(kbd, VK_LEFT))
+	{
+		this->actor->method->Move(this->actor, (VMFLOAT3A) { -(float)fElapsedTime, 0.0f, 0.0f, });
+	}
+	if (kbd->method->KeyPressed(kbd, VK_RIGHT))
+	{
+		this->actor->method->Move(this->actor, (VMFLOAT3A) { (float)fElapsedTime, 0.0f, 0.0f });
+	}
 }
 void virtual(HandleMouse)(void* self, struct Mouse* mouse, const double fElapsedTime)
 {
@@ -86,7 +103,7 @@ void virtual(HandleMouse)(void* self, struct Mouse* mouse, const double fElapsed
 bool virtual(OnUserCreate)(void* self)
 {
 	account(self);
-	this->pCam = new(Camera); // Create an instance of a camera
+	//this->pCam = new(Camera); // Create an instance of a free camera
 	this->pPl = new(VLine, base.Output);
 	this->pLight = new(DirectionalLight);
 
@@ -128,7 +145,10 @@ bool virtual(OnUserCreate)(void* self)
 		0.0f,
 		0.0f,
 		0.9f);	//scale
-	
+	this->actor = new(VActor);
+	this->pCam = this->actor->ACamera;
+
+
 	this->pPl->VS = this->model->VS;
 	this->pPl->GS = nullptr;
 	this->pPl->PS = this->model->PS;
@@ -153,7 +173,12 @@ bool virtual(OnUserUpdate)(void* self, double fElapsedSeconds)
 	VMMATRIX Transformation = VMMatrixMultiply(Rotation, &base.Output->camera);
 	this->model->VS->ModelViewProj = VMMatrixMultiply(Transformation, &base.Output->projection);
 	this->pPl->method->Draw(this->pPl, &this->model->model);
-	
+
+	Rotation = this->actor->method->GetTransformVM(this->actor);
+	Transformation = VMMatrixMultiply(Rotation, &base.Output->camera);
+	this->model->VS->ModelViewProj = VMMatrixMultiply(Transformation, &base.Output->projection);
+	this->pPl->method->Draw(this->pPl, &this->actor->Mesh->model);
+
 	return true;
 }
 bool virtual(OnUserDestroy)(void* self)

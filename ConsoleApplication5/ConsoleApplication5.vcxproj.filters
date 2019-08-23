@@ -201,6 +201,9 @@
     <ClCompile Include="GouraudVST.c">
       <Filter>Файлы исходного кода\Engine\Graphics\Shading\Gouraud</Filter>
     </ClCompile>
+    <ClCompile Include="VActor.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\VObjects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BitField.h">
@@ -355,6 +358,9 @@
     </ClInclude>
     <ClInclude Include="GouraudVST.h">
       <Filter>Заголовочные файлы\Engine\Graphics\Shading\Gouraud</Filter>
+    </ClInclude>
+    <ClInclude Include="VActor.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\VObjects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

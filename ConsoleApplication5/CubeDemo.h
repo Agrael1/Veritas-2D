@@ -19,4 +19,5 @@ class
 
 	bool bStop;
 	struct CubeTex* model;
+	struct VActor* actor;
 };
