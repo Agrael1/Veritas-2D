@@ -137,6 +137,16 @@ inline VMVECTOR __vectorcall VMVectorAdd
 	return _mm_add_ps(V1, V2);
 }
 
+// ANDs 2 vectors
+inline VMVECTOR __vectorcall VMVectorAnd
+(
+	FVMVECTOR V1,
+	FVMVECTOR V2
+)
+{
+	return _mm_and_ps(V1, V2);
+}
+
 // Computes the product of the first two vectors added to the third vector.
 inline VMVECTOR __vectorcall VMVectorMultiplyAdd
 (

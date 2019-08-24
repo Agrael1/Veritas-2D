@@ -61,6 +61,9 @@ LRESULT _HandleMsg(selfptr, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_INPUT:
 	{
+		if (self->bCursorEnabled)
+			break;
+
 		UINT dwSize = 48;
 		RAWINPUT raw;
 

@@ -5,7 +5,7 @@
 inline VMMATRIX __vectorcall VMMatrixMultiply(FXMMATRIX M1, CXMMATRIX M2);
 
 // Load Float3A into VMVECTOR
-inline VMVECTOR __vectorcall VMLoadFloat3A(VMFLOAT3A* pSource)
+inline VMVECTOR __vectorcall VMLoadFloat3A(const VMFLOAT3A* pSource)
 {
 	__m128 V = _mm_load_ps(&pSource->x);
 	return _mm_and_ps(V, g_XMMask3.v);
@@ -262,6 +262,18 @@ inline bool __vectorcall VMVector3LessOrEqual
 {
 	VMVECTOR vTemp = _mm_cmple_ps(V1, V2);
 	return (((_mm_movemask_ps(vTemp) & 7) == 7) != 0);
+}
+
+// Masked comparison less
+inline bool __vectorcall VMVector3GreaterMasked
+(
+	FVMVECTOR V1,
+	FVMVECTOR V2,
+	uint8_t mask
+)
+{
+	VMVECTOR vTemp = _mm_cmpgt_ps(V1, V2);
+	return (((_mm_movemask_ps(vTemp) & mask) == mask));
 }
 
 // Transforms coordinates in stream fashion

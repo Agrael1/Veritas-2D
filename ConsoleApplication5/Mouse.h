@@ -1,6 +1,5 @@
 #pragma once
 #include "WinSetup.h"
-#include "BitField.h"
 #include "EngineCommons.h"
 
 typedef enum
@@ -19,10 +18,12 @@ class
 		int(*GetX)(const selfptr);
 		int(*GetY)(const selfptr);
 		void (*ReadMouseMovement)(selfptr, int* X, int* Y);
+		short(*ReadWheelDelta)(selfptr);
 		void(*OnMouseMoved)(selfptr, RAWMOUSE* mouse);
 		bool(*ButtonPressed)(selfptr, MButtons BCode);
 	);
 
 	struct BitField* MBStates;
 	int deltaX, deltaY;
+	short WheelDelta;
 };

@@ -51,41 +51,17 @@ void virtual(HandleControls)(void* self, const struct Keyboard* kbd, double fEla
 	account(self);
 	if (kbd->method->KeyPressed(kbd, 'W'))
 	{
-		this->pCam->method->Translate(this->pCam, (VMFLOAT3A) { 0.0f, 0.0f, (float)fElapsedTime });
+		this->actor->method->Move(this->actor, (VMFLOAT3A) { 0.0f, 0.0f, (float)fElapsedTime });
 	}
 	if (kbd->method->KeyPressed(kbd, 'S'))
 	{
-		this->pCam->method->Translate(this->pCam, (VMFLOAT3A) { 0.0f, 0.0f, -(float)fElapsedTime });
+		this->actor->method->Move(this->actor, (VMFLOAT3A) { 0.0f, 0.0f, -(float)fElapsedTime });
 	}
 	if (kbd->method->KeyPressed(kbd, 'A'))
 	{
-		this->pCam->method->Translate(this->pCam, (VMFLOAT3A) { -(float)fElapsedTime, 0.0f, 0.0f });
-	}
-	if (kbd->method->KeyPressed(kbd, 'D'))
-	{
-		this->pCam->method->Translate(this->pCam, (VMFLOAT3A) { (float)fElapsedTime, 0.0f, 0.0f });
-	}
-	if (kbd->method->KeyPressed(kbd, 'R'))
-	{
-		this->pCam->method->Translate(this->pCam, (VMFLOAT3A) {  0.0f, (float)fElapsedTime, 0.0f });
-	}
-	if (kbd->method->KeyPressed(kbd, 'F'))
-	{
-		this->pCam->method->Translate(this->pCam, (VMFLOAT3A) {  0.0f, -(float)fElapsedTime, 0.0f });
-	}
-	if (kbd->method->KeyPressed(kbd, VK_UP))
-	{
-		this->actor->method->Move(this->actor, (VMFLOAT3A) { 0.0f,  0.0f, (float)fElapsedTime });
-	}
-	if (kbd->method->KeyPressed(kbd, VK_DOWN))
-	{
-		this->actor->method->Move(this->actor, (VMFLOAT3A) { 0.0f, 0.0f, -(float)fElapsedTime});
-	}
-	if (kbd->method->KeyPressed(kbd, VK_LEFT))
-	{
 		this->actor->method->Move(this->actor, (VMFLOAT3A) { -(float)fElapsedTime, 0.0f, 0.0f, });
 	}
-	if (kbd->method->KeyPressed(kbd, VK_RIGHT))
+	if (kbd->method->KeyPressed(kbd, 'D'))
 	{
 		this->actor->method->Move(this->actor, (VMFLOAT3A) { (float)fElapsedTime, 0.0f, 0.0f });
 	}
@@ -97,7 +73,12 @@ void virtual(HandleMouse)(void* self, struct Mouse* mouse, const double fElapsed
 	{
 		int X; int Y;
 		mouse->method->ReadMouseMovement(mouse, &X, &Y);
-		this->pCam->method->Rotate(this->pCam, X, Y);
+		float dX = (float)X*fElapsedTime;
+		float dY = (float)Y*fElapsedTime;
+		this->pCam->method->Rotate(this->pCam, dX, dY);
+		if (mouse->WheelDelta != 0)
+			this->pCam->method->Translate(this->pCam, 
+			(VMFLOAT3A) { 0.0f, 0.0f, (float)fElapsedTime*(float)mouse->method->ReadWheelDelta(mouse)});
 	}
 }
 bool virtual(OnUserCreate)(void* self)

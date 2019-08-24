@@ -11,7 +11,9 @@ class
 		void(*Move)(selfptr, VMFLOAT3A dPosition);
 		VMMATRIX(*GetTransformVM)(const selfptr);
 	);
-	VMFLOAT3A WorldPosition;
 	struct CubeTex* Mesh;
 	struct Camera* ACamera;
+
+	VMFLOAT3A WorldPosition;
+	float movespeed;
 };

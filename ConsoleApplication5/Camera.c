@@ -14,23 +14,30 @@ void _LookAround(selfptr, float dx, float dy)
 }
 void _Translate(selfptr, VMFLOAT3A translation)
 {
+	const XMVECTORI32 mask = { UINT32_MAX, UINT32_MAX ,0 ,UINT32_MAX };
 	VMVECTOR R = VMLoadFloat3A(&translation);
 	R = VMVector3Transform(
 		R,
 		VMMatrixScale(VMMatrixRotationRollPitchYaw(self->pitch, self->yaw, 0.0f), TravelSpeed));
-	VMStoreFloat3A(&self->RelativePos.x, VMVectorAdd(R, VMLoadFloat3A(&self->RelativePos.x)));
+	R = VMVectorAdd(R, VMLoadFloat3A(&self->RelativePos));
+	if (VMVector3GreaterMasked(R, g_XMZero.v, 0b0100))
+	{
+		R = VMVectorAnd(R, mask.v);
+	}
+
+	VMStoreFloat3A(&self->RelativePos, R);
 }
 VMMATRIX _GetViewMatrix(selfptr)
 {
 	const XMVECTORF32 forwardBase = { 0.0f,0.0f,1.0f,0.0f };
 
-	VMVECTOR lookVector = VMVector3Transform(forwardBase.v,
+	FVMVECTOR lookVector = VMVector3Transform(forwardBase.v,
 		VMMatrixRotationRollPitchYaw(self->phi, self->theta, 0.0f));
 	
-	VMVECTOR camPos = VMVectorAdd(
+	FVMVECTOR camPos = VMVectorAdd(
 		VMVector3Transform(VMLoadFloat3A(&self->RelativePos), VMMatrixRotationRollPitchYaw(self->phi, self->theta, 0.0f)),
 		VMLoadFloat3A(self->Anchor));
-	VMVECTOR camTarget = VMVectorAdd(camPos, lookVector);
+	FVMVECTOR camTarget = VMVectorAdd(camPos, lookVector);
 	VMMATRIX Res = VMMatrixLookAtLH(camPos, camTarget, g_XMIdentityR1.v);
 
 	return Res;
@@ -46,6 +53,7 @@ constructMethodTable(
 	.Reset = virtual(Reset),
 	.GetViewMatrix = _GetViewMatrix,
 	.Rotate = _Rotate,
+	.LookAround = _LookAround,
 	.Translate = _Translate
 );
 

@@ -1,3 +1,4 @@
+#include "BitField.h"
 #include "Mouse.h"
 #include "Class.h"
 
@@ -33,17 +34,29 @@ void _ReadMouseMovement(selfptr, int* X, int* Y)
 	
 	this->deltaX = 0; this->deltaY = 0;
 }
+short _ReadWheelDelta(selfptr)
+{
+	short _proxy = self->WheelDelta;
+	self->WheelDelta = 0;
+	return _proxy;
+}
 void _TranslateMouseInput(selfptr, RAWMOUSE* mouse)
 {
 	// make Lerp
 	account(self);
-	if (mouse->usFlags == 0)
+	if (mouse->usFlags == MOUSE_MOVE_RELATIVE)
 	{
-		this->deltaX = (this->deltaX + mouse->lLastX) / 2;
-		this->deltaY = (this->deltaY + mouse->lLastY) / 2;
-	}
+		this->deltaX += mouse->lLastX;
+		this->deltaY += mouse->lLastY;
+	}				 
 	if (mouse->usButtonFlags > 0)
 	{
+		if (mouse->usButtonFlags == RI_MOUSE_WHEEL)
+		{
+			this->WheelDelta = (short)mouse->usButtonData;
+			return;
+		}
+
 		Word NANDmask = 0, ORMask = 0;
 		MaxInt result = self->MBStates->BitArray[0];
 
@@ -73,6 +86,7 @@ constructMethodTable(
 	.GetX = virtual(GetX),
 	.GetY = virtual(GetY),
 	.ButtonPressed = virtual(ButtonPressed),
+	.ReadWheelDelta = _ReadWheelDelta,
 	.OnMouseMoved = _TranslateMouseInput,
 	.ReadMouseMovement = _ReadMouseMovement
 );

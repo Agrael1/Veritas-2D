@@ -2,8 +2,8 @@
 #include "VeritasMath.h"
 #include "EngineCommons.h"
 
-#define TravelSpeed 1.0f
-#define RotationSpeed 0.004f
+#define TravelSpeed 0.2f
+#define RotationSpeed 0.2f
 
 #define c_class Camera
 
@@ -14,6 +14,7 @@ class
 		VMMATRIX(*GetViewMatrix)(selfptr);
 		void(*Reset)(selfptr);
 		void(*Rotate)(selfptr, float dx, float dy);
+		void(*LookAround)(selfptr, float dx, float dy);
 		void(*Translate)(selfptr, VMFLOAT3A translation);
 	);
 	
