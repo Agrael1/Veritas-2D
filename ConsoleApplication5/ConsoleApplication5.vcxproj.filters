@@ -100,14 +100,17 @@
     <Filter Include="Файлы исходного кода\Engine\Console\Input">
       <UniqueIdentifier>{46c6ccda-a6b2-4a96-aecc-35ad480aa22d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Заголовочные файлы\Engine\Physics">
+      <UniqueIdentifier>{e42ac436-bcf3-4840-9083-23757fae38ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\Engine\Physics">
+      <UniqueIdentifier>{c10f753a-b2c0-4efb-a8e8-bad393e54d19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\Demo">
+      <UniqueIdentifier>{eb06c30d-87e2-4dd9-8dbc-e2338147504d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="MazeGen.c">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
-    <ClCompile Include="Maze3D.c">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
     <ClCompile Include="VeritasEngine.c">
       <Filter>Файлы исходного кода\Engine\Console</Filter>
     </ClCompile>
@@ -139,9 +142,6 @@
       <Filter>Файлы исходного кода\Engine\Console\Input</Filter>
     </ClCompile>
     <ClCompile Include="EntryMain.c">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
-    <ClCompile Include="CubeDemo.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
     <ClCompile Include="Camera.c">
@@ -203,6 +203,18 @@
     </ClCompile>
     <ClCompile Include="VActor.c">
       <Filter>Файлы исходного кода\Engine\Graphics\VObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="BoundingSphere.c">
+      <Filter>Файлы исходного кода\Engine\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="CubeDemo.cpp">
+      <Filter>Файлы исходного кода\Demo</Filter>
+    </ClCompile>
+    <ClCompile Include="Maze3D.c">
+      <Filter>Файлы исходного кода\Demo</Filter>
+    </ClCompile>
+    <ClCompile Include="MazeGen.c">
+      <Filter>Файлы исходного кода\Demo</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -361,6 +373,9 @@
     </ClInclude>
     <ClInclude Include="VActor.h">
       <Filter>Заголовочные файлы\Engine\Graphics\VObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="BoundingSphere.h">
+      <Filter>Заголовочные файлы\Engine\Physics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

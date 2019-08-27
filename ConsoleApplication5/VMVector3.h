@@ -781,3 +781,25 @@ inline VMFLOAT3* __vectorcall VMVector3TransformNormalStream
 
 	return pOutputStream;
 }
+
+inline VMVECTOR __vectorcall VMVector3LengthEst
+(
+	FVMVECTOR V
+)
+{
+	// Perform the dot product on x,y and z
+	VMVECTOR vLengthSq = _mm_mul_ps(V, V);
+	// vTemp has z and y
+	VMVECTOR vTemp = XM_PERMUTE_PS(vLengthSq, _MM_SHUFFLE(1, 2, 1, 2));
+	// x+z, y
+	vLengthSq = _mm_add_ss(vLengthSq, vTemp);
+	// y,y,y,y
+	vTemp = XM_PERMUTE_PS(vTemp, _MM_SHUFFLE(1, 1, 1, 1));
+	// x+z+y,??,??,??
+	vLengthSq = _mm_add_ss(vLengthSq, vTemp);
+	// Splat the length squared
+	vLengthSq = XM_PERMUTE_PS(vLengthSq, _MM_SHUFFLE(0, 0, 0, 0));
+	// Get the length
+	vLengthSq = _mm_sqrt_ps(vLengthSq);
+	return vLengthSq;
+}

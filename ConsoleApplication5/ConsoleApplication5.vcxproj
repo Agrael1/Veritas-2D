@@ -158,6 +158,7 @@
   <ItemGroup>
     <ClCompile Include="BitField.c" />
     <ClCompile Include="BitStack.c" />
+    <ClCompile Include="BoundingSphere.c" />
     <ClCompile Include="Camera.c" />
     <ClCompile Include="Class.c" />
     <ClCompile Include="Control.c" />
@@ -193,6 +194,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BitField.h" />
+    <ClInclude Include="BoundingSphere.h" />
     <ClInclude Include="Box.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Class.h" />
