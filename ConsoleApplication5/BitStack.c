@@ -47,7 +47,7 @@ short virtual(Pop)(selfptr, Byte length)
 		{
 			this->head--;
 			this->bitctr = NREG;
-			virtual(Pop)(this, length);
+			return virtual(Pop)(this, length);
 		}
 		else
 		{

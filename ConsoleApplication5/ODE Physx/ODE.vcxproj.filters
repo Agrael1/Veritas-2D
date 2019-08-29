@@ -361,6 +361,9 @@
     <ClCompile Include="$(ProjectDir)src\util.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\VPlaneXM.cpp">
+      <Filter>Source Files\Geometry</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(ProjectDir)src\array.h">
@@ -377,9 +380,6 @@
     </ClInclude>
     <ClInclude Include="$(ProjectDir)src\collision_transform.h">
       <Filter>Header Files\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="$(ProjectDir)src\common.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(ProjectDir)src\joints\contact.h">
       <Filter>Header Files</Filter>
@@ -401,9 +401,6 @@
     </ClInclude>
     <ClInclude Include="$(ProjectDir)src\collision_util.h">
       <Filter>Header Files\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="$(ProjectDir)src\joints\ball.h">
-      <Filter>Header Files\Geometry</Filter>
     </ClInclude>
     <ClInclude Include="$(ProjectDir)src\joints\dball.h">
       <Filter>Header Files\Joints</Filter>
@@ -729,6 +726,99 @@
     <ClInclude Include="$(ProjectDir)src\util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="$(ProjectDir)src\joints\ball.h">
+      <Filter>Header Files\Joints</Filter>
+    </ClInclude>
+    <ClInclude Include="$(ProjectDir)src\common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\VPlaneXM.h">
+      <Filter>Header Files\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ode\collision.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ode\collision_space.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ode\collision_trimesh.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ode\common.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ode\compatibility.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ode\contact.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ode\cooperative.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ode\error.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ode\export-dif.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ode\mass.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ode\matrix.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ode\matrix_coop.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ode\memory.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ode\misc.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ode\objects.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ode\ode.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ode\odeconfig.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ode\odecpp.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ode\odecpp_collision.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ode\odeinit.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ode\odemath.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ode\odemath_legacy.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ode\precision.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ode\rotation.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ode\threading.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ode\threading_impl.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ode\timer.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ode\version.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
@@ -784,6 +874,9 @@
     </Filter>
     <Filter Include="Source Files\OPCODE lib">
       <UniqueIdentifier>{d2169859-e77d-4307-9e23-89d3766d55c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\include">
+      <UniqueIdentifier>{0485f6b3-3a59-4862-a678-3e7f77fe4137}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -2,7 +2,7 @@
 //
 //		GNU GPL License 3.0. Usage or modification is strictly welcome.
 //
-// Main Inclusion file for all the classes in olcGameEngine project. 
+// Main Inclusion file for all the classes in VeritasEngine project. 
 // Defines all the crucial automation for class mechanics in ANSI-C and some data types
 // Designed for multiple inclusions, does not consume memory, contains only compiler instructions.
 // Usage: include last to every class declaration header.
@@ -10,22 +10,7 @@
 #define ENGINECOMMONS_H
 
 #include "New.h"
-
-typedef unsigned char Byte;
-typedef _Bool bool;
-typedef unsigned short Word;
-typedef unsigned int DWord;
-
-#if _WIN64
-typedef unsigned long long MaxInt;
-#else
-typedef unsingned int MaxInt;
-#endif
-
-#define M_PI 3.14159265358979323846
-#define true 1
-#define false 0
-#define nullptr ((void*)0)
+#include <VEngineTypes.h>
 
 #pragma region Automation
 // Easy mangling for method and private tables
@@ -66,6 +51,8 @@ typedef unsingned int MaxInt;
 // Method Handling
 #define methods(...) struct vftb { __VA_ARGS__ }*method
 #define constructMethodTable(...) struct vftb meth = { __VA_ARGS__ }
+
+#define VirtualTable struct vftb meth =
 #define assignMethodTable(x) ((struct c_class *)(x))->method = &meth
 
 // Class construction handling

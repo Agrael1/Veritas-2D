@@ -25,7 +25,7 @@
 
 #include <ode/odeconfig.h>
 #include <ode/error.h>
-
+#include <VMathTypes.h>
 
 #ifdef __cplusplus
 extern "C" {

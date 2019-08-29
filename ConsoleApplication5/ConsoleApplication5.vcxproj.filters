@@ -216,6 +216,9 @@
     <ClCompile Include="MazeGen.c">
       <Filter>Файлы исходного кода\Demo</Filter>
     </ClCompile>
+    <ClCompile Include="PhysicsAggregate.c">
+      <Filter>Файлы исходного кода\Engine\Physics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BitField.h">
@@ -256,9 +259,6 @@
     </ClInclude>
     <ClInclude Include="WinSetup.h">
       <Filter>Заголовочные файлы\Engine\Framework</Filter>
-    </ClInclude>
-    <ClInclude Include="VTypes.h">
-      <Filter>Заголовочные файлы\Engine\Math</Filter>
     </ClInclude>
     <ClInclude Include="VeritasMath.h">
       <Filter>Заголовочные файлы\Engine\Math</Filter>
@@ -376,6 +376,21 @@
     </ClInclude>
     <ClInclude Include="BoundingSphere.h">
       <Filter>Заголовочные файлы\Engine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsAggregate.h">
+      <Filter>Заголовочные файлы\Engine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="VMStoreLoad.h">
+      <Filter>Заголовочные файлы\Engine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="VMathTypes.h">
+      <Filter>Заголовочные файлы\Engine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="VEngineTypes.h">
+      <Filter>Заголовочные файлы\Engine\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="VMPlane.h">
+      <Filter>Заголовочные файлы\Engine\Math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

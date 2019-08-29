@@ -1041,11 +1041,16 @@ ODE_API void dGeomBoxGetLengths (dGeomID box, dVector3 result);
  */
 ODE_API dReal dGeomBoxPointDepth (dGeomID box, dReal x, dReal y, dReal z);
 
-
 ODE_API dGeomID dCreatePlane (dSpaceID space, dReal a, dReal b, dReal c, dReal d);
 ODE_API void dGeomPlaneSetParams (dGeomID plane, dReal a, dReal b, dReal c, dReal d);
 ODE_API void dGeomPlaneGetParams (dGeomID plane, dVector4 result);
 ODE_API dReal dGeomPlanePointDepth (dGeomID plane, dReal x, dReal y, dReal z);
+
+// Veritas Math Compatible Interface
+ODE_API dGeomID dCreateVPlane(dSpaceID space, VMVECTOR plane);
+ODE_API void dGeomVPlaneSetParams(dGeomID g, VMVECTOR plane);
+ODE_API VMVECTOR dGeomVPlaneGetParams(dGeomID g);
+ODE_API VMVECTOR dGeomVPlanePointDepth(dGeomID g, VMVECTOR point3D);
 
 ODE_API dGeomID dCreateCapsule (dSpaceID space, dReal radius, dReal length);
 ODE_API void dGeomCapsuleSetParams (dGeomID ccylinder, dReal radius, dReal length);

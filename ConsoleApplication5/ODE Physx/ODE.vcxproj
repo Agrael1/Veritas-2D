@@ -24,6 +24,7 @@
     <Platform>x64</Platform>
     <ProjectName>ODE</ProjectName>
     <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -82,7 +83,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src;$(ProjectDir)ou\include;$(ProjectDir)OPCODE;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src;$(ProjectDir)ou\include;$(ProjectDir)OPCODE;C:\Users\aa\Documents\Visual Studio 2015\ProjectsKR\Veritas\Veritas-3D\ConsoleApplication5\Veritas Math;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -115,8 +116,8 @@
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <ImportLibrary>C:/Users/aa/Desktop/ode-0.16/build/Debug/ode_doubled.lib</ImportLibrary>
-      <ProgramDataBaseFile>C:/Users/aa/Desktop/ode-0.16/build/Debug/ode_doubled.pdb</ProgramDataBaseFile>
+      <ImportLibrary>build\Debug\ode_doubled.lib</ImportLibrary>
+      <ProgramDataBaseFile>build\Debug\ode_doubled.pdb</ProgramDataBaseFile>
       <SubSystem>Console</SubSystem>
     </Link>
     <ProjectReference>
@@ -158,8 +159,7 @@
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <ImportLibrary>C:/Users/aa/Desktop/ode-0.16/build/Release/ode_double.lib</ImportLibrary>
-      <ProgramDataBaseFile>C:/Users/aa/Desktop/ode-0.16/build/Release/ode_double.pdb</ProgramDataBaseFile>
+      <ProgramDataBaseFile>build\Release\ode_double.pdb</ProgramDataBaseFile>
       <SubSystem>Console</SubSystem>
     </Link>
     <ProjectReference>
@@ -201,8 +201,8 @@
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <ImportLibrary>C:/Users/aa/Desktop/ode-0.16/build/MinSizeRel/ode_double.lib</ImportLibrary>
-      <ProgramDataBaseFile>C:/Users/aa/Desktop/ode-0.16/build/MinSizeRel/ode_double.pdb</ProgramDataBaseFile>
+      <ImportLibrary>build\MinSizeRel\ode_double.lib</ImportLibrary>
+      <ProgramDataBaseFile>build\MinSizeRel\ode_double.pdb</ProgramDataBaseFile>
       <SubSystem>Console</SubSystem>
     </Link>
     <ProjectReference>
@@ -243,8 +243,8 @@
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <ImportLibrary>C:/Users/aa/Desktop/ode-0.16/build/RelWithDebInfo/ode_double.lib</ImportLibrary>
-      <ProgramDataBaseFile>C:/Users/aa/Desktop/ode-0.16/build/RelWithDebInfo/ode_double.pdb</ProgramDataBaseFile>
+      <ImportLibrary>build\RelWithDebInfo\ode_double.lib</ImportLibrary>
+      <ProgramDataBaseFile>build\RelWithDebInfo\ode_double.pdb</ProgramDataBaseFile>
       <SubSystem>Console</SubSystem>
     </Link>
     <ProjectReference>
@@ -253,6 +253,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="$(ProjectDir)src\array.cpp" />
+    <ClCompile Include="src\VPlaneXM.cpp" />
     <ClInclude Include="$(ProjectDir)src\array.h" />
     <ClCompile Include="$(ProjectDir)src\box.cpp" />
     <ClCompile Include="$(ProjectDir)src\capsule.cpp" />
@@ -499,14 +500,35 @@
     <ClCompile Include="$(ProjectDir)ou\src\ou\customization.cpp" />
     <ClCompile Include="$(ProjectDir)ou\src\ou\malloc.cpp" />
     <ClCompile Include="$(ProjectDir)ou\src\ou\threadlocalstorage.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="$(ProjectDir)build\ZERO_CHECK.vcxproj">
-      <Project>{21ED35C2-4958-364A-B82D-43C2CCF57FEE}</Project>
-      <Name>ZERO_CHECK</Name>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </ProjectReference>
+    <ClInclude Include="include\ode\collision.h" />
+    <ClInclude Include="include\ode\collision_space.h" />
+    <ClInclude Include="include\ode\collision_trimesh.h" />
+    <ClInclude Include="include\ode\common.h" />
+    <ClInclude Include="include\ode\compatibility.h" />
+    <ClInclude Include="include\ode\contact.h" />
+    <ClInclude Include="include\ode\cooperative.h" />
+    <ClInclude Include="include\ode\error.h" />
+    <ClInclude Include="include\ode\export-dif.h" />
+    <ClInclude Include="include\ode\mass.h" />
+    <ClInclude Include="include\ode\matrix.h" />
+    <ClInclude Include="include\ode\matrix_coop.h" />
+    <ClInclude Include="include\ode\memory.h" />
+    <ClInclude Include="include\ode\misc.h" />
+    <ClInclude Include="include\ode\objects.h" />
+    <ClInclude Include="include\ode\ode.h" />
+    <ClInclude Include="include\ode\odeconfig.h" />
+    <ClInclude Include="include\ode\odecpp.h" />
+    <ClInclude Include="include\ode\odecpp_collision.h" />
+    <ClInclude Include="include\ode\odeinit.h" />
+    <ClInclude Include="include\ode\odemath.h" />
+    <ClInclude Include="include\ode\odemath_legacy.h" />
+    <ClInclude Include="include\ode\precision.h" />
+    <ClInclude Include="include\ode\rotation.h" />
+    <ClInclude Include="include\ode\threading.h" />
+    <ClInclude Include="include\ode\threading_impl.h" />
+    <ClInclude Include="include\ode\timer.h" />
+    <ClInclude Include="include\ode\version.h" />
+    <ClInclude Include="src\VPlaneXM.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,6 +1,6 @@
 #pragma once
 #include "VeritasEngine.h"
-#include "VTypes.h"
+#include "VMathTypes.h"
 #include "VLine.h"
 #include "Light.h"
 #include "Camera.h"

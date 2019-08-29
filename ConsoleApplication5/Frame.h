@@ -1,7 +1,7 @@
 #pragma once
 #include "WinSetup.h"
 #include "EngineCommons.h"
-#include "VTypes.h"
+#include "VMathTypes.h"
 
 #define c_class Frame
 

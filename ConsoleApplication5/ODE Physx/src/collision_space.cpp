@@ -478,7 +478,7 @@ void dxHashSpace::collide (void *data, dNearCallback *callback)
     // for `n' objects, an n*n array of bits is used to record if those objects
     // have been intersection-tested against each other yet. this array can
     // grow large with high n, but oh well...
-    int tested_rowsize = (n+7) >> 3;	// number of bytes needed for n bits
+	sizeint tested_rowsize = (n+7) >> 3;	// number of bytes needed for n bits
     std::vector<uint8> tested(n * tested_rowsize);
 
     // create a hash table to store all AABBs. each AABB may take up to 8 cells.

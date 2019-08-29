@@ -12,6 +12,8 @@
 #include "Color.scheme"
 #include <stdlib.h>
 
+#include "ODE Physx\include\ode\ode.h"
+
 
 float GetRand(float min, float max)
 {

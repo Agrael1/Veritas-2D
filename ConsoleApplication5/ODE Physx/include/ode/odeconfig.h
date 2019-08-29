@@ -36,22 +36,25 @@
 
 #include <ode/precision.h>
 
-
 #if defined(ODE_DLL) || defined(ODE_LIB)
 #define __ODE__
 #endif
 
 /* Define a DLL export symbol for those platforms that need it */
-#if defined(_MSC_VER) || (defined(__GNUC__) && defined(_WIN32))
+#if defined(__GNUC__) && defined(_WIN32)
   #if defined(ODE_DLL)
     #define ODE_API __declspec(dllexport)
   #else
-    #define ODE_API
+    #define ODE_API __declspec(dllimport)
   #endif
 #endif
 
-#if !defined(ODE_API)
-  #define ODE_API
+#if defined(_MSC_VER) 
+#ifdef ODE_EXPORTS
+#define ODE_API __declspec(dllexport)
+#else
+#define ODE_API __declspec(dllimport)
+#endif
 #endif
 
 #if defined(_MSC_VER)
