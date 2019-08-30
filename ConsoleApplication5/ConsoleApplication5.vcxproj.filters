@@ -260,15 +260,6 @@
     <ClInclude Include="WinSetup.h">
       <Filter>Заголовочные файлы\Engine\Framework</Filter>
     </ClInclude>
-    <ClInclude Include="VeritasMath.h">
-      <Filter>Заголовочные файлы\Engine\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="MathConstants.h">
-      <Filter>Заголовочные файлы\Engine\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="VMVector.h">
-      <Filter>Заголовочные файлы\Engine\Math</Filter>
-    </ClInclude>
     <ClInclude Include="IndexedTriangleList.h">
       <Filter>Заголовочные файлы\Engine\Graphics</Filter>
     </ClInclude>
@@ -298,9 +289,6 @@
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Заголовочные файлы\Engine\Graphics\VObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="VMVector3.h">
-      <Filter>Заголовочные файлы\Engine\Math</Filter>
     </ClInclude>
     <ClInclude Include="Frame.h">
       <Filter>Заголовочные файлы\Engine\Graphics</Filter>
@@ -380,16 +368,31 @@
     <ClInclude Include="PhysicsAggregate.h">
       <Filter>Заголовочные файлы\Engine\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="VMStoreLoad.h">
-      <Filter>Заголовочные файлы\Engine\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="VMathTypes.h">
-      <Filter>Заголовочные файлы\Engine\Math</Filter>
-    </ClInclude>
     <ClInclude Include="VEngineTypes.h">
       <Filter>Заголовочные файлы\Engine\Framework</Filter>
     </ClInclude>
-    <ClInclude Include="VMPlane.h">
+    <ClInclude Include="Veritas Math\MathConstants.h">
+      <Filter>Заголовочные файлы\Engine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Veritas Math\VEngineTypes.h">
+      <Filter>Заголовочные файлы\Engine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Veritas Math\VeritasMath.h">
+      <Filter>Заголовочные файлы\Engine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Veritas Math\VMathTypes.h">
+      <Filter>Заголовочные файлы\Engine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Veritas Math\VMPlane.h">
+      <Filter>Заголовочные файлы\Engine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Veritas Math\VMStoreLoad.h">
+      <Filter>Заголовочные файлы\Engine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Veritas Math\VMVector.h">
+      <Filter>Заголовочные файлы\Engine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Veritas Math\VMVector3.h">
       <Filter>Заголовочные файлы\Engine\Math</Filter>
     </ClInclude>
   </ItemGroup>

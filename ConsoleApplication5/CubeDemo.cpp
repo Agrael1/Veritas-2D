@@ -7,12 +7,12 @@
 #include "GouraudPST.h"
 #include "GouraudVST.h"
 
+#include "PhysicsAggregate.h"
+
 #include "Class.h"
 #include "CubeDemo.h"
 #include "Color.scheme"
 #include <stdlib.h>
-
-#include "ODE Physx\include\ode\ode.h"
 
 
 float GetRand(float min, float max)
@@ -129,6 +129,7 @@ bool virtual(OnUserCreate)(void* self)
 		0.0f,
 		0.9f);	//scale
 	this->actor = new(VActor);
+	this->pP = new(Physics);
 	this->pCam = this->actor->ACamera;
 
 
@@ -151,16 +152,20 @@ bool virtual(OnUserUpdate)(void* self, double fElapsedSeconds)
 	base.Output->camera = this->pCam->method->GetViewMatrix(this->pCam);
 	base.Output->method->BeginFrame(base.Output, ' ', BG_Sky);
 	
-	//this->model->_base.method->Update(this->model, (float)fElapsedSeconds);
-	VMMATRIX Rotation = this->model->_base.method->GetTransformXM(this->model);
+	/*VMMATRIX Rotation = this->model->_base.method->GetTransformXM(this->model);
 	VMMATRIX Transformation = VMMatrixMultiply(Rotation, &base.Output->camera);
 	this->model->VS->ModelViewProj = VMMatrixMultiply(Transformation, &base.Output->projection);
-	this->pPl->method->Draw(this->pPl, &this->model->model);
+	this->pPl->method->Draw(this->pPl, &this->model->model);*/
 
-	Rotation = this->actor->method->GetTransformVM(this->actor);
-	Transformation = VMMatrixMultiply(Rotation, &base.Output->camera);
+	VMMATRIX Rotation = this->actor->method->GetTransformVM(this->actor);
+	VMMATRIX Transformation = VMMatrixMultiply(Rotation, &base.Output->camera);
 	this->model->VS->ModelViewProj = VMMatrixMultiply(Transformation, &base.Output->projection);
 	this->pPl->method->Draw(this->pPl, &this->actor->Mesh->model);
+
+	Rotation = this->pP->method->Tick(this->pP);
+	Transformation = VMMatrixMultiply(Rotation, &base.Output->camera);
+	this->model->VS->ModelViewProj = VMMatrixMultiply(Transformation, &base.Output->projection);
+	this->pPl->method->Draw(this->pPl, &this->pP->pMesh->model);
 
 	return true;
 }

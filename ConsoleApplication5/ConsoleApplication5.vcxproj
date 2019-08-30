@@ -110,13 +110,13 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <CompileAs>CompileAsC</CompileAs>
-      <AdditionalIncludeDirectories>$(ProjectDir)ODE Physx\include;$(ProjectDir)Veritas Math;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)VPhysics\include;$(SolutionDir)Veritas Math;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\aa\Documents\Visual Studio 2015\ProjectsKR\Veritas\Veritas-3D\ConsoleApplication5\ODE Physx\build\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ode_doubled.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>VPhysics.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -230,10 +230,17 @@
     <ClInclude Include="Triangle.h" />
     <ClInclude Include="VActor.h" />
     <ClInclude Include="VEngineTypes.h" />
+    <ClInclude Include="Veritas Math\MathConstants.h" />
+    <ClInclude Include="Veritas Math\VEngineTypes.h" />
+    <ClInclude Include="Veritas Math\VeritasMath.h" />
+    <ClInclude Include="Veritas Math\VMathTypes.h" />
+    <ClInclude Include="Veritas Math\VMPlane.h" />
+    <ClInclude Include="Veritas Math\VMStoreLoad.h" />
+    <ClInclude Include="Veritas Math\VMVector.h" />
+    <ClInclude Include="Veritas Math\VMVector3.h" />
     <ClInclude Include="VLine.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="Light.h" />
-    <ClInclude Include="MathConstants.h" />
     <ClInclude Include="Maze.h" />
     <ClInclude Include="Maze3D.h" />
     <ClInclude Include="LoaderTest.h" />
@@ -242,17 +249,11 @@
     <ClInclude Include="ColorIndexPS.h" />
     <ClInclude Include="Pipeline.h" />
     <ClInclude Include="PSBase.h" />
-    <ClInclude Include="VMPlane.h" />
-    <ClInclude Include="VMStoreLoad.h" />
     <ClInclude Include="VSBase.h" />
     <ClInclude Include="Standard.h" />
     <ClInclude Include="StringStream.h" />
     <ClInclude Include="Test.h" />
     <ClInclude Include="VeritasEngine.h" />
-    <ClInclude Include="VeritasMath.h" />
-    <ClInclude Include="VMVector.h" />
-    <ClInclude Include="VMVector3.h" />
-    <ClInclude Include="VMathTypes.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="WinSetup.h" />
   </ItemGroup>

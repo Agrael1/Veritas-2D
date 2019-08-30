@@ -15,6 +15,7 @@ class
 	float fTheta;
 	struct Camera* pCam;
 	struct VLine* pPl;
+	struct Physics* pP;
 	struct DirectionalLight* pLight;
 
 	bool bStop;

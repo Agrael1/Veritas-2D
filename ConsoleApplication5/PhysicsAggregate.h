@@ -1,6 +1,7 @@
 #pragma once
+#define dIDESINGLE
 #include "VeritasMath.h"
-#include <ode\ode.h>
+#include <ode/ode.h>
 #include "EngineCommons.h"
 
 #define c_class Physics
@@ -16,12 +17,9 @@ class
 	GENERATED_DESC
 
 	methods(
-		int x;
+		VMMATRIX(*GetTransform)(selfptr);
+		VMMATRIX(*Tick)(selfptr);
 	);
-
-	VMFLOAT3X3 GeomMatrix;
-	PhysObject Object;
+	struct CubeTex* pMesh;
 	dWorldID World;
-	dSpaceID Space;
-	dJointGroupID contactgroup;
 };
