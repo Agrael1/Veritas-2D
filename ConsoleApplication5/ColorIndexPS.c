@@ -4,9 +4,10 @@
 
 extern IAOut ia;
 
-CHAR_INFO virtual(Apply)(selfptr, void* _unused)
+CHAR_INFO virtual(Apply)(void* self, void* _unused)
 {
-	return Pick(self->colors[(ia.SV_PrimID) % 8],2,0);
+	account(self);
+	return Pick(this->colors[(ia.SV_PrimID) % 8],2,0);
 }
 
 Constructor(selfptr, va_list *ap)

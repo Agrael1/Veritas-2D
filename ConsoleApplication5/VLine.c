@@ -307,7 +307,7 @@ void _AssembleTriangles(selfptr, const void* Verts, size_t VSize, const size_t* 
 		}
 	}
 }
-void _ProcessVertices(selfptr, struct IndexedTriangleList* trilist)
+void _ProcessVertices(selfptr, IndexedTriangleList* trilist)
 {
 	assert(self->VS);
 	void* pVSOut = _aligned_malloc(self->VS->VSOutSize * trilist->numVerts, 16);
@@ -320,15 +320,14 @@ void _ProcessVertices(selfptr, struct IndexedTriangleList* trilist)
 	}
 	_aligned_free(pVSOut);
 }
-void _Draw(selfptr, struct IndexedTriangleList* trilist)
+void _Draw(selfptr, IndexedTriangleList* trilist)
 {
 	_ProcessVertices(self, trilist); // Start the pipeline
 }
 
-constructMethodTable(
+VirtualTable{
 	.Draw = _Draw
-);
-
+};
 Constructor(selfptr, va_list *ap)
 {
 	assignMethodTable(self);

@@ -17,5 +17,5 @@ class
 	inherits(TestObject);
 	struct GouraudVST* VS;
 	struct GouraudPST* PS;
-	struct IndexedTriangleList model;
+	IndexedTriangleList model;
 };

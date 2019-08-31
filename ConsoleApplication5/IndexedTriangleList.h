@@ -2,17 +2,15 @@
 #include "VeritasMath.h"
 #include <memory.h>
 
-typedef struct IndexedTriangleList
-{
-	size_t numVerts;
-	size_t VSize;
-	void* vertices;
-	
-	size_t numInds;
+typedef struct _IndexedTriangleList {
 	size_t* indices;
+	void* vertices;
+	size_t numVerts;
+	size_t VSize;	
+	size_t numInds;
 }IndexedTriangleList;
 
-static void MakeIndependent(struct IndexedTriangleList* temp)
+static void MakeIndependent(IndexedTriangleList* temp)
 {
 	void* ReVertices = malloc(temp->numInds * temp->VSize);
 	

@@ -60,8 +60,8 @@ unsigned int sizeOf(const void* _self)
 }
 const char* stringOf(const void * _self)
 {
-	const struct Class* const * cp = _self;
-	assert(_self&&*cp && (*cp)->typestring);
-	return (*cp)->typestring;
+	const struct Class* cp = _self;
+	assert(_self && (cp)->typestring);
+	return (cp)->typestring;
 }
 

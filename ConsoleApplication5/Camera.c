@@ -33,10 +33,18 @@ VMMATRIX _GetViewMatrix(selfptr)
 
 	FVMVECTOR lookVector = VMVector3Transform(forwardBase.v,
 		VMMatrixRotationRollPitchYaw(self->phi, self->theta, 0.0f));
+	VMVECTOR camPos;
+	if (self->Anchor)
+	{
+		camPos = VMVectorAdd(
+			VMVector3Transform(VMLoadFloat3A(&self->RelativePos), VMMatrixRotationRollPitchYaw(self->phi, self->theta, 0.0f)),
+			VMLoadFloat3A(self->Anchor));
+	}
+	else
+	{
+		camPos = VMVector3Transform(VMLoadFloat3A(&self->RelativePos), VMMatrixRotationRollPitchYaw(self->phi, self->theta, 0.0f));
+	}
 	
-	FVMVECTOR camPos = VMVectorAdd(
-		VMVector3Transform(VMLoadFloat3A(&self->RelativePos), VMMatrixRotationRollPitchYaw(self->phi, self->theta, 0.0f)),
-		VMLoadFloat3A(self->Anchor));
 	FVMVECTOR camTarget = VMVectorAdd(camPos, lookVector);
 	VMMATRIX Res = VMMatrixLookAtLH(camPos, camTarget, g_XMIdentityR1.v);
 

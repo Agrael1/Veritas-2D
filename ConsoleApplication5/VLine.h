@@ -13,11 +13,10 @@ class
 {
 	GENERATED_DESC
 
-		methods(
-			void(*Draw)(selfptr, struct IndexedTriangleList* trilist);
-		);
+	methods(
+		void(*Draw)(selfptr, struct IndexedTriangleList* trilist);
+	);
 
-	struct ConsoleWindow* wndDbg;
 	struct Frame* gfx;
 	struct VSBase* VS;
 	struct GSBase* GS;

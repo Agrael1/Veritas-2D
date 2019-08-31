@@ -1,19 +1,13 @@
-#include "Icosphere.h"
-#include "LoaderTest.h"
-#include "CubeSceneTex.h"
-#include "Triangle.h"
-#include "VActor.h"
-
 #include "GouraudPST.h"
 #include "GouraudVST.h"
 
-#include "PhysicsAggregate.h"
+#include "Codex.h"
+#include "CubeTexDr.h"
 
 #include "Class.h"
 #include "CubeDemo.h"
 #include "Color.scheme"
 #include <stdlib.h>
-
 
 float GetRand(float min, float max)
 {
@@ -50,7 +44,7 @@ bool virtual(HandleInputEvents)(void* self, const KeyboardEvent* event)
 }
 void virtual(HandleControls)(void* self, const struct Keyboard* kbd, double fElapsedTime)
 {
-	account(self);
+	/*account(self);
 	if (kbd->method->KeyPressed(kbd, 'W'))
 	{
 		this->actor->method->Move(this->actor, (VMFLOAT3A) { 0.0f, 0.0f, (float)fElapsedTime });
@@ -66,7 +60,7 @@ void virtual(HandleControls)(void* self, const struct Keyboard* kbd, double fEla
 	if (kbd->method->KeyPressed(kbd, 'D'))
 	{
 		this->actor->method->Move(this->actor, (VMFLOAT3A) { (float)fElapsedTime, 0.0f, 0.0f });
-	}
+	}*/
 }
 void virtual(HandleMouse)(void* self, struct Mouse* mouse, const double fElapsedTime)
 {
@@ -86,9 +80,10 @@ void virtual(HandleMouse)(void* self, struct Mouse* mouse, const double fElapsed
 bool virtual(OnUserCreate)(void* self)
 {
 	account(self);
-	//this->pCam = new(Camera); // Create an instance of a free camera
+	InitializeCodex();
+	this->pCam = new(Camera, nullptr); // Create an instance of a free camera
 	this->pPl = new(VLine, base.Output);
-	this->pLight = new(DirectionalLight);
+	//this->pLight = new(DirectionalLight);
 
 	// using DB16 - DawnBringer's 16 Col Palette v1.0
 	// http://pixeljoint.com/forum/forum_posts.asp?TID=12795
@@ -116,30 +111,8 @@ bool virtual(OnUserCreate)(void* self)
 	this->bStop = false;
 	srand((unsigned int)time(NULL));
 	
-	this->model = new(CubeTex,
-		0.0f,
-		0.0f,
-		0.0f,
-		0.0f,
-		0.0f,
-		0.0f,
-		0.0f,
-		0.0f,
-		0.0f,
-		0.0f,
-		0.9f);	//scale
-	this->actor = new(VActor);
-	this->pP = new(Physics);
-	this->pCam = this->actor->ACamera;
-
-
-	this->pPl->VS = this->model->VS;
-	this->pPl->GS = nullptr;
-	this->pPl->PS = this->model->PS;
-
+	this->model = new(CubeDr);
 	base.Output->projection = VMMatrixPerspectiveLH(1.0f, (float)base.Output->nFrameHeight / (float)base.Output->nFrameLength, 0.5f, 40.0f);
-	this->model->VS->light = this->pLight;
-	this->pPl->wndDbg = base.Window;
 	return true;
 }
 bool virtual(OnUserUpdate)(void* self, double fElapsedSeconds)
@@ -151,42 +124,31 @@ bool virtual(OnUserUpdate)(void* self, double fElapsedSeconds)
 
 	base.Output->camera = this->pCam->method->GetViewMatrix(this->pCam);
 	base.Output->method->BeginFrame(base.Output, ' ', BG_Sky);
-	
-	/*VMMATRIX Rotation = this->model->_base.method->GetTransformXM(this->model);
-	VMMATRIX Transformation = VMMatrixMultiply(Rotation, &base.Output->camera);
-	this->model->VS->ModelViewProj = VMMatrixMultiply(Transformation, &base.Output->projection);
-	this->pPl->method->Draw(this->pPl, &this->model->model);*/
 
-	VMMATRIX Rotation = this->actor->method->GetTransformVM(this->actor);
-	VMMATRIX Transformation = VMMatrixMultiply(Rotation, &base.Output->camera);
-	this->model->VS->ModelViewProj = VMMatrixMultiply(Transformation, &base.Output->projection);
-	this->pPl->method->Draw(this->pPl, &this->actor->Mesh->model);
-
-	Rotation = this->pP->method->Tick(this->pP);
-	Transformation = VMMatrixMultiply(Rotation, &base.Output->camera);
-	this->model->VS->ModelViewProj = VMMatrixMultiply(Transformation, &base.Output->projection);
-	this->pPl->method->Draw(this->pPl, &this->pP->pMesh->model);
+	this->model->method->Draw(this->model, this->pPl);
 
 	return true;
 }
 bool virtual(OnUserDestroy)(void* self)
 {
 	account(self);
-	if (this->model->model.indices)
+	DestroyCodex();
+
+	/*if (this->model->model.indices)
 		free(this->model->model.indices);
 	if (this->model->model.vertices)
 		free(this->model->model.vertices);
 	if(this->pCam)
 		delete(this->pCam);
 	if (this->pPl)
-		delete(this->pPl);
+		delete(this->pPl);*/
 	return true;
 }
 
 Constructor(void* self, va_list *ap)
 {
 	struct c_class *this = ((struct Class*)VeritasEngine)->ctor(self, ap);
-	base.AppName = stringOf(self);
+	base.AppName = stringOf(this->_base._class);
 	base.method->OnUserCreate = virtual(OnUserCreate);
 	base.method->HandleControls = virtual(HandleControls);
 	base.method->OnUserUpdate = virtual(OnUserUpdate);

@@ -3,7 +3,7 @@
 #include <memory.h>
 #include <math.h>
 
-static struct IndexedTriangleList Icosahedron_Make(size_t VSize)
+static IndexedTriangleList Icosahedron_Make(size_t VSize)
 {
 	const float t = (1.0f + sqrtf(5.0f)) / 2.0f;
 
@@ -31,7 +31,7 @@ static struct IndexedTriangleList Icosahedron_Make(size_t VSize)
 			4, 9, 5,	2, 4, 11,	6, 2, 10,	8, 6, 7,	9, 8, 1
 	}, 60 * sizeof(size_t));
 
-	struct IndexedTriangleList _ret = { 0 };
+	IndexedTriangleList _ret = { 0 };
 	_ret.vertices = vertices;
 	_ret.VSize = VSize;
 	_ret.indices = indices;
@@ -40,9 +40,9 @@ static struct IndexedTriangleList Icosahedron_Make(size_t VSize)
 
 	return _ret;
 }
-static struct IndexedTriangleList Icosahedron_MakeIndependent(size_t VSize)
+static IndexedTriangleList Icosahedron_MakeIndependent(size_t VSize)
 {
-	struct IndexedTriangleList temp = Icosahedron_Make(VSize);
+	IndexedTriangleList temp = Icosahedron_Make(VSize);
 
 	void* ReVertices = malloc(temp.numInds * VSize);
 	for (unsigned i = 0; i < temp.numInds; i++)

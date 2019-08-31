@@ -30,8 +30,6 @@ Constructor(selfptr, va_list *ap)
 	this->PS = new(GouraudPST);
 	this->PS->texBuffer = tex;
 	return this;
-
-	return self;
 }
 Destructor(selfptr)
 {

@@ -26,7 +26,7 @@ static IndexedTriangleList Box_Make(size_t VSize)
 			4, 0, 5,	 0, 1, 5
 	}, 36 * sizeof(size_t));
 
-	struct IndexedTriangleList _ret = { 0 };
+	IndexedTriangleList _ret = { 0 };
 	_ret.vertices = vertices;
 	_ret.indices = indices;
 	_ret.VSize = VSize;

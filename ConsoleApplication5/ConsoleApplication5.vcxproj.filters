@@ -109,6 +109,18 @@
     <Filter Include="Файлы исходного кода\Demo">
       <UniqueIdentifier>{eb06c30d-87e2-4dd9-8dbc-e2338147504d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Файлы исходного кода\Engine\Framework\Bindable">
+      <UniqueIdentifier>{72414281-77f6-4108-84ec-2d0a93a9d13c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Заголовочные файлы\Engine\Framework\Bindable">
+      <UniqueIdentifier>{8a49e677-5008-41a1-8ea4-9ee495b8cb91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Заголовочные файлы\Engine\Framework\Drawable">
+      <UniqueIdentifier>{9665dedf-718c-4963-b8fa-846501d5452f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\Engine\Framework\Drawable">
+      <UniqueIdentifier>{7dae4cd2-cf27-4e57-8b79-abd3a1c78ff0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VeritasEngine.c">
@@ -219,6 +231,30 @@
     <ClCompile Include="PhysicsAggregate.c">
       <Filter>Файлы исходного кода\Engine\Physics</Filter>
     </ClCompile>
+    <ClCompile Include="VertexShader.c">
+      <Filter>Файлы исходного кода\Engine\Framework\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Drawable.c">
+      <Filter>Файлы исходного кода\Engine\Framework\Drawable</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector.c">
+      <Filter>Файлы исходного кода\Engine\Framework\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="Codex.c">
+      <Filter>Файлы исходного кода\Engine\Framework\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="CubeTexDr.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="PixelShader.c">
+      <Filter>Файлы исходного кода\Engine\Framework\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureBuffer.c">
+      <Filter>Файлы исходного кода\Engine\Framework\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="HashMap.c">
+      <Filter>Файлы исходного кода\Engine\Framework\Containers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BitField.h">
@@ -314,9 +350,6 @@
     <ClInclude Include="DefaultVS.h">
       <Filter>Заголовочные файлы\Engine\Graphics\Shading\FlatLight</Filter>
     </ClInclude>
-    <ClInclude Include="VSBase.h">
-      <Filter>Заголовочные файлы\Engine\Graphics\Shading</Filter>
-    </ClInclude>
     <ClInclude Include="GSBase.h">
       <Filter>Заголовочные файлы\Engine\Graphics\Shading</Filter>
     </ClInclude>
@@ -368,9 +401,6 @@
     <ClInclude Include="PhysicsAggregate.h">
       <Filter>Заголовочные файлы\Engine\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="VEngineTypes.h">
-      <Filter>Заголовочные файлы\Engine\Framework</Filter>
-    </ClInclude>
     <ClInclude Include="Veritas Math\MathConstants.h">
       <Filter>Заголовочные файлы\Engine\Math</Filter>
     </ClInclude>
@@ -394,6 +424,39 @@
     </ClInclude>
     <ClInclude Include="Veritas Math\VMVector3.h">
       <Filter>Заголовочные файлы\Engine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="SharedPtr.h">
+      <Filter>Заголовочные файлы\Engine\Framework\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Codex.h">
+      <Filter>Заголовочные файлы\Engine\Framework\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="HashMap.h">
+      <Filter>Заголовочные файлы\Engine\Framework\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="VSBase.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Shading</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexShader.h">
+      <Filter>Заголовочные файлы\Engine\Framework\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="BindableBase.h">
+      <Filter>Заголовочные файлы\Engine\Framework\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawable.h">
+      <Filter>Заголовочные файлы\Engine\Framework\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector.h">
+      <Filter>Заголовочные файлы\Engine\Framework\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="CubeTexDr.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="PixelShader.h">
+      <Filter>Заголовочные файлы\Engine\Framework\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureBuffer.h">
+      <Filter>Заголовочные файлы\Engine\Framework\Bindable</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

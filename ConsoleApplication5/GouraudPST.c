@@ -10,7 +10,7 @@ CHAR_INFO virtual(Apply)(void* self, void* _in)
 {
 	account(self);
 	UINT y = (UINT)(((SVMVECTOR*)_in + 2)->c.y*9.0f) * 9 + (UINT)(((SVMVECTOR*)_in + 2)->c.x*9.0f);
-	return Pick(((CHAR_INFO*)this->texBuffer)[y].Attributes, (Byte)(_mm_cvtss_f32(((VMVECTOR*)_in)[1]) * 4.0f), GVSCB.diffuse);
+	return Pick(base.textureBuf[y]->Attributes, (Byte)(_mm_cvtss_f32(((VMVECTOR*)_in)[1]) * 4.0f), GVSCB.diffuse);
 }
 
 Constructor(selfptr, va_list *ap)

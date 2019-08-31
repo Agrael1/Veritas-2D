@@ -7,7 +7,7 @@
 
 virtual(cBuf)GVSCB;
 
-void virtual(Apply)(void* self, void* _out, struct IndexedTriangleList* _in)
+void virtual(Apply)(void* self, void* _out, IndexedTriangleList* _in)
 {
 	account(self);
 	VMVector3TransformStream(_out, base.VSOutSize, _in->vertices, _in->VSize, _in->numVerts, this->ModelViewProj);

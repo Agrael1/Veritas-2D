@@ -7,11 +7,10 @@
 
 virtual(cBuf)GVSCB;
 
-void virtual(Apply)(void* self, void* _out, struct IndexedTriangleList* _in)
+void virtual(Apply)(void* self, void* _out, IndexedTriangleList* _in)
 {
 	account(self);
 	VMVector3TransformStream(_out, base.VSOutSize, _in->vertices, _in->VSize, _in->numVerts, this->ModelViewProj);
-	Vertex_CubeTex* r = (Vertex_CubeTex*)_in;
 	for (int i = 0; i < _in->numVerts; i++)
 	{
 		VMVECTOR normal = VMVector3TransformNormal(((Vertex_CubeTex*)_in->vertices)[i].n, this->ModelViewProj);
@@ -27,6 +26,7 @@ Constructor(selfptr, va_list *ap)
 	base.VSOutSize = sizeof(Vertex_CubeTex);
 	base.Apply = virtual(Apply);
 	self->ModelViewProj = VMMatrixIdentity();
+	self->light = va_arg(*ap, void*);
 	return self;
 }
 Destructor(selfptr)

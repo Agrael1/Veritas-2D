@@ -17,5 +17,5 @@ class
 	struct DefaultVS* VS;
 	struct FlatLightGS* GS;
 	struct ExperimentalPS* PS;
-	struct IndexedTriangleList model;
+	IndexedTriangleList model;
 };

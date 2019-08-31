@@ -19,6 +19,6 @@ class
 	struct DirectionalLight* pLight;
 
 	bool bStop;
-	struct CubeTex* model;
+	struct Drawable* model;
 	struct VActor* actor;
 };

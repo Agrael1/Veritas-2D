@@ -7,4 +7,5 @@ class
 {
 	GENERATED_DESC
 	struct _CHAR_INFO(*Apply)(selfptr, void* _unIn);
+	struct _CHAR_INFO* textureBuf[4];
 };
