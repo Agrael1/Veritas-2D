@@ -9,11 +9,9 @@ class
 	GENERATED_DESC
 	methods(
 		void(*Move)(selfptr, VMFLOAT3A dPosition);
-		VMMATRIX(*GetTransformVM)(const selfptr);
 	);
-	struct CubeTex* Mesh;
+	struct CubeDr* Mesh;
 	struct Camera* ACamera;
 
-	VMFLOAT3A WorldPosition;
 	float movespeed;
 };

@@ -18,7 +18,7 @@ void DrawFlatTriangle(selfptr,
 	FVMVECTOR* dv1,
 	VMVECTOR* itEdge1)
 {
-	const UINT size = self->VS->VSOutSize;
+	const UINT size = self->VS.VSOutSize;
 	
 	// create edge interpolant for left edge (always v0)
 	VMVECTOR* itEdge0 = (VMVECTOR*)it0;
@@ -85,7 +85,7 @@ void DrawFlatTriangle(selfptr,
 }
 void _DrawFlatTopTriangle(selfptr, VMVECTOR* it0, VMVECTOR* it1, VMVECTOR* it2)
 {
-	const UINT Size = self->VS->VSOutSize;
+	const UINT Size = self->VS.VSOutSize;
 	VMVECTOR* _P = _alloca(Size);
 	VMVECTOR* dit0 = _alloca(Size);
 	VMVECTOR* dit1 = _alloca(Size);
@@ -111,7 +111,7 @@ void _DrawFlatTopTriangle(selfptr, VMVECTOR* it0, VMVECTOR* it1, VMVECTOR* it2)
 }
 void _DrawFlatBottomTriangle(selfptr, VMVECTOR* it0, VMVECTOR* it1, VMVECTOR* it2)
 {
-	const UINT Size = self->VS->VSOutSize;
+	const UINT Size = self->VS.VSOutSize;
 	VMVECTOR* _P = _alloca(Size);
 	VMVECTOR* dit0 = _alloca(Size);
 	VMVECTOR* dit1 = _alloca(Size);
@@ -156,8 +156,8 @@ void V_DrawTriangle(selfptr, SVMVECTOR* v0, SVMVECTOR* v1, SVMVECTOR* v2)
 		const float alphaSplit =
 			(v1->c.y - v0->c.y) / (v2->c.y - v0->c.y);
 
-		SVMVECTOR* vi = _alloca(self->VS->VSOutSize);
-		VSOutInterpolate(vi, v0, v2, alphaSplit, self->VS->VSOutSize);
+		SVMVECTOR* vi = _alloca(self->VS.VSOutSize);
+		VSOutInterpolate(vi, v0, v2, alphaSplit, self->VS.VSOutSize);
 
 		if (v1->c.x < vi->c.x)
 		{
@@ -185,7 +185,7 @@ void _ProcessTriangle(selfptr, VMVECTOR* v0, VMVECTOR* v1, VMVECTOR* v2)
 	*v1 = VMVectorMultiplyAdd(_mm_mul_ps(*v1, X.r[1]), self->Global.Scale, self->Global.Offset); _mm_store_ss((float*)v1 + 3, X.r[1]);
 	*v2 = VMVectorMultiplyAdd(_mm_mul_ps(*v2, X.r[2]), self->Global.Scale, self->Global.Offset); _mm_store_ss((float*)v2 + 3, X.r[2]);
 
-	for (unsigned i = 1; i < self->VS->VSOutSize / 16; i++)
+	for (unsigned i = 1; i < self->VS.VSOutSize / 16; i++)
 	{
 		v0[i] = _mm_mul_ps(v0[i], X.r[0]);
 		v1[i] = _mm_mul_ps(v1[i], X.r[1]);
@@ -279,7 +279,7 @@ void _ClipCullTriangle(selfptr, void* v0, void* v1, void* v2, size_t VSize)
 
 void _AssembleTriangles(selfptr, const void* Verts, size_t VSize, const size_t* indices, size_t indN)
 {
-	FVMVECTOR eyepos = VMVector4Transform((XMVECTORF32){ 0.0f,0.0f,0.0f,1.0f }.v, self->gfx->projection);
+	FVMVECTOR eyepos = VMVector4Transform((XMVECTORF32){ 0.0f,0.0f,0.0f,1.0f }.v, self->projection);
 
 	VMVECTOR* Triangle = _alloca(VSize * 3);	//Opt triangle repr
 	VMVECTOR* v0p = (Byte*)Triangle + 0 * VSize;
@@ -309,14 +309,14 @@ void _AssembleTriangles(selfptr, const void* Verts, size_t VSize, const size_t* 
 }
 void _ProcessVertices(selfptr, IndexedTriangleList* trilist)
 {
-	assert(self->VS);
-	void* pVSOut = _aligned_malloc(self->VS->VSOutSize * trilist->numVerts, 16);
+	assert(self->VS.Apply);
+	void* pVSOut = _aligned_malloc(self->VS.VSOutSize * trilist->numVerts, 16);
 
 	if (pVSOut)
 	{
 		// Transform all the verts accordingly
-		self->VS->Apply(self->VS, pVSOut, trilist);
-		_AssembleTriangles(self, pVSOut, self->VS->VSOutSize, trilist->indices, trilist->numInds);
+		self->VS.Apply(&self->VS, pVSOut, trilist);
+		_AssembleTriangles(self, pVSOut, self->VS.VSOutSize, trilist->indices, trilist->numInds);
 	}
 	_aligned_free(pVSOut);
 }

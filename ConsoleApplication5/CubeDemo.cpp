@@ -1,18 +1,10 @@
-#include "GouraudPST.h"
-#include "GouraudVST.h"
-
-#include "Codex.h"
+#include "VActor.h"
 #include "CubeTexDr.h"
-
+#include "Drawable.h"
+#include "Codex.h"
 #include "Class.h"
 #include "CubeDemo.h"
 #include "Color.scheme"
-#include <stdlib.h>
-
-float GetRand(float min, float max)
-{
-	return ((float)rand() / (float)(RAND_MAX)) * max - min;
-}
 
 bool virtual(HandleInputEvents)(void* self, const KeyboardEvent* event)
 {
@@ -44,7 +36,7 @@ bool virtual(HandleInputEvents)(void* self, const KeyboardEvent* event)
 }
 void virtual(HandleControls)(void* self, const struct Keyboard* kbd, double fElapsedTime)
 {
-	/*account(self);
+	account(self);
 	if (kbd->method->KeyPressed(kbd, 'W'))
 	{
 		this->actor->method->Move(this->actor, (VMFLOAT3A) { 0.0f, 0.0f, (float)fElapsedTime });
@@ -60,59 +52,62 @@ void virtual(HandleControls)(void* self, const struct Keyboard* kbd, double fEla
 	if (kbd->method->KeyPressed(kbd, 'D'))
 	{
 		this->actor->method->Move(this->actor, (VMFLOAT3A) { (float)fElapsedTime, 0.0f, 0.0f });
-	}*/
+	}
 }
-void virtual(HandleMouse)(void* self, struct Mouse* mouse, const double fElapsedTime)
+void virtual(HandleMouse)(void* self, struct Mouse* mouse, double fElapsedTime)
 {
 	account(self);
 	if (!base.Control->bCursorEnabled)
 	{
 		int X; int Y;
 		mouse->method->ReadMouseMovement(mouse, &X, &Y);
-		float dX = (float)X*fElapsedTime;
-		float dY = (float)Y*fElapsedTime;
-		this->pCam->method->Rotate(this->pCam, dX, dY);
+		float dX = (float)X*(float)fElapsedTime;
+		float dY = (float)Y*(float)fElapsedTime;
+		this->pActiveCamera->method->Rotate(this->pActiveCamera, dX, dY);
 		if (mouse->WheelDelta != 0)
-			this->pCam->method->Translate(this->pCam, 
-			(VMFLOAT3A) { 0.0f, 0.0f, (float)fElapsedTime*(float)mouse->method->ReadWheelDelta(mouse)});
+			this->pActiveCamera->method->Translate(this->pActiveCamera,
+			(VMFLOAT3A) {
+			0.0f, 0.0f, (float)fElapsedTime*(float)mouse->method->ReadWheelDelta(mouse)
+		});
 	}
 }
 bool virtual(OnUserCreate)(void* self)
 {
 	account(self);
 	InitializeCodex();
-	this->pCam = new(Camera, nullptr); // Create an instance of a free camera
 	this->pPl = new(VLine, base.Output);
-	//this->pLight = new(DirectionalLight);
+	this->pLight = new(DirectionalLight);
 
 	// using DB16 - DawnBringer's 16 Col Palette v1.0
 	// http://pixeljoint.com/forum/forum_posts.asp?TID=12795
 	COLORREF palette[16] = {
-	RGB(20, 12, 28),		// Black
-	RGB(68, 36, 52),		// Dark Magenta
-	RGB(48, 52, 109),		// Dark Blue
-	RGB(78, 74, 78),		// Grey
-	RGB(133, 76, 48),		// Light Brown
-	RGB(52, 101, 36),		// Grass Green
-	RGB(208, 70, 72),		// Red
-	RGB(117, 113, 97),		// Ditry Gray
-	RGB(89, 125, 206),		// Blue
-	RGB(10, 125, 44),		// Light Green
-	RGB(133, 149, 161),		// Metal
-	RGB(109, 170, 44),		// Acid Green
-	RGB(210, 170, 153),		// Skin
-	RGB(109, 194, 202),		// Sky
-	RGB(218, 212, 94),		// Honey
-	RGB(222, 238, 214)		// Moon White
+		RGB(20, 12, 28),		// Black
+		RGB(68, 36, 52),		// Dark Magenta
+		RGB(48, 52, 109),		// Dark Blue
+		RGB(78, 74, 78),		// Grey
+		RGB(133, 76, 48),		// Light Brown
+		RGB(52, 101, 36),		// Grass Green
+		RGB(208, 70, 72),		// Red
+		RGB(117, 113, 97),		// Ditry Gray
+		RGB(89, 125, 206),		// Blue
+		RGB(10, 125, 44),		// Light Green
+		RGB(133, 149, 161),		// Metal
+		RGB(109, 170, 44),		// Acid Green
+		RGB(210, 170, 153),		// Skin
+		RGB(109, 194, 202),		// Sky
+		RGB(218, 212, 94),		// Honey
+		RGB(222, 238, 214)		// Moon White
 	};
-
 	base.Window->method->SetPalette(base.Window, palette);
 
 	this->bStop = false;
-	srand((unsigned int)time(NULL));
-	
-	this->model = new(CubeDr);
-	base.Output->projection = VMMatrixPerspectiveLH(1.0f, (float)base.Output->nFrameHeight / (float)base.Output->nFrameLength, 0.5f, 40.0f);
+	this->actor = new(VActor);
+	this->mesh = new(CubeDr);
+
+	this->pActiveCamera = this->actor->ACamera;
+
+	this->pPl->projection = VMMatrixPerspectiveLH(1.0f, (float)base.Output->nFrameHeight / (float)base.Output->nFrameLength, 0.5f, 40.0f);
+	this->pLight->_base.Bind(this->pLight, this->pPl);
 	return true;
 }
 bool virtual(OnUserUpdate)(void* self, double fElapsedSeconds)
@@ -122,10 +117,10 @@ bool virtual(OnUserUpdate)(void* self, double fElapsedSeconds)
 	if (this->bStop)
 		return true;
 
-	base.Output->camera = this->pCam->method->GetViewMatrix(this->pCam);
+	this->pPl->camera = this->pActiveCamera->method->GetViewMatrix(this->pActiveCamera);
 	base.Output->method->BeginFrame(base.Output, ' ', BG_Sky);
-
-	this->model->method->Draw(this->model, this->pPl);
+	((struct Drawable*)this->actor->Mesh)->method->Draw(this->actor->Mesh, this->pPl);
+	this->mesh->method->Draw(this->mesh, this->pPl);
 
 	return true;
 }
@@ -133,22 +128,17 @@ bool virtual(OnUserDestroy)(void* self)
 {
 	account(self);
 	DestroyCodex();
-
-	/*if (this->model->model.indices)
-		free(this->model->model.indices);
-	if (this->model->model.vertices)
-		free(this->model->model.vertices);
-	if(this->pCam)
-		delete(this->pCam);
+	if (this->pActiveCamera)
+		delete(this->pActiveCamera);
 	if (this->pPl)
-		delete(this->pPl);*/
+		delete(this->pPl);
 	return true;
 }
 
 Constructor(void* self, va_list *ap)
 {
 	struct c_class *this = ((struct Class*)VeritasEngine)->ctor(self, ap);
-	base.AppName = stringOf(this->_base._class);
+	base.AppName = stringOf(CubeDemo);
 	base.method->OnUserCreate = virtual(OnUserCreate);
 	base.method->HandleControls = virtual(HandleControls);
 	base.method->OnUserUpdate = virtual(OnUserUpdate);

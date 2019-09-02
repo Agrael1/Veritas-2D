@@ -14,5 +14,6 @@ typedef struct
 class
 {
 	inherits(Drawable);
-	void* light;
+	VMFLOAT3A pos;
+	VMFLOAT3A orientation;
 };

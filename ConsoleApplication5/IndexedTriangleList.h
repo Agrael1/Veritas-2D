@@ -2,7 +2,8 @@
 #include "VeritasMath.h"
 #include <memory.h>
 
-typedef struct _IndexedTriangleList {
+typedef struct _IndexedTriangleList 
+{
 	size_t* indices;
 	void* vertices;
 	size_t numVerts;

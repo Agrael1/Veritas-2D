@@ -43,6 +43,22 @@ inline VMVECTOR __vectorcall VMLoadFloat4A
 	return _mm_load_ps(&pSource->x);
 }
 
+inline VMMATRIX __vectorcall VMLoadFloat4x4A
+(
+	const VMFLOAT4X4A* pSource
+)
+{
+	assert(pSource);
+	assert(((uintptr_t)pSource & 0xF) == 0);
+	VMMATRIX M;
+	M.r[0] = _mm_load_ps(&pSource->_11);
+	M.r[1] = _mm_load_ps(&pSource->_21);
+	M.r[2] = _mm_load_ps(&pSource->_31);
+	M.r[3] = _mm_load_ps(&pSource->_41);
+	return M;
+}
+
+
 // Store float3A from VMVector
 inline void __vectorcall VMStoreFloat3A
 (

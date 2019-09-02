@@ -9,8 +9,8 @@ void virtual(Apply)(void* self, void* _out, IndexedTriangleList* _in)
 {
 	account(self);
 	VMVector3TransformStream(_out, base.VSOutSize, _in->vertices, _in->VSize, _in->numVerts, this->ModelViewProj);
-	VMVector3TransformNormalStream((VMFLOAT3*)(Byte*)_out + sizeof(VMVECTOR), base.VSOutSize,
-		(Byte*)_in->vertices + sizeof(VMVECTOR), _in->VSize, _in->numVerts, this->ModelViewProj);
+	VMVector3TransformNormalStream((VMFLOAT3*)((Byte*)_out + sizeof(VMVECTOR)), base.VSOutSize,
+		(VMFLOAT3*)((Byte*)_in->vertices + sizeof(VMVECTOR)), _in->VSize, _in->numVerts, this->ModelViewProj);
 }
 
 Constructor(selfptr, va_list *ap)

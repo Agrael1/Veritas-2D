@@ -1,6 +1,5 @@
 #pragma once
 #include "VeritasEngine.h"
-#include "VMathTypes.h"
 #include "VLine.h"
 #include "Light.h"
 #include "Camera.h"
@@ -12,13 +11,13 @@ class
 {
 	inherits(VeritasEngine);
 	
-	float fTheta;
-	struct Camera* pCam;
+	struct Camera* pActiveCamera;
 	struct VLine* pPl;
-	struct Physics* pP;
 	struct DirectionalLight* pLight;
 
-	bool bStop;
-	struct Drawable* model;
+	struct Drawable* mesh;
 	struct VActor* actor;
+	
+	float fTheta;
+	bool bStop;
 };

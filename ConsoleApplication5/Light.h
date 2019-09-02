@@ -1,4 +1,5 @@
 #pragma once
+#include "BindableBase.h"
 #include "VeritasMath.h"
 #include "EngineCommons.h"
 
@@ -6,11 +7,11 @@
 
 class
 {
-	GENERATED_DESC
-	struct
+	inherits(Bindable);
+	struct LightCBuf
 	{
-		SVMVECTOR dir;
+		VMVECTOR dir;
 		DWord diffuse;
 		DWord ambientForce;
-	}LightCBuf;
+	}Buf;
 };

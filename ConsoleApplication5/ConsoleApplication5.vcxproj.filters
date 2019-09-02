@@ -255,6 +255,9 @@
     <ClCompile Include="HashMap.c">
       <Filter>Файлы исходного кода\Engine\Framework\Containers</Filter>
     </ClCompile>
+    <ClCompile Include="TransformBuffer.c">
+      <Filter>Файлы исходного кода\Engine\Framework\Bindable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BitField.h">
@@ -456,6 +459,9 @@
       <Filter>Заголовочные файлы\Engine\Framework\Bindable</Filter>
     </ClInclude>
     <ClInclude Include="TextureBuffer.h">
+      <Filter>Заголовочные файлы\Engine\Framework\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="TransformBuffer.h">
       <Filter>Заголовочные файлы\Engine\Framework\Bindable</Filter>
     </ClInclude>
   </ItemGroup>

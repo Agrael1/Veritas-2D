@@ -47,6 +47,22 @@ typedef struct _VMFLOAT3X3
 		float m[3][3];
 	};
 }VMFLOAT3X3;
+// 4x4 Matrix: 32 bit floating point components
+typedef struct _VMFLOAT4X4
+{
+	union
+	{
+		struct
+		{
+			float _11, _12, _13, _14;
+			float _21, _22, _23, _24;
+			float _31, _32, _33, _34;
+			float _41, _42, _43, _44;
+		};
+		float m[4][4];
+	};
+}VMFLOAT4X4;
+typedef __declspec(align(16)) struct _VMFLOAT4X4 VMFLOAT4X4A;
 
 //------------------------------------------------------------------------------
 // Conversion types for constants
@@ -101,6 +117,10 @@ typedef __declspec(align(16)) struct
 	float z;
 	float w;
 }VMFLOAT4A;
+
+
+
+
 // Standardized Vector
 typedef __declspec(align(16)) union
 {

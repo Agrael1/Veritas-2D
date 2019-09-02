@@ -11,10 +11,6 @@ class
 
 	CHAR_INFO *localFrame;
 	float* ZBuffer;
-
-	Word nFrameLength;
-	Word nFrameHeight;
-
 	methods(
 		bool (*DepthTest)(selfptr, unsigned x, unsigned y, float zValue);
 		void (*ClearFrame)(selfptr, wchar_t c, Word col);
@@ -25,8 +21,8 @@ class
 		void (*PrintFrame)(selfptr, Word x, Word y, CHAR_INFO color);
 		void (*DrawRectangle)(selfptr, Word x1, Word y1, Word x2, Word y2, Word color);
 	);
-	// 3D stuff
-	VMMATRIX projection;
-	VMMATRIX camera;
+
+	Word nFrameLength;
+	Word nFrameHeight;
 };
 

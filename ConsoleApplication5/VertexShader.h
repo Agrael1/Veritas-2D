@@ -7,14 +7,14 @@
 class
 {
 	inherits(Bindable);
-	struct VSBase* pVertexShader;
+	struct VSBase pVertexShader;
 };
 
 inline char* virtual(GenerateUID)(char* info)
 {
 	return info;
 }
-inline shared_ptr* virtual(Resolve)(char* info, void* pVS, void* pLight)
+inline shared_ptr* virtual(Resolve)(char* info, void* pVS)
 {
-	__Resolve(info, pVS, pLight)
+	__Resolve(info, pVS)
 }

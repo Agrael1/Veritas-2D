@@ -21,7 +21,7 @@ if (!result)																	\
 }																				\
 else																			\
 {																				\
-	insert = (shared_ptr*)(result->info);										\
+	insert = (shared_ptr*)(&result->info);										\
 	insert->counter++;															\
 	return insert;																\
 }																				\

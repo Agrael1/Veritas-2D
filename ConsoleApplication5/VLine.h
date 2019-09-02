@@ -1,5 +1,6 @@
 #pragma once
 #include "Frame.h"
+#include "VSBase.h"
 #include "EngineCommons.h"
 
 #define c_class VLine
@@ -14,11 +15,12 @@ class
 	GENERATED_DESC
 
 	methods(
-		void(*Draw)(selfptr, struct IndexedTriangleList* trilist);
+		void(*Draw)(selfptr, IndexedTriangleList* trilist);
 	);
 
 	struct Frame* gfx;
-	struct VSBase* VS;
+
+	struct VSBase VS;
 	struct GSBase* GS;
 	struct PSBase* PS;
 
@@ -27,4 +29,7 @@ class
 		VMVECTOR Offset;
 		VMVECTOR Scale;
 	}Global;
+	
+	VMMATRIX projection;
+	VMMATRIX camera;
 };

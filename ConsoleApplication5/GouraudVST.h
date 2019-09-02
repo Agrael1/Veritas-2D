@@ -13,6 +13,4 @@ typedef struct
 class
 {
 	inherits(VSBase);
-	struct DirectionalLight* light;
-	VMMATRIX ModelViewProj;
 };

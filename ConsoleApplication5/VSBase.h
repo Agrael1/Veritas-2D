@@ -1,5 +1,6 @@
 #pragma once
 #include "VeritasMath.h"
+#include "IndexedTriangleList.h"
 #include "EngineCommons.h"
 
 #define c_class VSBase
@@ -7,7 +8,8 @@
 class
 {
 	GENERATED_DESC
-	void(*Apply)(selfptr, void* _out, struct IndexedTriangleList* _in);
+	void(*Apply)(selfptr, void* _out, IndexedTriangleList* _in);
+	void* ConstantBuffer[2];
 	unsigned VSOutSize;
 };
 
