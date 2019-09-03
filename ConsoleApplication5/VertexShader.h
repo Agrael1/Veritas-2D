@@ -14,7 +14,7 @@ inline char* virtual(GenerateUID)(char* info)
 {
 	return info;
 }
-inline shared_ptr* virtual(Resolve)(char* info, void* pVS)
+inline shared_ptr virtual(Resolve)(char* info, void* pVS)
 {
 	__Resolve(info, pVS)
 }

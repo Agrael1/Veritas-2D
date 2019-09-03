@@ -127,11 +127,12 @@ bool virtual(OnUserUpdate)(void* self, double fElapsedSeconds)
 bool virtual(OnUserDestroy)(void* self)
 {
 	account(self);
+	
+	delete_s(this->mesh);
+	delete_s(this->actor);
+	delete_s(this->pPl);
+
 	DestroyCodex();
-	if (this->pActiveCamera)
-		delete(this->pActiveCamera);
-	if (this->pPl)
-		delete(this->pPl);
 	return true;
 }
 

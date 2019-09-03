@@ -17,7 +17,7 @@ inline char* virtual(GenerateUID)(struct Drawable* info)
 {
 	return (char*)stringOf(info->_class);
 }
-inline shared_ptr* virtual(Resolve)(struct Drawable* pParent, unsigned slot)
+inline shared_ptr virtual(Resolve)(struct Drawable* pParent, unsigned slot)
 {
 	__Resolve(pParent, pParent, slot)
 }

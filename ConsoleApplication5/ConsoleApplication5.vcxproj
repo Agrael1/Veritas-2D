@@ -149,7 +149,7 @@
       <CompileAs>CompileAsC</CompileAs>
       <ExceptionHandling>false</ExceptionHandling>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
-      <AdditionalIncludeDirectories>$(ProjectDir)ODE Physx\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Veritas Math;$(SolutionDir)VPhysics\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

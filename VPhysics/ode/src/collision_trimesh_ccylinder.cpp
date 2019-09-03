@@ -20,35 +20,35 @@
  *                                                                       *
  *************************************************************************/
 
-/*
- *	Triangle-Capsule(Capsule) collider by Alen Ladavac
- *  Ported to ODE by Nguyen Binh
- */
+ /*
+  *	Triangle-Capsule(Capsule) collider by Alen Ladavac
+  *  Ported to ODE by Nguyen Binh
+  */
 
-// NOTES from Nguyen Binh
-//	14 Apr : Seem to be robust
-//       There is a problem when you use original Step and set contact friction
-//		surface.mu = dInfinity;
-//		More description : 
-//			When I dropped Capsule over the bunny ears, it seems to stuck
-//			there for a while. I think the cause is when you set surface.mu = dInfinity;
-//			the friction force is too high so it just hang the capsule there.
-//			So the good cure for this is to set mu = around 1.5 (in my case)
-//		For StepFast1, this become as solid as rock : StepFast1 just approximate 
-//		friction force.
+  // NOTES from Nguyen Binh
+  //	14 Apr : Seem to be robust
+  //       There is a problem when you use original Step and set contact friction
+  //		surface.mu = dInfinity;
+  //		More description : 
+  //			When I dropped Capsule over the bunny ears, it seems to stuck
+  //			there for a while. I think the cause is when you set surface.mu = dInfinity;
+  //			the friction force is too high so it just hang the capsule there.
+  //			So the good cure for this is to set mu = around 1.5 (in my case)
+  //		For StepFast1, this become as solid as rock : StepFast1 just approximate 
+  //		friction force.
 
-// NOTES from Croteam's Alen
-//As a side note... there are some extra contacts that can be generated
-//on the edge between two triangles, and if the capsule penetrates deeply into
-//the triangle (usually happens with large mass or low FPS), some such
-//contacts can in some cases push the capsule away from the edge instead of
-//away from the two triangles. This shows up as capsule slowing down a bit
-//when hitting an edge while sliding along a flat tesselated grid of
-//triangles. This is only if capsule is standing upwards.
+  // NOTES from Croteam's Alen
+  //As a side note... there are some extra contacts that can be generated
+  //on the edge between two triangles, and if the capsule penetrates deeply into
+  //the triangle (usually happens with large mass or low FPS), some such
+  //contacts can in some cases push the capsule away from the edge instead of
+  //away from the two triangles. This shows up as capsule slowing down a bit
+  //when hitting an edge while sliding along a flat tesselated grid of
+  //triangles. This is only if capsule is standing upwards.
 
-//Same thing can appear whenever a smooth object (e.g sphere) hits such an
-//edge, and it needs to be solved as a special case probably. This is a
-//problem we are looking forward to address soon.
+  //Same thing can appear whenever a smooth object (e.g sphere) hits such an
+  //edge, and it needs to be solved as a special case probably. This is a
+  //problem we are looking forward to address soon.
 
 #include <ode/collision.h>
 #include <ode/rotation.h>
@@ -58,7 +58,6 @@
 #include "collision_util.h"
 #include "collision_trimesh_internal.h"
 #include "util.h"
-
 
 #if dTRIMESH_ENABLED
 

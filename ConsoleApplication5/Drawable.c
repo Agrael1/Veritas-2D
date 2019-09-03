@@ -30,6 +30,11 @@ Constructor(selfptr, va_list *ap)
 }
 Destructor(selfptr)
 {
+	for (size_t i = 0; i < self->Binds.elements + 1; i++)
+	{
+		shared_ptr* p = (shared_ptr*)self->Binds.method->get(&self->Binds, i);
+		destroy_shared(p);
+	}
 	deconstruct(&self->Binds);
 	return self;
 }

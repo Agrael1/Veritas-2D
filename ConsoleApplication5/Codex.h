@@ -17,15 +17,14 @@ if (!result)																	\
 {																				\
 	insert = codex.binds.method->insert(&codex.binds, key);						\
 	*insert = make_shared(c_class, __VA_ARGS__);								\
-	return insert;																\
+	return *insert;																\
 }																				\
 else																			\
 {																				\
 	insert = (shared_ptr*)(&result->info);										\
-	insert->counter++;															\
-	return insert;																\
-}																				\
-	
+	insert->control->counter++;													\
+	return *insert;																\
+}																				
 	
 	
 	

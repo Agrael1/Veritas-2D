@@ -15,6 +15,7 @@ Constructor(selfptr, va_list *ap)
 }
 Destructor(selfptr)
 {
+	delete(self->pPixelShader);
 	return self;
 }
 ENDCLASSDESC

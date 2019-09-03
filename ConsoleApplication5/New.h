@@ -7,6 +7,8 @@
 #ifndef New_h
 #define New_h
 
+#define delete_s(block) if(block) delete(block)
+
 void construct(void* where, const void* what, ...);
 void deconstruct(void* self);
 

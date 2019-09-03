@@ -34,6 +34,7 @@ Constructor(selfptr, va_list *ap)
 Destructor(selfptr)
 {
 	delete(self->Mesh);
+	delete(self->ACamera);
 	return self;
 }
 ENDCLASSDESC
