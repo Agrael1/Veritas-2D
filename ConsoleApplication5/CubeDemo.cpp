@@ -1,5 +1,6 @@
 #include "VActor.h"
 #include "CubeTexDr.h"
+#include "PhysicsAggregate.h"
 #include "Drawable.h"
 #include "Codex.h"
 #include "Class.h"
@@ -103,6 +104,7 @@ bool virtual(OnUserCreate)(void* self)
 	this->bStop = false;
 	this->actor = new(VActor);
 	this->mesh = new(CubeDr);
+	this->physics = new(Physics);
 
 	this->pActiveCamera = this->actor->ACamera;
 
@@ -117,10 +119,14 @@ bool virtual(OnUserUpdate)(void* self, double fElapsedSeconds)
 	if (this->bStop)
 		return true;
 
+	this->physics->method->Tick(this->physics);
+
+
 	this->pPl->camera = this->pActiveCamera->method->GetViewMatrix(this->pActiveCamera);
 	base.Output->method->BeginFrame(base.Output, ' ', BG_Sky);
-	((struct Drawable*)this->actor->Mesh)->method->Draw(this->actor->Mesh, this->pPl);
-	this->mesh->method->Draw(this->mesh, this->pPl);
+
+	this->actor->Mesh->_base.method->Draw(this->actor->Mesh, this->pPl);
+	this->physics->pMesh->method->Draw(this->physics->pMesh, this->pPl);
 
 	return true;
 }

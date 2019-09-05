@@ -17,9 +17,13 @@ class
 	GENERATED_DESC
 
 	methods(
-		VMMATRIX(*GetTransform)(selfptr);
-		VMMATRIX(*Tick)(selfptr);
+		void(*SetTransform)(selfptr);
+		void(*Tick)(selfptr);
 	);
-	struct CubeTex* pMesh;
+	struct Drawable* pMesh;
 	dWorldID World;
+	dSpaceID Space;
+	dJointGroupID contactgroup;
+
+	PhysObject Object;
 };

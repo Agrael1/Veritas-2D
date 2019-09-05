@@ -207,6 +207,7 @@
     <ClCompile Include="Window.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AnchorPoint.h" />
     <ClInclude Include="BindableBase.h" />
     <ClInclude Include="BitField.h" />
     <ClInclude Include="BoundingSphere.h" />

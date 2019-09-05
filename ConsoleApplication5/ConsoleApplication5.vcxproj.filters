@@ -464,6 +464,9 @@
     <ClInclude Include="TransformBuffer.h">
       <Filter>Заголовочные файлы\Engine\Framework\Bindable</Filter>
     </ClInclude>
+    <ClInclude Include="AnchorPoint.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\VObjects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <MASM Include="memset32.asm">

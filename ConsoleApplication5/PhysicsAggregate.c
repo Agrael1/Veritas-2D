@@ -1,32 +1,21 @@
-#include "CubeSceneTex.h"
+#include "CubeTexDr.h"
+#include "Drawable.h"
 #include "PhysicsAggregate.h"
 #include "Class.h"
 
-PhysObject Object;
-dSpaceID Space;
-dJointGroupID contactgroup;
-
-VMMATRIX GetTransform(selfptr)
+void SetTransform(selfptr)
 {
-	int type = dGeomGetClass(Object.Geom[0]);
+	int type = dGeomGetClass(self->Object.Geom[0]);
 	if (type == dBoxClass) {
 
-		const dReal * SPos = dGeomGetPosition(Object.Geom[0]);
-		const dReal * SRot = dGeomGetRotation(Object.Geom[0]);
+		const dReal * SPos = dGeomGetPosition(self->Object.Geom[0]);
+		const dReal * SRot = dGeomGetRotation(self->Object.Geom[0]);
 
 		float spos[3] = { SPos[0], SPos[1], SPos[2] };
 		float srot[12] = { SRot[0], SRot[1], SRot[2], SRot[3], SRot[4], SRot[5], SRot[6], SRot[7], SRot[8], SRot[9], SRot[10], SRot[11] };
-		int type = dGeomGetClass(Object.Geom[0]);
+		int type = dGeomGetClass(self->Object.Geom[0]);
 
-		//VMMATRIX RM = VMLoadFloat3x3(&srot);
-		VMMATRIX RM = self->pMesh->_base.method->GetTransformXM(self->pMesh);
-		VMMATRIX T = VMMatrixTranslation((float)spos[0], (float)spos[1], (float)spos[2]);
-		VMMATRIX res = VMMatrixMultiply(T, &RM);
-		return res;
-	}
-	else
-	{
-		return VMMatrixIdentity();
+		VMStoreFloat3A(&((struct CubeDr*)self->pMesh)->pos, VMLoadFloat3(SPos));
 	}
 }
 void nearCallback(void *data, dGeomID o1, dGeomID o2)
@@ -63,23 +52,22 @@ void nearCallback(void *data, dGeomID o1, dGeomID o2)
 	{
 		for (i = 0; i < numc; i++)
 		{
-			dJointID c = dJointCreateContact(this->World, contactgroup, contact + i);
+			dJointID c = dJointCreateContact(this->World, this->contactgroup, contact + i);
 			dJointAttach(c, b1, b2);
 		}
 	}
 }
-VMMATRIX Tick(selfptr)
+void Tick(selfptr)
 {
-	dSpaceCollide(Space, self, &nearCallback);
+	dSpaceCollide(self->Space, self, &nearCallback);
 	dWorldQuickStep(self->World, 0.05f);
-	dJointGroupEmpty(contactgroup);
+	dJointGroupEmpty(self->contactgroup);
 
-	VMMATRIX M = GetTransform(self);
-	return M;
+	SetTransform(self);
 }
 
 VirtualTable{
-	.GetTransform = GetTransform,
+	.SetTransform = SetTransform,
 	.Tick = Tick
 };
 Constructor(selfptr, va_list *ap)
@@ -88,13 +76,13 @@ Constructor(selfptr, va_list *ap)
 
 	dInitODE2(0);
 	self->World = dWorldCreate();		//Create World ODE
-	Space = dSimpleSpaceCreate(0);
-	contactgroup = dJointGroupCreate(0);
+	self->Space = dSimpleSpaceCreate(0);
+	self->contactgroup = dJointGroupCreate(0);
 
 
-	dCreatePlane(Space, 0,1,0,0);
+	dCreatePlane(self->Space, 0,1,0,0);
 	//dCreateVPlane(Space, g_XMIdentityR1.v);
-	dWorldSetGravity(self->World, 0.0f, -0.1f, 0.0f);
+	dWorldSetGravity(self->World, 0.0f, -1.0f, 0.0f);
 
 	dWorldSetERP(self->World, 0.2f);
 	dWorldSetCFM(self->World, 1e-5f);
@@ -107,42 +95,31 @@ Constructor(selfptr, va_list *ap)
 	dMass m;
 	float sides[3];
 
-	Object.Body = dBodyCreate(self->World);
-	dBodySetPosition(Object.Body, 0, 2, 0);
+	self->Object.Body = dBodyCreate(self->World);
+	dBodySetPosition(self->Object.Body, 0, 2, 0);
 
 	sides[0] = 1.0f;
 	sides[1] = 1.0f;
 	sides[2] = 1.0f;
 	dMassSetBox(&m, 0.5f, 1.0f, sides[1], sides[2]);
-	Object.Geom[0] = dCreateBox(Space, sides[0], sides[1], sides[2]);
-	dGeomSetBody(Object.Geom[0], Object.Body);
+	self->Object.Geom[0] = dCreateBox(self->Space, sides[0], sides[1], sides[2]);
+	dGeomSetBody(self->Object.Geom[0], self->Object.Body);
 
 	dMatrix3 R;
 	dRSetIdentity(R);
-	dBodySetRotation(Object.Body, R);
-	dBodySetMass(Object.Body, &m);
+	dBodySetRotation(self->Object.Body, R);
+	dBodySetMass(self->Object.Body, &m);
 
-	SVMVECTOR tempVect = { 0.0, 0.0, 0.0 };
-	dBodySetLinearVel(Object.Body, tempVect.c.x, tempVect.c.y, tempVect.c.z);
+	SVMVECTOR tempVect = { 0.0f, 0.2f, 0.0f };
+	dBodySetLinearVel(self->Object.Body, tempVect.c.x, tempVect.c.y, tempVect.c.z);
 
-	self->pMesh = new(CubeTex,
-		0.0f,
-		0.0f,
-		0.0f,
-		0.0f,
-		0.0f,
-		0.0f,
-		0.0f,
-		0.0f,
-		0.0f,
-		0.0f,
-		1.0f);
+	self->pMesh = new(CubeDr);
 	return self;
 }
 Destructor(selfptr)
 {
-	dJointGroupDestroy(contactgroup);
-	dSpaceDestroy(Space);
+	dJointGroupDestroy(self->contactgroup);
+	dSpaceDestroy(self->Space);
 	dWorldDestroy(self->World);
 	dCloseODE();
 	return self;
