@@ -190,6 +190,7 @@
     <ClCompile Include="LoaderTest.c" />
     <ClCompile Include="Maze3D.c" />
     <ClCompile Include="MazeGen.c" />
+    <ClCompile Include="Model.c" />
     <ClCompile Include="Mouse.c" />
     <ClCompile Include="PhysicsAggregate.c" />
     <ClCompile Include="Pipeline.c" />
@@ -207,8 +208,8 @@
     <ClCompile Include="Window.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AnchorPoint.h" />
     <ClInclude Include="BindableBase.h" />
+    <ClInclude Include="BindingIncludes.h" />
     <ClInclude Include="BitField.h" />
     <ClInclude Include="BoundingSphere.h" />
     <ClInclude Include="Box.h" />
@@ -240,6 +241,7 @@
     <ClInclude Include="Icosahedron.h" />
     <ClInclude Include="Icosphere.h" />
     <ClInclude Include="IndexedTriangleList.h" />
+    <ClInclude Include="Model.h" />
     <ClInclude Include="PhysicsAggregate.h" />
     <ClInclude Include="PixelShader.h" />
     <ClInclude Include="SharedPtr.h" />

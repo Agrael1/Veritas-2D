@@ -30,6 +30,8 @@ Constructor(selfptr, va_list *ap)
 }
 Destructor(selfptr)
 {
+	free(self->trilist.indices);
+	free(self->trilist.vertices);
 	for (size_t i = 0; i < self->Binds.elements + 1; i++)
 	{
 		shared_ptr* p = (shared_ptr*)self->Binds.method->get(&self->Binds, i);

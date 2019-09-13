@@ -8,6 +8,33 @@
 #include "VMathTypes.h"
 #include "MathConstants.h"
 
+
+// Load Float2 into VMVECTOR
+inline VMVECTOR __vectorcall VMLoadFloat2
+(
+	const VMFLOAT2* pSource
+)
+{
+	assert(pSource);
+
+	__m128 x = _mm_load_ss(&pSource->x);
+	__m128 y = _mm_load_ss(&pSource->y);
+	return _mm_unpacklo_ps(x, y);
+}
+
+// Load Float2A into VMVECTOR
+inline VMVECTOR __vectorcall VMLoadFloat2A
+(
+	const VMFLOAT2A* pSource
+)
+{
+	assert(pSource);
+	assert(((uintptr_t)pSource & 0xF) == 0);
+
+	__m128i V = _mm_loadl_epi64((const __m128i*)(pSource));
+	return _mm_castsi128_ps(V);
+}
+
 // Load Float3A into VMVECTOR
 inline VMVECTOR __vectorcall VMLoadFloat3A
 (
@@ -43,6 +70,20 @@ inline VMVECTOR __vectorcall VMLoadFloat4A
 	return _mm_load_ps(&pSource->x);
 }
 
+inline VMMATRIX __vectorcall VMLoadFloat4x4
+(
+	const VMFLOAT4X4* pSource
+)
+{
+	assert(pSource);
+	VMMATRIX M;
+	M.r[0] = _mm_loadu_ps(&pSource->_11);
+	M.r[1] = _mm_loadu_ps(&pSource->_21);
+	M.r[2] = _mm_loadu_ps(&pSource->_31);
+	M.r[3] = _mm_loadu_ps(&pSource->_41);
+	return M;
+}
+
 inline VMMATRIX __vectorcall VMLoadFloat4x4A
 (
 	const VMFLOAT4X4A* pSource
@@ -58,6 +99,30 @@ inline VMMATRIX __vectorcall VMLoadFloat4x4A
 	return M;
 }
 
+
+
+inline void __vectorcall VMStoreFloat2
+(
+	VMFLOAT2* pDestination,
+	FVMVECTOR  V
+)
+{
+	assert(pDestination);
+	VMVECTOR T = XM_PERMUTE_PS(V, _MM_SHUFFLE(1, 1, 1, 1));
+	_mm_store_ss(&pDestination->x, V);
+	_mm_store_ss(&pDestination->y, T);
+}
+
+inline void __vectorcall VMStoreFloat2A
+(
+	VMFLOAT2A*   pDestination,
+	FVMVECTOR     V
+)
+{
+	assert(pDestination);
+	assert(((uintptr_t)pDestination & 0xF) == 0);
+	_mm_storel_epi64((__m128i*)(pDestination), _mm_castps_si128(V));
+}
 
 // Store float3A from VMVector
 inline void __vectorcall VMStoreFloat3A
@@ -120,4 +185,19 @@ inline void __vectorcall VMStoreFloat3x3
 	_mm_storeu_ps(&pDestination->m[1][1], vTemp2);
 	vTemp3 = XM_PERMUTE_PS(vTemp3, _MM_SHUFFLE(2, 2, 2, 2));
 	_mm_store_ss(&pDestination->m[2][2], vTemp3);
+}
+
+inline void __vectorcall VMStoreFloat4x4A
+(
+	VMFLOAT4X4A*	pDestination,
+	FXMMATRIX		M
+)
+{
+	assert(pDestination);
+	assert(((uintptr_t)pDestination & 0xF) == 0);
+
+	_mm_store_ps(&pDestination->_11, M.r[0]);
+	_mm_store_ps(&pDestination->_21, M.r[1]);
+	_mm_store_ps(&pDestination->_31, M.r[2]);
+	_mm_store_ps(&pDestination->_41, M.r[3]);
 }

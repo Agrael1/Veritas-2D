@@ -15,3 +15,5 @@ class
 	size_t elements;
 	size_t size;
 };
+
+void* virtual(construct)(selfptr, size_t elsize, size_t chunksize);

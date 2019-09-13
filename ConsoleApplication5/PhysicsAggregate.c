@@ -3,6 +3,8 @@
 #include "PhysicsAggregate.h"
 #include "Class.h"
 
+#pragma warning(disable:4133)
+
 void SetTransform(selfptr)
 {
 	int type = dGeomGetClass(self->Object.Geom[0]);

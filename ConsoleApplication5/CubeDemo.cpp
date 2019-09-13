@@ -2,6 +2,7 @@
 #include "CubeTexDr.h"
 #include "PhysicsAggregate.h"
 #include "Drawable.h"
+#include "Model.h"
 #include "Codex.h"
 #include "Class.h"
 #include "CubeDemo.h"
@@ -17,7 +18,7 @@ bool virtual(HandleInputEvents)(void* self, const KeyboardEvent* event)
 		{
 		case VK_ESCAPE:
 			return false;
-		case VK_SPACE:
+		case 'R':
 			this->bStop ^= true;
 			break;
 		case VK_INSERT:
@@ -53,6 +54,14 @@ void virtual(HandleControls)(void* self, const struct Keyboard* kbd, double fEla
 	if (kbd->method->KeyPressed(kbd, 'D'))
 	{
 		this->actor->method->Move(this->actor, (VMFLOAT3A) { (float)fElapsedTime, 0.0f, 0.0f });
+	}
+	if (kbd->method->KeyPressed(kbd, ' '))
+	{
+		this->actor->method->Move(this->actor, (VMFLOAT3A) {  0.0f,(float)fElapsedTime, 0.0f });
+	}
+	if (kbd->method->KeyPressed(kbd, VK_SHIFT))
+	{
+		this->actor->method->Move(this->actor, (VMFLOAT3A) {  0.0f, -(float)fElapsedTime, 0.0f });
 	}
 }
 void virtual(HandleMouse)(void* self, struct Mouse* mouse, double fElapsedTime)
@@ -107,6 +116,7 @@ bool virtual(OnUserCreate)(void* self)
 	this->physics = new(Physics);
 
 	this->pActiveCamera = this->actor->ACamera;
+	this->model = new(Model, "Models\\nanosuit.obj");
 
 	this->pPl->projection = VMMatrixPerspectiveLH(1.0f, (float)base.Output->nFrameHeight / (float)base.Output->nFrameLength, 0.5f, 40.0f);
 	this->pLight->_base.Bind(this->pLight, this->pPl);
@@ -125,8 +135,9 @@ bool virtual(OnUserUpdate)(void* self, double fElapsedSeconds)
 	this->pPl->camera = this->pActiveCamera->method->GetViewMatrix(this->pActiveCamera);
 	base.Output->method->BeginFrame(base.Output, ' ', BG_Sky);
 
-	this->actor->Mesh->_base.method->Draw(this->actor->Mesh, this->pPl);
-	this->physics->pMesh->method->Draw(this->physics->pMesh, this->pPl);
+	//this->actor->Mesh->_base.method->Draw(this->actor->Mesh, this->pPl);
+	this->model->method->Draw(this->model, this->pPl);
+	//this->physics->pMesh->method->Draw(this->physics->pMesh, this->pPl);
 
 	return true;
 }
@@ -146,12 +157,14 @@ Constructor(void* self, va_list *ap)
 {
 	struct c_class *this = ((struct Class*)VeritasEngine)->ctor(self, ap);
 	base.AppName = stringOf(CubeDemo);
-	base.method->OnUserCreate = virtual(OnUserCreate);
-	base.method->HandleControls = virtual(HandleControls);
-	base.method->OnUserUpdate = virtual(OnUserUpdate);
-	base.method->HandleInputEvents = virtual(HandleInputEvents);
-	base.method->OnUserDestroy = virtual(OnUserDestroy);
-	base.method->HandleMouse = virtual(HandleMouse);
+
+	override(OnUserCreate);
+	override(HandleControls);
+	override(OnUserUpdate);
+	override(HandleInputEvents);
+	override(OnUserDestroy);
+	override(HandleMouse);
+
 	return this;
 }
 Destructor(void* self)

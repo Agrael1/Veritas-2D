@@ -12,7 +12,6 @@ class
 	);
 	struct CubeDr* Mesh;
 	struct Camera* ACamera;
-	
 
 	float movespeed;
 };

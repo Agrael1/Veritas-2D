@@ -52,8 +52,9 @@
 #define methods(...) struct vftb { __VA_ARGS__ }*method
 #define constructMethodTable(...) struct vftb meth = { __VA_ARGS__ }
 
-#define VirtualTable struct vftb meth =
+#define VirtualTable struct vftb meth = 
 #define assignMethodTable(x) ((struct c_class *)(x))->method = &meth
+#define override(vmethod) base.method->vmethod = virtual(vmethod)
 
 // Class construction handling
 #define ENDCLASSDESC const struct Class ctab = { sizeof(struct c_class),\

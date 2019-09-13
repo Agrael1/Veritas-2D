@@ -258,6 +258,9 @@
     <ClCompile Include="TransformBuffer.c">
       <Filter>Файлы исходного кода\Engine\Framework\Bindable</Filter>
     </ClCompile>
+    <ClCompile Include="Model.c">
+      <Filter>Файлы исходного кода\Engine\Framework\Drawable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BitField.h">
@@ -464,8 +467,11 @@
     <ClInclude Include="TransformBuffer.h">
       <Filter>Заголовочные файлы\Engine\Framework\Bindable</Filter>
     </ClInclude>
-    <ClInclude Include="AnchorPoint.h">
-      <Filter>Заголовочные файлы\Engine\Graphics\VObjects</Filter>
+    <ClInclude Include="Model.h">
+      <Filter>Заголовочные файлы\Engine\Framework\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="BindingIncludes.h">
+      <Filter>Заголовочные файлы\Engine\Framework\Bindable</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

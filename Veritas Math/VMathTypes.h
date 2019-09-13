@@ -91,6 +91,13 @@ typedef __declspec(align(16)) struct _XMVECTORI32
 	};
 }XMVECTORI32;
 
+
+typedef struct
+{
+	float x;
+	float y;
+}VMFLOAT2;
+typedef __declspec(align(16)) VMFLOAT2 VMFLOAT2A;
 typedef __declspec(align(16)) struct
 {
 	float x;

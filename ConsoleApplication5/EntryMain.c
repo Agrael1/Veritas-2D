@@ -2,6 +2,8 @@
 #include "CubeDemo.h"
 #include "Exception.h"
 
+#pragma warning(disable:4133)
+
 int main(void)
 {
 	struct CubeDemo *Demo;

@@ -23,7 +23,7 @@ inline void destroy_shared(shared_ptr* ptr)
 	if (--ptr->control->counter == 0)
 		if (ptr->pointer) delete(ptr->pointer);
 }
-inline shared_ptr make_shared(void* type, ...)
+inline shared_ptr make_shared(const void* type, ...)
 {
 	va_list ap;
 	va_start(ap, type);

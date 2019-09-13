@@ -28,6 +28,15 @@ Constructor(selfptr, va_list *ap)
 		return nullptr;
 	return self;
 }
+void* virtual(construct)(selfptr, size_t elsize, size_t chunksize)
+{
+	assignMethodTable(self);
+	self->size = elsize;
+	self->elements = -1;
+	if (!(self->array = calloc(chunksize, self->size)))
+		return nullptr;
+	return self;
+}
 Destructor(selfptr)
 {
 	free(self->array);
