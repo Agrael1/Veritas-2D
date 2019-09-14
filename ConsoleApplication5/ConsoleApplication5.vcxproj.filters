@@ -34,9 +34,6 @@
     <Filter Include="Заголовочные файлы\Engine\Graphics">
       <UniqueIdentifier>{22374a9d-ce13-4982-9cf5-e0bca2c2308d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Заголовочные файлы\Engine\Math">
-      <UniqueIdentifier>{6d6ce88f-a0b6-45b5-b867-e9baea36c1b8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Заголовочные файлы\Engine\Graphics\Primitives">
       <UniqueIdentifier>{e86c07a3-114b-43d1-8517-547c9977c67f}</UniqueIdentifier>
     </Filter>
@@ -406,30 +403,6 @@
     </ClInclude>
     <ClInclude Include="PhysicsAggregate.h">
       <Filter>Заголовочные файлы\Engine\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="Veritas Math\MathConstants.h">
-      <Filter>Заголовочные файлы\Engine\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Veritas Math\VEngineTypes.h">
-      <Filter>Заголовочные файлы\Engine\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Veritas Math\VeritasMath.h">
-      <Filter>Заголовочные файлы\Engine\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Veritas Math\VMathTypes.h">
-      <Filter>Заголовочные файлы\Engine\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Veritas Math\VMPlane.h">
-      <Filter>Заголовочные файлы\Engine\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Veritas Math\VMStoreLoad.h">
-      <Filter>Заголовочные файлы\Engine\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Veritas Math\VMVector.h">
-      <Filter>Заголовочные файлы\Engine\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Veritas Math\VMVector3.h">
-      <Filter>Заголовочные файлы\Engine\Math</Filter>
     </ClInclude>
     <ClInclude Include="SharedPtr.h">
       <Filter>Заголовочные файлы\Engine\Framework\Containers</Filter>

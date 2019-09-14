@@ -5,7 +5,7 @@
 
 void virtual(Reset)(selfptr)
 {
-	self->Mesh->pos = (VMFLOAT3A) { 0.0f, 0.0f, 0.0f };
+	self->Mesh->pos = (VMFLOAT3A) { 0.0f, 9.0f, -5.0f };
 }
 void virtual(Move)(selfptr, VMFLOAT3A dPosition)
 {

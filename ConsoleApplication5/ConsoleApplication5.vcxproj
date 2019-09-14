@@ -251,14 +251,6 @@
     <ClInclude Include="Triangle.h" />
     <ClInclude Include="VActor.h" />
     <ClInclude Include="Vector.h" />
-    <ClInclude Include="Veritas Math\MathConstants.h" />
-    <ClInclude Include="Veritas Math\VEngineTypes.h" />
-    <ClInclude Include="Veritas Math\VeritasMath.h" />
-    <ClInclude Include="Veritas Math\VMathTypes.h" />
-    <ClInclude Include="Veritas Math\VMPlane.h" />
-    <ClInclude Include="Veritas Math\VMStoreLoad.h" />
-    <ClInclude Include="Veritas Math\VMVector.h" />
-    <ClInclude Include="Veritas Math\VMVector3.h" />
     <ClInclude Include="VertexShader.h" />
     <ClInclude Include="VLine.h" />
     <ClInclude Include="Keyboard.h" />

@@ -23,6 +23,7 @@ class
 	struct VSBase VS;
 	struct GSBase* GS;
 	struct PSBase* PS;
+	struct ConsoleWindow* Debug;
 
 	__declspec(align(16))struct
 	{

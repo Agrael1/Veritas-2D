@@ -74,6 +74,7 @@ void DrawFlatTriangle(selfptr,
 				// and use result to set the pixel color on the screen
 				self->gfx->localFrame[premulI + x] = self->PS->Apply(self->PS, _P);
 			}
+			//self->Debug->method->OutputToScreen(self->Debug, self->gfx->localFrame);
 		}
 		for (unsigned i = 0; i < size / 16; i++)
 		{

@@ -10,7 +10,7 @@ extern cBuf_GouraudVST GVSCB;
 CHAR_INFO virtual(Apply)(void* self, void* _in)
 {
 	account(self);
-	UINT y = (UINT)(((SVMVECTOR*)_in + 2)->c.y*9.0f) * 9 + (UINT)(((SVMVECTOR*)_in + 2)->c.x*9.0f);
+	UINT y = (UINT)(((SVMVECTOR*)_in + 2)->c.y*8.0f) * 9 + (UINT)(((SVMVECTOR*)_in + 2)->c.x*8.0f);
 	return Pick(base.textureBuf[0][y].Attributes, (Byte)(_mm_cvtss_f32(((VMVECTOR*)_in)[1]) * 4.0f), FG_Moon_White);
 }
 

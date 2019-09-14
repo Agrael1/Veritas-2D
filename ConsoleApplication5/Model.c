@@ -3,6 +3,7 @@
 #include "Assimp\Include\assimp\scene.h"
 
 #include "BindingIncludes.h"
+#include "Window.h"
 #include "GouraudPST.h"
 #include "GouraudVST.h"
 #include "Header.h"
@@ -66,9 +67,10 @@ void virtual(Draw)(selfptr, struct VLine* gfx, FXMMATRIX accumulatedTransform)
 		VMMatrixMultiply(VMLoadFloat4x4A(&self->appliedTransform), &self->transform),
 		&accumulatedTransform);
 
-	for (size_t i = 0; i<self->nmeshes; i++)
+	for (size_t i = 0; i < self->nmeshes; i++)
 	{
 		Draw_Mesh(self->meshPtrs[i], gfx, built);
+		//gfx->Debug->method->OutputToScreen(gfx->Debug, gfx->gfx->localFrame);
 	}
 	if (self->childPtrs.elements == -1) return;
 
@@ -76,6 +78,7 @@ void virtual(Draw)(selfptr, struct VLine* gfx, FXMMATRIX accumulatedTransform)
 	{
 		virtual(Draw)(*(void**)self->childPtrs.method->get(&self->childPtrs, i), gfx, built);
 	}
+
 }
 
 Constructor(selfptr, va_list *ap)

@@ -120,6 +120,7 @@ bool virtual(OnUserCreate)(void* self)
 
 	this->pPl->projection = VMMatrixPerspectiveLH(1.0f, (float)base.Output->nFrameHeight / (float)base.Output->nFrameLength, 0.5f, 40.0f);
 	this->pLight->_base.Bind(this->pLight, this->pPl);
+	this->pPl->Debug = base.Window;
 	return true;
 }
 bool virtual(OnUserUpdate)(void* self, double fElapsedSeconds)
