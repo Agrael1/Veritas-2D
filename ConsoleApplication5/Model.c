@@ -73,7 +73,7 @@ void virtual(Draw)(selfptr, struct VLine* gfx, FXMMATRIX accumulatedTransform)
 		//gfx->Debug->method->OutputToScreen(gfx->Debug, gfx->gfx->localFrame);
 	}
 	if (self->childPtrs.elements == -1) return;
-
+	
 	for (size_t i = 0; i<self->childPtrs.elements+1; i++)
 	{
 		virtual(Draw)(*(void**)self->childPtrs.method->get(&self->childPtrs, i), gfx, built);

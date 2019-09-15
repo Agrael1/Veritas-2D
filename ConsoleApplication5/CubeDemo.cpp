@@ -4,9 +4,14 @@
 #include "Drawable.h"
 #include "Model.h"
 #include "Codex.h"
+
+#include "TextureSurface.h"
+
 #include "Class.h"
 #include "CubeDemo.h"
 #include "Color.scheme"
+
+#pragma comment(lib, "GDIPlusHandler.lib")
 
 bool virtual(HandleInputEvents)(void* self, const KeyboardEvent* event)
 {
@@ -116,7 +121,11 @@ bool virtual(OnUserCreate)(void* self)
 	this->physics = new(Physics);
 
 	this->pActiveCamera = this->actor->ACamera;
-	this->model = new(Model, "Models\\nanosuit.obj");
+	this->model = new(Model, "Models\\Nano\\nanosuit.obj");
+
+	HGDIPM gdi = GDIPMStart();
+	BitmapData p = GetImageFromFileW(L"Models\\Nano\\arm_dif.png");
+	GDIPMStop(gdi);
 
 	this->pPl->projection = VMMatrixPerspectiveLH(1.0f, (float)base.Output->nFrameHeight / (float)base.Output->nFrameLength, 0.5f, 40.0f);
 	this->pLight->_base.Bind(this->pLight, this->pPl);

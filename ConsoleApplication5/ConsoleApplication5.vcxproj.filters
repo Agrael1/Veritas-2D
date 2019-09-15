@@ -118,6 +118,12 @@
     <Filter Include="Файлы исходного кода\Engine\Framework\Drawable">
       <UniqueIdentifier>{7dae4cd2-cf27-4e57-8b79-abd3a1c78ff0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Файлы исходного кода\Engine\Framework\Resources">
+      <UniqueIdentifier>{e40c9e87-10a0-4f67-b453-6944fafa59b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Заголовочные файлы\Engine\Framework\Resources">
+      <UniqueIdentifier>{107bf5a2-81c8-44e2-9074-c2e6646944dc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VeritasEngine.c">
@@ -257,6 +263,9 @@
     </ClCompile>
     <ClCompile Include="Model.c">
       <Filter>Файлы исходного кода\Engine\Framework\Drawable</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureSurface.c">
+      <Filter>Файлы исходного кода\Engine\Framework\Resources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -445,6 +454,12 @@
     </ClInclude>
     <ClInclude Include="BindingIncludes.h">
       <Filter>Заголовочные файлы\Engine\Framework\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureSurface.h">
+      <Filter>Заголовочные файлы\Engine\Framework\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="GDISetup.h">
+      <Filter>Заголовочные файлы\Engine\Framework\Resources</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

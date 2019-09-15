@@ -198,6 +198,7 @@
     <ClCompile Include="StringStream.c" />
     <ClCompile Include="Test.c" />
     <ClCompile Include="TextureBuffer.c" />
+    <ClCompile Include="TextureSurface.c" />
     <ClCompile Include="TransformBuffer.c" />
     <ClCompile Include="Triangle.c" />
     <ClCompile Include="VActor.c" />
@@ -231,6 +232,7 @@
     <ClInclude Include="FlatLightGS.h" />
     <ClInclude Include="Frame.h" />
     <ClInclude Include="BitStack.h" />
+    <ClInclude Include="GDISetup.h" />
     <ClInclude Include="GouraudPS.h" />
     <ClInclude Include="GouraudPST.h" />
     <ClInclude Include="GouraudVS.h" />
@@ -246,6 +248,7 @@
     <ClInclude Include="PixelShader.h" />
     <ClInclude Include="SharedPtr.h" />
     <ClInclude Include="TextureBuffer.h" />
+    <ClInclude Include="TextureSurface.h" />
     <ClInclude Include="TransformBuffer.h" />
     <ClInclude Include="Tri.h" />
     <ClInclude Include="Triangle.h" />
