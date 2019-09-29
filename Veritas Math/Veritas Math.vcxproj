@@ -114,6 +114,7 @@
     <ClInclude Include="VEngineTypes.h" />
     <ClInclude Include="VeritasMath.h" />
     <ClInclude Include="VMathTypes.h" />
+    <ClInclude Include="VMInteger.h" />
     <ClInclude Include="VMPlane.h" />
     <ClInclude Include="VMStoreLoad.h" />
     <ClInclude Include="VMVector.h" />

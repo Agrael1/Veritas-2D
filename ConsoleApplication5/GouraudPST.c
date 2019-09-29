@@ -10,8 +10,11 @@ extern cBuf_GouraudVST GVSCB;
 CHAR_INFO virtual(Apply)(void* self, void* _in)
 {
 	account(self);
-	UINT y = (UINT)(((SVMVECTOR*)_in + 2)->c.y*8.0f) * 9 + (UINT)(((SVMVECTOR*)_in + 2)->c.x*8.0f);
-	return Pick(base.textureBuf[0][y].Attributes, (Byte)(_mm_cvtss_f32(((VMVECTOR*)_in)[1]) * 4.0f), FG_Moon_White);
+	ColorMap* Diffuse = &base.TextureBuffer[0];
+	SVMVECTOR Sample = { .v = VMVectorMultiply(((VMVECTOR*)_in)[2], VMLoadFloat2(&Diffuse->Width)) };
+	UINT y = (UINT)Sample.c.y * Diffuse->Stride + (UINT)Sample.c.x;
+
+	return Pick(Diffuse->map[y].Attributes, (Byte)(_mm_cvtss_f32(((VMVECTOR*)_in)[1]) * 4.0f), FG_Moon_White);
 }
 
 Constructor(selfptr, va_list *ap)

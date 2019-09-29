@@ -132,12 +132,12 @@ struct Mesh* ParseMesh(const struct aiMesh* mesh)
 		indices[3 * i + 1] = face->mIndices[1];
 		indices[3 * i + 2] = face->mIndices[2];
 	}
-	shared_ptr* pBinds = malloc(sizeof(shared_ptr) * 3);
+	shared_ptr* pBinds = malloc(sizeof(shared_ptr) * 2);
 	pBinds[0] = Resolve_VertexShader((char*)stringOf(GouraudVST), GouraudVST);
 	pBinds[1] = Resolve_PixelShader((char*)stringOf(GouraudPST), GouraudPST);
-	pBinds[2] = Resolve_TextureBuffer((char*)"Tex0", tex, 0u);
+	//pBinds[2] = Resolve_TextureBuffer((char*)"Tex0", tex, 0u);
 
-	struct Mesh* pMesh = new(Mesh, pBinds, 3);
+	struct Mesh* pMesh = new(Mesh, pBinds, 2);
 	pMesh->_base.trilist.indices = indices;
 	pMesh->_base.trilist.vertices = vertices;
 	pMesh->_base.trilist.numInds = mesh->mNumFaces * 3;

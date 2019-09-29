@@ -162,7 +162,6 @@
   <ItemGroup>
     <ClCompile Include="BitField.c" />
     <ClCompile Include="BitStack.c" />
-    <ClCompile Include="BoundingSphere.c" />
     <ClCompile Include="Camera.c" />
     <ClCompile Include="Class.c" />
     <ClCompile Include="Codex.c" />
@@ -198,7 +197,6 @@
     <ClCompile Include="StringStream.c" />
     <ClCompile Include="Test.c" />
     <ClCompile Include="TextureBuffer.c" />
-    <ClCompile Include="TextureSurface.c" />
     <ClCompile Include="TransformBuffer.c" />
     <ClCompile Include="Triangle.c" />
     <ClCompile Include="VActor.c" />
@@ -212,13 +210,13 @@
     <ClInclude Include="BindableBase.h" />
     <ClInclude Include="BindingIncludes.h" />
     <ClInclude Include="BitField.h" />
-    <ClInclude Include="BoundingSphere.h" />
     <ClInclude Include="Box.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Class.h" />
     <ClInclude Include="Codex.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="Color.scheme" />
+    <ClInclude Include="Colormap.h" />
     <ClInclude Include="Control.h" />
     <ClInclude Include="CubeDemo.h" />
     <ClInclude Include="CubeSceneTex.h" />
@@ -232,7 +230,6 @@
     <ClInclude Include="FlatLightGS.h" />
     <ClInclude Include="Frame.h" />
     <ClInclude Include="BitStack.h" />
-    <ClInclude Include="GDISetup.h" />
     <ClInclude Include="GouraudPS.h" />
     <ClInclude Include="GouraudPST.h" />
     <ClInclude Include="GouraudVS.h" />
@@ -248,7 +245,6 @@
     <ClInclude Include="PixelShader.h" />
     <ClInclude Include="SharedPtr.h" />
     <ClInclude Include="TextureBuffer.h" />
-    <ClInclude Include="TextureSurface.h" />
     <ClInclude Include="TransformBuffer.h" />
     <ClInclude Include="Tri.h" />
     <ClInclude Include="Triangle.h" />

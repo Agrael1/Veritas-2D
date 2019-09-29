@@ -5,13 +5,11 @@
 #include "Model.h"
 #include "Codex.h"
 
-#include "TextureSurface.h"
+#include "TextureBuffer.h"
 
 #include "Class.h"
 #include "CubeDemo.h"
 #include "Color.scheme"
-
-#pragma comment(lib, "GDIPlusHandler.lib")
 
 bool virtual(HandleInputEvents)(void* self, const KeyboardEvent* event)
 {
@@ -121,11 +119,7 @@ bool virtual(OnUserCreate)(void* self)
 	this->physics = new(Physics);
 
 	this->pActiveCamera = this->actor->ACamera;
-	this->model = new(Model, "Models\\Nano\\nanosuit.obj");
-
-	HGDIPM gdi = GDIPMStart();
-	BitmapData p = GetImageFromFileW(L"Models\\Nano\\arm_dif.png");
-	GDIPMStop(gdi);
+	//this->model = new(Model, "Models\\Nano\\nanosuit.obj");
 
 	this->pPl->projection = VMMatrixPerspectiveLH(1.0f, (float)base.Output->nFrameHeight / (float)base.Output->nFrameLength, 0.5f, 40.0f);
 	this->pLight->_base.Bind(this->pLight, this->pPl);
@@ -145,8 +139,9 @@ bool virtual(OnUserUpdate)(void* self, double fElapsedSeconds)
 	this->pPl->camera = this->pActiveCamera->method->GetViewMatrix(this->pActiveCamera);
 	base.Output->method->BeginFrame(base.Output, ' ', BG_Sky);
 
+	this->mesh->method->Draw(this->mesh, this->pPl);
 	//this->actor->Mesh->_base.method->Draw(this->actor->Mesh, this->pPl);
-	this->model->method->Draw(this->model, this->pPl);
+	//this->model->method->Draw(this->model, this->pPl);
 	//this->physics->pMesh->method->Draw(this->physics->pMesh, this->pPl);
 
 	return true;

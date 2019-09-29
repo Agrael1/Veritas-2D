@@ -6,7 +6,6 @@
 #include "TransformBuffer.h"
 #include "Light.h"
 
-#include "Header.h"
 #include "Box.h"
 #include "CubeTexDr.h"
 #include "Class.h"
@@ -46,7 +45,7 @@ Constructor(selfptr, va_list *ap)
 
 	base.method->AddBind(self, Resolve_VertexShader((char*)stringOf(GouraudVST), GouraudVST));
 	base.method->AddBind(self, Resolve_PixelShader((char*)stringOf(GouraudPST), GouraudPST));
-	base.method->AddBind(self, Resolve_TextureBuffer((char*)"Tex0", tex, 0u));
+	base.method->AddBind(self, Resolve_TextureBuffer("Models\\Nano\\Test.cm", 0u));
 	base.method->AddBind(self, make_shared(TransformBuffer, self, 0));
 	return self;
 }

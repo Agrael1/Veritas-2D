@@ -118,9 +118,6 @@
     <Filter Include="Файлы исходного кода\Engine\Framework\Drawable">
       <UniqueIdentifier>{7dae4cd2-cf27-4e57-8b79-abd3a1c78ff0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Файлы исходного кода\Engine\Framework\Resources">
-      <UniqueIdentifier>{e40c9e87-10a0-4f67-b453-6944fafa59b0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Заголовочные файлы\Engine\Framework\Resources">
       <UniqueIdentifier>{107bf5a2-81c8-44e2-9074-c2e6646944dc}</UniqueIdentifier>
     </Filter>
@@ -219,9 +216,6 @@
     <ClCompile Include="VActor.c">
       <Filter>Файлы исходного кода\Engine\Graphics\VObjects</Filter>
     </ClCompile>
-    <ClCompile Include="BoundingSphere.c">
-      <Filter>Файлы исходного кода\Engine\Physics</Filter>
-    </ClCompile>
     <ClCompile Include="CubeDemo.cpp">
       <Filter>Файлы исходного кода\Demo</Filter>
     </ClCompile>
@@ -263,9 +257,6 @@
     </ClCompile>
     <ClCompile Include="Model.c">
       <Filter>Файлы исходного кода\Engine\Framework\Drawable</Filter>
-    </ClCompile>
-    <ClCompile Include="TextureSurface.c">
-      <Filter>Файлы исходного кода\Engine\Framework\Resources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -407,9 +398,6 @@
     <ClInclude Include="VActor.h">
       <Filter>Заголовочные файлы\Engine\Graphics\VObjects</Filter>
     </ClInclude>
-    <ClInclude Include="BoundingSphere.h">
-      <Filter>Заголовочные файлы\Engine\Physics</Filter>
-    </ClInclude>
     <ClInclude Include="PhysicsAggregate.h">
       <Filter>Заголовочные файлы\Engine\Physics</Filter>
     </ClInclude>
@@ -455,10 +443,7 @@
     <ClInclude Include="BindingIncludes.h">
       <Filter>Заголовочные файлы\Engine\Framework\Bindable</Filter>
     </ClInclude>
-    <ClInclude Include="TextureSurface.h">
-      <Filter>Заголовочные файлы\Engine\Framework\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="GDISetup.h">
+    <ClInclude Include="Colormap.h">
       <Filter>Заголовочные файлы\Engine\Framework\Resources</Filter>
     </ClInclude>
   </ItemGroup>

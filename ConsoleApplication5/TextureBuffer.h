@@ -1,21 +1,22 @@
 #pragma once
 #include "BindableBase.h"
 #include "EngineCommons.h"
+#include "Colormap.h"
 
 #define c_class TextureBuffer
 
 class
 {
 	inherits(Bindable);
-	void* Texture;
+	ColorMap Texture;
 	unsigned slot;
 };
 
-inline char* virtual(GenerateUID)(char* info)
+inline char* virtual(GenerateUID)(const char* info)
 {
 	return info;
 }
-inline shared_ptr virtual(Resolve)(char* info, void* pTex, unsigned slot)
+inline shared_ptr virtual(Resolve)(const char* fileName, unsigned slot)
 {
-	__Resolve(info, pTex, slot)
+	__Resolve(fileName, fileName, slot);
 }
