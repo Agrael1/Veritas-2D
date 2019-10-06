@@ -1,10 +1,10 @@
-#include "Class.h"
 #include <stdlib.h>
-#include "StringStream.h"
 #include "VeritasEngine.h"
+#include "Class.h"
 
-__declspec(thread) char buf[10];
-volatile bool bActive = false;
+#define VTHREAD __stdcall
+
+volatile BOOL bActive = false;
 
 bool virtual(HandleInputEvents)(void* self, const KeyboardEvent* event)
 {
@@ -30,7 +30,7 @@ bool _PassEvents(selfptr)
 
 void _Show(selfptr)
 {
-	self->Window->method->OutputToScreen(self->Window, self->Output->localFrame);
+	self->Window->method->OutputToScreen(self->Window, self->Output->ReadFrame);
 }
 void _SetupScreen(selfptr, Word width, Word height, Byte fontw, Byte fonth)
 {
@@ -39,10 +39,10 @@ void _SetupScreen(selfptr, Word width, Word height, Byte fontw, Byte fonth)
 	// default setup for fast access
 	COORD frame = this->Window->method->CreateConsole(this->Window, width, height, fontw, fonth);
 
-	this->Output = new(Frame, frame.X, frame.Y);
+	this->Output = new(SwapChain, frame.X, frame.Y);
 	_Show(this);
 }
-DWORD _stdcall _GameThread(selfptr)
+DWORD VTHREAD GameThread(selfptr)
 {
 	account(self);
 	this->Control = new(MessageWindow, this->Window);
@@ -54,14 +54,23 @@ DWORD _stdcall _GameThread(selfptr)
 	// Time counting
 	LARGE_INTEGER StartingTime, EndingTime;
 	LARGE_INTEGER Frequency;
-	double fElapsedSeconds;
+	double fElapsedSeconds = 0.0;
 	int rtime = 0;
 	int middle = 0, k = 0;
 
 	QueryPerformanceFrequency(&Frequency);
 	QueryPerformanceCounter(&StartingTime);
 
+	// first try
+	if (!this->method->OnUserUpdate(this, fElapsedSeconds))
+	{
+		gResult = 4;
+		bActive = false;
+	};
+
+	bActive = true;
 	// Game Loop
+
 	while (bActive)
 	{
 		QueryPerformanceCounter(&EndingTime);
@@ -74,11 +83,18 @@ DWORD _stdcall _GameThread(selfptr)
 
 		// Read Messages
 		if (gResult = ProcessMessages() != 0)
-			return gResult;
+		{
+			InterlockedAnd(&bActive, false);
+			break;
+		};
 
 		// Process queue
 		if (!_PassEvents(this))
-			return 1;
+		{
+			gResult = 1;
+			InterlockedAnd(&bActive, false);
+			break;
+		};
 
 		// Process mouse
 		if (this->method->HandleMouse)
@@ -90,65 +106,87 @@ DWORD _stdcall _GameThread(selfptr)
 
 		// render frame
 		if (!this->method->OnUserUpdate(this, fElapsedSeconds))
-			return 0;
-
-		_Show(this);
-
-		if (k++ == 60)
 		{
-			rtime = (int)(1.0 / fElapsedSeconds);
-			middle = (rtime + middle) / 2;
-			k = 0;
-			SetConsoleTitleA(_itoa(middle, buf, 10));
-		}
+			gResult = 0;
+			InterlockedAnd(&bActive, false);
+			break;
+		};
+		//// FPS Counter
+		//if (k++ == 60)
+		//{
+		//	char* buf = alloca(10);
+		//	rtime = (int)(1.0 / fElapsedSeconds);
+		//	middle = (rtime + middle) / 2;
+		//	k = 0;
+		//	SetConsoleTitleA(_itoa(middle, buf, 10));
+		//}
 	}
 
 	if (this->method->OnUserDestroy&&!this->method->OnUserDestroy(this))
 	{
-		return 3;
+		gResult = 3;
 	}
 
+	return gResult;
+}
+DWORD VTHREAD Render(selfptr)
+{
+	while (!bActive); //easy sync
+	while (bActive)
+	{
+		WaitForSingleObject(self->Output->hSemaphore, INFINITE);
+		self->Window->method->OutputToScreen(self->Window, self->Output->ReadFrame);
+		ReleaseSemaphore(self->Output->hSemaphore, 1, nullptr);
+	}
 	return 0;
 }
 void _Start(selfptr)
 {
-	DWORD dwThreadID;
-	HANDLE hThread;
+	DWORD dwThreadID[2];
+	HANDLE hRender, hGame;
 	DWORD ExitCode;
-
-	bActive = true;		
+	
 	// start a game thread
-	hThread = CreateThread(
+	hGame = CreateThread(
 		NULL,
 		0,
-		&_GameThread,
+		&GameThread,
 		self,
 		0,
-		&dwThreadID);
+		&dwThreadID[0]);
+
+	hRender = CreateThread(
+		NULL,
+		0,
+		&Render,
+		self,
+		0,
+		&dwThreadID[1]);
 
 	
-	WaitForSingleObject(hThread, INFINITE);
-	GetExitCodeThread(hThread, &ExitCode);
+	WaitForMultipleObjects(2u, (const HANDLE[]){hRender, hGame}, TRUE, INFINITE);
+	GetExitCodeThread(hGame, &ExitCode);
 
 	switch (ExitCode)
 	{
 	case 0:
 	case 1:
-		CloseHandle(hThread);
+		CloseHandle(hGame);
+		CloseHandle(hRender);
 		break;
 	default:
-		CloseHandle(hThread);
+		CloseHandle(hGame);
+		CloseHandle(hRender);
 		throw(new(Exception, __LINE__, __FILE__));
 	}
 }
 
-constructMethodTable(
+VirtualTable{
 	.SetupScreen = _SetupScreen,
 	.Start = _Start,
 	.HandleInputEvents = virtual(HandleInputEvents),
 	.Show = _Show
-);
-
+};
 Constructor(selfptr, va_list* ap)
 {
 	account(self);
@@ -162,11 +200,9 @@ Constructor(selfptr, va_list* ap)
 Destructor(selfptr)
 {
 	account(self);
+	delete_s(this->Output);
+	delete_s(this->Control);
 	delete(this->Window);
-	if(this->Control)
-		delete(this->Control);
-	if (this->Output)
-		delete(this->Output);
 	return this;
 }
 ENDCLASSDESC

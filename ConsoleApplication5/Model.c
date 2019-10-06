@@ -25,7 +25,8 @@ void virtual(Draw)(selfptr, struct VLine* gfx, FXMMATRIX accumulatedTransform)
 VMMATRIX virtual(GetTransformXM)(const void* self)
 {
 	const account(self);
-	return VMLoadFloat4x4A(&this->transform);
+	VMMATRIX M = VMLoadFloat4x4A(&this->transform);
+	return M;
 }
 
 Constructor(selfptr, va_list *ap)
@@ -113,7 +114,7 @@ typedef struct
 	VMFLOAT2A tc;
 }virtual(Vertex);
 
-struct Mesh* ParseMesh(const struct aiMesh* mesh)
+struct Mesh* ParseMesh(const struct aiMesh* mesh, const struct aiMaterial* const* pMaterials)
 {
 	virtual(Vertex)* vertices = malloc(sizeof(virtual(Vertex))*mesh->mNumVertices);
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
@@ -132,12 +133,27 @@ struct Mesh* ParseMesh(const struct aiMesh* mesh)
 		indices[3 * i + 1] = face->mIndices[1];
 		indices[3 * i + 2] = face->mIndices[2];
 	}
-	shared_ptr* pBinds = malloc(sizeof(shared_ptr) * 2);
+	shared_ptr* pBinds = malloc(sizeof(shared_ptr) * 3);
+	
+	struct aiString texFileName;
+	const struct aiMaterial* curMaterial = pMaterials[mesh->mMaterialIndex];
+	if (aiGetMaterialTexture(curMaterial, aiTextureType_DIFFUSE, 0, &texFileName, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr) == aiReturn_SUCCESS)
+	{
+		char* path = alloca(128);
+		strcpy(path, "Models\\Nano\\");
+		strcat(path, texFileName.data);
+		pBinds[2] = Resolve_TextureBuffer(path, 0u);
+	}
+	else
+	{
+		pBinds[2] = Resolve_TextureBuffer("Models\\Nano\\Test.cm", 0u);
+	}
+
+	
 	pBinds[0] = Resolve_VertexShader((char*)stringOf(GouraudVST), GouraudVST);
 	pBinds[1] = Resolve_PixelShader((char*)stringOf(GouraudPST), GouraudPST);
-	//pBinds[2] = Resolve_TextureBuffer((char*)"Tex0", tex, 0u);
 
-	struct Mesh* pMesh = new(Mesh, pBinds, 2);
+	struct Mesh* pMesh = new(Mesh, pBinds, 3);
 	pMesh->_base.trilist.indices = indices;
 	pMesh->_base.trilist.vertices = vertices;
 	pMesh->_base.trilist.numInds = mesh->mNumFaces * 3;
@@ -194,7 +210,7 @@ Constructor(selfptr, va_list *ap)
 	self->meshPtrs = _aligned_malloc(self->nmeshes * sizeof(struct Mesh*), sizeof(struct Mesh*));
 	for (size_t i = 0; i < pScene->mNumMeshes; i++)
 	{
-		self->meshPtrs[i] = ParseMesh(pScene->mMeshes[i]);
+		self->meshPtrs[i] = ParseMesh(pScene->mMeshes[i], pScene->mMaterials);
 	}
 
 	int nextId = 0;

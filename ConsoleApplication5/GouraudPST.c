@@ -11,9 +11,10 @@ CHAR_INFO virtual(Apply)(void* self, void* _in)
 {
 	account(self);
 	ColorMap* Diffuse = &base.TextureBuffer[0];
-	SVMVECTOR Sample = { .v = VMVectorMultiply(((VMVECTOR*)_in)[2], VMLoadFloat2(&Diffuse->Width)) };
-	UINT y = (UINT)Sample.c.y * Diffuse->Stride + (UINT)Sample.c.x;
-
+	VMFLOAT2A* Coord = (VMVECTOR*)_in + 2;
+	//SVMVECTOR Sample = { .v = VMVectorMultiply(((VMVECTOR*)_in)[2], VMLoadFloat2(&Diffuse->Width)) };
+	//UINT y = (UINT)Sample.c.y * Diffuse->Stride + (UINT)Sample.c.x;
+	UINT y = (UINT)(Coord->y*Diffuse->Height)*Diffuse->Stride + (UINT)(Coord->x*Diffuse->Width);
 	return Pick(Diffuse->map[y].Attributes, (Byte)(_mm_cvtss_f32(((VMVECTOR*)_in)[1]) * 4.0f), FG_Moon_White);
 }
 

@@ -13,7 +13,7 @@ void _Clip(selfptr, Word *x, Word *y)
 }
 void _PrintFrame(selfptr, Word x, Word y, CHAR_INFO color)
 {
-	self->localFrame[y*self->nFrameLength + x] = color;
+	self->WriteFrame[y*self->nFrameLength + x] = color;
 }
 bool _DepthTest(selfptr, unsigned x, unsigned y, float zValue)
 {
@@ -28,24 +28,33 @@ bool _DepthTest(selfptr, unsigned x, unsigned y, float zValue)
 
 void _ClearFrame(selfptr, wchar_t c, Word col)
 {
-	CHAR_INFO r;
-	r.Attributes = col;
-	r.Char.UnicodeChar = c;
-	
-	DWord value = *(DWord*)&r;
-	memset32(self->localFrame, value, self->nFrameHeight*self->nFrameLength);
-}
-inline void _ClearDepth(selfptr)
-{
-	for (int i = 0; i < self->nFrameHeight*self->nFrameLength; i++)
+	union
 	{
-		self->ZBuffer[i] = FLT_MAX;
-	}
+		CHAR_INFO r;
+		unsigned int i;
+	}imp = { .r.Attributes = col,.r.Char.UnicodeChar = c };
+
+	memset32(self->WriteFrame, imp.i, self->nFrameHeight*self->nFrameLength);
+}
+void _ClearDepth(selfptr)
+{
+	union
+	{
+		unsigned int i;
+		float f;
+	}imp = {.f = FLT_MAX };
+	memset32(self->ZBuffer, imp.i, self->nFrameHeight*self->nFrameLength);
 }
 void _BeginFrame(selfptr, wchar_t c, Word col)
 {
 	_ClearFrame(self, c, col);
 	_ClearDepth(self);
+}
+void _PresentFrame(selfptr)
+{
+	WaitForSingleObject(self->hSemaphore, INFINITE);
+	swapptr(&self->ReadFrame, &self->WriteFrame);
+	ReleaseSemaphore(self->hSemaphore, 1, nullptr);
 }
 
 // Old Functions
@@ -61,7 +70,7 @@ void _FillRegion(selfptr, Word x1, Word y1, Word x2, Word y2, wchar_t c, Word co
 	DWord value = *(DWord*)&r;
 
 	for (int y = y1; y < y2; y++)
-		memset32(self->localFrame + y*self->nFrameLength + x1, value, x2 - x1);
+		memset32(self->WriteFrame + y*self->nFrameLength + x1, value, x2 - x1);
 }
 void _DrawRectangle(selfptr, Word x1, Word y1, Word x2, Word y2, Word color)
 {
@@ -143,39 +152,45 @@ void _DrawTriangleWireframe(selfptr, Word x1, Word y1, Word x2, Word y2, Word x3
 }
 
 
-constructMethodTable( 
+VirtualTable{
 	.ClearFrame = _ClearFrame,
 	.BeginFrame = _BeginFrame,
 	.DepthTest = _DepthTest,
+	.PresentFrame = _PresentFrame,
 
 	.DrawTriangleWireframe = _DrawTriangleWireframe,
 	.DrawLine = _DrawLine,
 	.PrintFrame = _PrintFrame,
 	.DrawRectangle = _DrawRectangle,
-);
-
+};
 Constructor(selfptr, va_list *ap)
 {
-	account(self);
-	assignMethodTable(this);
+	assignMethodTable(self);
+	Word Width = va_arg(*ap, Word);
+	Word Height = va_arg(*ap, Word);
+	self->nFrameLength = Width;
+	self->nFrameHeight = Height;
 
-	this->nFrameLength = va_arg(*ap, Word);
-	this->nFrameHeight = va_arg(*ap, Word);
+	self->WriteFrame = _aligned_malloc(Width * Height * sizeof(CHAR_INFO), sizeof(CHAR_INFO));
+	self->ReadFrame = _aligned_malloc(Width * Height * sizeof(CHAR_INFO), sizeof(CHAR_INFO));
+	self->ZBuffer = _aligned_malloc(Width * Height * sizeof(float), sizeof(float));
 
-	this->localFrame = malloc(this->nFrameLength * this->nFrameHeight * sizeof(CHAR_INFO));
-	this->ZBuffer = malloc(this->nFrameLength*this->nFrameHeight * sizeof(float));
+	ZeroMemory(self->ReadFrame, Width * Height * sizeof(CHAR_INFO));
+	self->hSemaphore = CreateSemaphoreW(NULL, 1, 1, TEXT("Buffer"));
 
-	if (this->ZBuffer)
-		_ClearDepth(this);
-	if (this->localFrame)
-		_ClearFrame(this, L' ', 0);
+	if (self->ZBuffer)
+		_ClearDepth(self);
+	if (self->WriteFrame)
+		_ClearFrame(self, L' ', 0);
 
-	return this;
+	return self;
 }
 Destructor(selfptr)
 {
-	account(self);
-	free(this->localFrame);
-	return this;
+	CloseHandle(self->hSemaphore);
+	_aligned_free(self->WriteFrame);
+	_aligned_free(self->ReadFrame);
+	_aligned_free(self->ZBuffer);
+	return self;
 }
 ENDCLASSDESC

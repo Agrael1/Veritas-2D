@@ -59,7 +59,7 @@ ColorMap ConvertToCM(Surface& S, const COLORREF palette[16])
 void MakeCM(ColorMap& CM, std::string paletteName)
 {
 	std::ofstream CMOut;
-	CMOut.open(L"..\\ConsoleApplication5\\Models\\Nano\\Test.cm", std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
+	CMOut.open(L"..\\ConsoleApplication5\\Models\\Nano\\arm_dif.cm", std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
 	if (!CMOut.is_open())
 		return;
 
@@ -100,7 +100,7 @@ int __stdcall WinMain(
 		RGB(218, 212, 94),		// Honey
 		RGB(222, 238, 214)		// Moon White
 	};
-	Surface S(L"..\\ConsoleApplication5\\Models\\Nano\\Test.png");
+	Surface S(L"..\\ConsoleApplication5\\Models\\Nano\\arm_dif.png");
 	MakeCM(ConvertToCM(S, palette),"DB16");
 	return 0;
 }

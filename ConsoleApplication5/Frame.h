@@ -3,18 +3,23 @@
 #include "EngineCommons.h"
 #include "VMathTypes.h"
 
-#define c_class Frame
+#define c_class SwapChain
 
 class
 {
 	GENERATED_DESC
 
-	CHAR_INFO *localFrame;
+	CHAR_INFO* WriteFrame;
+	CHAR_INFO* ReadFrame;
+	HANDLE hSemaphore;
+
 	float* ZBuffer;
 	methods(
 		bool (*DepthTest)(selfptr, unsigned x, unsigned y, float zValue);
 		void (*ClearFrame)(selfptr, wchar_t c, Word col);
 		void (*BeginFrame)(selfptr, wchar_t c, Word col);
+		void (*PresentFrame)(selfptr);
+
 		void (*DrawTriangleWireframe)(selfptr, Word x1, Word y1, Word x2, Word y2, Word x3, Word y3, wchar_t c, Word col);
 		void (*DrawTriangle)(selfptr, VMVECTOR* v0, VMVECTOR* v1, VMVECTOR* v2, wchar_t c, Word col);
 		void (*DrawLine)(selfptr, Word x1, Word y1, Word x2, Word y2, wchar_t character, Word col);

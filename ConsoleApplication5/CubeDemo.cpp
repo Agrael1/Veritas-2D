@@ -116,10 +116,10 @@ bool virtual(OnUserCreate)(void* self)
 	this->bStop = false;
 	this->actor = new(VActor);
 	this->mesh = new(CubeDr);
-	this->physics = new(Physics);
+	//this->physics = new(Physics);
 
 	this->pActiveCamera = this->actor->ACamera;
-	//this->model = new(Model, "Models\\Nano\\nanosuit.obj");
+	this->model = new(Model, "Models\\Nano\\nanosuit.obj");
 
 	this->pPl->projection = VMMatrixPerspectiveLH(1.0f, (float)base.Output->nFrameHeight / (float)base.Output->nFrameLength, 0.5f, 40.0f);
 	this->pLight->_base.Bind(this->pLight, this->pPl);
@@ -133,17 +133,17 @@ bool virtual(OnUserUpdate)(void* self, double fElapsedSeconds)
 	if (this->bStop)
 		return true;
 
-	this->physics->method->Tick(this->physics);
+	//this->physics->method->Tick(this->physics);
 
 
 	this->pPl->camera = this->pActiveCamera->method->GetViewMatrix(this->pActiveCamera);
 	base.Output->method->BeginFrame(base.Output, ' ', BG_Sky);
 
-	this->mesh->method->Draw(this->mesh, this->pPl);
+	//this->mesh->method->Draw(this->mesh, this->pPl);
 	//this->actor->Mesh->_base.method->Draw(this->actor->Mesh, this->pPl);
-	//this->model->method->Draw(this->model, this->pPl);
+  	this->model->method->Draw(this->model, this->pPl);
 	//this->physics->pMesh->method->Draw(this->physics->pMesh, this->pPl);
-
+	base.Output->method->PresentFrame(base.Output);
 	return true;
 }
 bool virtual(OnUserDestroy)(void* self)

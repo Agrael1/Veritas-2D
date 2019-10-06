@@ -72,7 +72,7 @@ void DrawFlatTriangle(selfptr,
 					_P[i] = _mm_mul_ps(iLine[i], w);
 				// invoke pixel shader with interpolated vertex attributes
 				// and use result to set the pixel color on the screen
-				self->gfx->localFrame[premulI + x] = self->PS->Apply(self->PS, _P);
+				self->gfx->WriteFrame[premulI + x] = self->PS->Apply(self->PS, _P);
 			}
 			//self->Debug->method->OutputToScreen(self->Debug, self->gfx->localFrame);
 		}

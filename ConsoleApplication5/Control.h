@@ -27,7 +27,7 @@ class
 	bool bCursorEnabled;
 };
 
-static DWord ProcessMessages()
+inline DWord ProcessMessages()
 {
 	MSG msg;
 	while (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))

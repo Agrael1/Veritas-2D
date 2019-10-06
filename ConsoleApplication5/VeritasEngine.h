@@ -13,7 +13,7 @@ class
 	const void* _class;
 	const char* AppName;
 	struct ConsoleWindow* Window;
-	struct Frame* Output;
+	struct SwapChain* Output;
 	struct MessageWindow* Control;
 
 	methods(

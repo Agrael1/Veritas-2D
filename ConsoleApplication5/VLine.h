@@ -18,7 +18,7 @@ class
 		void(*Draw)(selfptr, IndexedTriangleList* trilist);
 	);
 
-	struct Frame* gfx;
+	struct SwapChain* gfx;
 
 	struct VSBase VS;
 	struct GSBase* GS;
