@@ -1,5 +1,6 @@
 #include "GDIPlusManager.h"
 #include "Surface.h"
+#include "../ConsoleApplication5/L16TC.palette"
 #include <fstream>
 #include <algorithm>
 
@@ -59,7 +60,7 @@ ColorMap ConvertToCM(Surface& S, const COLORREF palette[16])
 void MakeCM(ColorMap& CM, std::string paletteName)
 {
 	std::ofstream CMOut;
-	CMOut.open(L"..\\ConsoleApplication5\\Models\\Nano\\arm_dif.cm", std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
+	CMOut.open(L"..\\ConsoleApplication5\\Models\\Nano\\optiarm_dif.cm", std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
 	if (!CMOut.is_open())
 		return;
 
@@ -82,25 +83,7 @@ int __stdcall WinMain(
 )
 {
 	GDIPlusManager manager;
-	COLORREF palette[16] = {
-		RGB(20, 12, 28),		// Black
-		RGB(68, 36, 52),		// Dark Magenta
-		RGB(48, 52, 109),		// Dark Blue
-		RGB(78, 74, 78),		// Grey
-		RGB(133, 76, 48),		// Light Brown
-		RGB(52, 101, 36),		// Grass Green
-		RGB(208, 70, 72),		// Red
-		RGB(117, 113, 97),		// Ditry Gray
-		RGB(89, 125, 206),		// Blue
-		RGB(10, 125, 44),		// Light Green
-		RGB(133, 149, 161),		// Metal
-		RGB(109, 170, 44),		// Acid Green
-		RGB(210, 170, 153),		// Skin
-		RGB(109, 194, 202),		// Sky
-		RGB(218, 212, 94),		// Honey
-		RGB(222, 238, 214)		// Moon White
-	};
-	Surface S(L"..\\ConsoleApplication5\\Models\\Nano\\arm_dif.png");
-	MakeCM(ConvertToCM(S, palette),"DB16");
+	Surface S(L"..\\ConsoleApplication5\\Models\\Nano\\optiarm_dif_16.png");
+	MakeCM(ConvertToCM(S, pPalette), pPaletteName);
 	return 0;
 }

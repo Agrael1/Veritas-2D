@@ -220,7 +220,6 @@
     <ClInclude Include="Class.h" />
     <ClInclude Include="Codex.h" />
     <ClInclude Include="Color.h" />
-    <ClInclude Include="Color.scheme" />
     <ClInclude Include="Colormap.h" />
     <ClInclude Include="Control.h" />
     <ClInclude Include="CubeDemo.h" />
@@ -277,6 +276,10 @@
   </ItemGroup>
   <ItemGroup>
     <MASM Include="memset32.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DB16.palette" />
+    <None Include="L16TC.palette" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

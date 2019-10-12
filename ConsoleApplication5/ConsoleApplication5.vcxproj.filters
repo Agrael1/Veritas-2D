@@ -121,6 +121,9 @@
     <Filter Include="Заголовочные файлы\Engine\Framework\Resources">
       <UniqueIdentifier>{107bf5a2-81c8-44e2-9074-c2e6646944dc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Заголовочные файлы\Engine\Graphics\Palettes">
+      <UniqueIdentifier>{9e2e1900-ba94-459e-899a-a363bc452329}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VeritasEngine.c">
@@ -314,9 +317,6 @@
     <ClInclude Include="Pipeline.h">
       <Filter>Заголовочные файлы\Engine\Graphics\Pipeline</Filter>
     </ClInclude>
-    <ClInclude Include="Color.scheme">
-      <Filter>Заголовочные файлы\Engine\Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="CubeDemo.h">
       <Filter>Заголовочные файлы\Demo</Filter>
     </ClInclude>
@@ -451,5 +451,13 @@
     <MASM Include="memset32.asm">
       <Filter>Файлы исходного кода\asm</Filter>
     </MASM>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="L16TC.palette">
+      <Filter>Заголовочные файлы\Engine\Graphics\Palettes</Filter>
+    </None>
+    <None Include="DB16.palette">
+      <Filter>Заголовочные файлы\Engine\Graphics\Palettes</Filter>
+    </None>
   </ItemGroup>
 </Project>

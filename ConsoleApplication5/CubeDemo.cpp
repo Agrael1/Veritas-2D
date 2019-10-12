@@ -9,7 +9,7 @@
 
 #include "Class.h"
 #include "CubeDemo.h"
-#include "Color.scheme"
+#include "L16TC.palette"
 
 bool virtual(HandleInputEvents)(void* self, const KeyboardEvent* event)
 {
@@ -91,27 +91,7 @@ bool virtual(OnUserCreate)(void* self)
 	this->pPl = new(VLine, base.Output);
 	this->pLight = new(DirectionalLight);
 
-	// using DB16 - DawnBringer's 16 Col Palette v1.0
-	// http://pixeljoint.com/forum/forum_posts.asp?TID=12795
-	COLORREF palette[16] = {
-		RGB(20, 12, 28),		// Black
-		RGB(68, 36, 52),		// Dark Magenta
-		RGB(48, 52, 109),		// Dark Blue
-		RGB(78, 74, 78),		// Grey
-		RGB(133, 76, 48),		// Light Brown
-		RGB(52, 101, 36),		// Grass Green
-		RGB(208, 70, 72),		// Red
-		RGB(117, 113, 97),		// Ditry Gray
-		RGB(89, 125, 206),		// Blue
-		RGB(10, 125, 44),		// Light Green
-		RGB(133, 149, 161),		// Metal
-		RGB(109, 170, 44),		// Acid Green
-		RGB(210, 170, 153),		// Skin
-		RGB(109, 194, 202),		// Sky
-		RGB(218, 212, 94),		// Honey
-		RGB(222, 238, 214)		// Moon White
-	};
-	base.Window->method->SetPalette(base.Window, palette);
+	base.Window->method->SetPalette(base.Window, pPalette);
 
 	this->bStop = false;
 	this->actor = new(VActor);
