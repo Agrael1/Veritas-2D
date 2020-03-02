@@ -10,9 +10,9 @@
 
 class
 {
-	const void* _class;
+	GENERATED_DESC
 	const char* AppName;
-	struct ConsoleWindow* Window;
+	struct ConsoleWindow Window;
 	struct SwapChain* Output;
 	struct MessageWindow* Control;
 
@@ -30,4 +30,6 @@ class
 		void(*Start)(selfptr);
 		void(*Show)(selfptr);
 		);
+
+	float fElapsedSeconds;
 };

@@ -4,8 +4,8 @@
 #define c_class HashMap
 
 typedef struct _Node { 
-	struct _Node *next;
-	char *key;
+	struct _Node* next;
+	char* key;
 	void* info;
 }Node;
 

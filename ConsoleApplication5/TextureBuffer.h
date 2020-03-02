@@ -12,7 +12,7 @@ class
 	unsigned slot;
 };
 
-inline char* virtual(GenerateUID)(const char* info)
+inline const char* virtual(GenerateUID)(const char* info)
 {
 	return info;
 }

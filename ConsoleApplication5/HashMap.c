@@ -4,7 +4,7 @@
 #include <string.h>
 
 #define CHUNKSIZE 64
-unsigned _Hash(char *s)
+unsigned _Hash(const char *s)
 {
 	unsigned hashval;
 	for (hashval = 0; *s != '\0'; s++)

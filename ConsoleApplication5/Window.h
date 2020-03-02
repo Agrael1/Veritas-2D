@@ -20,6 +20,13 @@ class
 class 
 {
 	GENERATED_DESC
+	methods(
+		COORD(*CreateConsole)(selfptr, Word width, Word height, Byte fontw, Byte fonth);
+		bool(*SetCursor)(selfptr, bool value);
+		bool(*Restore)(const selfptr);
+		void(*OutputToScreen)(selfptr);
+		void(*SetPalette)(selfptr, COLORREF palette[16]);
+	);
 
 	HANDLE hOut;	
 	HANDLE hIn;	
@@ -32,13 +39,7 @@ class
 	Word Width;
 	Word Height;
 
-	methods(
-		COORD(*CreateConsole)(selfptr, Word width, Word height, Byte fontw, Byte fonth);
-		bool(*SetCursor)(selfptr, bool value);
-		bool(*Restore)(const selfptr);
-		void(*OutputToScreen)(selfptr, CHAR_INFO* buffer);
-		void(*SetPalette)(selfptr, COLORREF palette[16]);
-	);
+	CHAR_INFO** ppBuffer;
 };
 
 #define WND_EXCEPT_AUTO() new(WindowException,__LINE__, __FILE__, GetLastError())

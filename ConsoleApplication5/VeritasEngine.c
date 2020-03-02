@@ -2,8 +2,6 @@
 #include "VeritasEngine.h"
 #include "Class.h"
 
-#define VTHREAD __stdcall
-
 volatile BOOL bActive = false;
 
 bool virtual(HandleInputEvents)(void* self, const KeyboardEvent* event)
@@ -30,39 +28,37 @@ bool _PassEvents(selfptr)
 
 void _Show(selfptr)
 {
-	self->Window->method->OutputToScreen(self->Window, self->Output->ReadFrame);
+	self->Window.method->OutputToScreen(&self->Window);
 }
 void _SetupScreen(selfptr, Word width, Word height, Byte fontw, Byte fonth)
 {
-	account(self);
-
 	// default setup for fast access
-	COORD frame = this->Window->method->CreateConsole(this->Window, width, height, fontw, fonth);
+	COORD frame = self->Window.method->CreateConsole(&self->Window, width, height, fontw, fonth);
 
-	this->Output = new(SwapChain, frame.X, frame.Y);
-	_Show(this);
+	self->Output = new(SwapChain, frame.X, frame.Y);
+	self->Window.ppBuffer = &self->Output->ReadFrame;
+	_Show(self);
 }
-DWORD VTHREAD GameThread(selfptr)
+DWORD GameThread(selfptr)
 {
 	account(self);
-	this->Control = new(MessageWindow, this->Window);
 	int gResult;
 
 	if (!this->method->OnUserCreate(this))
 		return 2;
 
 	// Time counting
-	LARGE_INTEGER StartingTime, EndingTime;
-	LARGE_INTEGER Frequency;
-	double fElapsedSeconds = 0.0;
 	int rtime = 0;
 	int middle = 0, k = 0;
+
+	LARGE_INTEGER StartingTime, EndingTime;
+	LARGE_INTEGER Frequency;
 
 	QueryPerformanceFrequency(&Frequency);
 	QueryPerformanceCounter(&StartingTime);
 
 	// first try
-	if (!this->method->OnUserUpdate(this, fElapsedSeconds))
+	if (!this->method->OnUserUpdate(this, this->fElapsedSeconds))
 	{
 		gResult = 4;
 		bActive = false;
@@ -74,9 +70,6 @@ DWORD VTHREAD GameThread(selfptr)
 	while (bActive)
 	{
 		QueryPerformanceCounter(&EndingTime);
-		fElapsedSeconds = (double)(EndingTime.QuadPart - StartingTime.QuadPart) / (double)Frequency.QuadPart;
-		StartingTime = EndingTime;
-
 		// Catch a focus if not in it
 		if (!self->Control->bInFocus)
 			self->Control->method->CatchFocus(self->Control);
@@ -98,28 +91,24 @@ DWORD VTHREAD GameThread(selfptr)
 
 		// Process mouse
 		if (this->method->HandleMouse)
-			this->method->HandleMouse(this, &this->Control->mouse, fElapsedSeconds);
+			this->method->HandleMouse(this, &this->Control->mouse, this->fElapsedSeconds);
 
 		// Process continuous input
 		if (this->method->HandleControls)
-			this->method->HandleControls(this, &this->Control->kbd, fElapsedSeconds);
+			this->method->HandleControls(this, &this->Control->kbd, this->fElapsedSeconds);
 
 		// render frame
-		if (!this->method->OnUserUpdate(this, fElapsedSeconds))
+		if (!this->method->OnUserUpdate(this, this->fElapsedSeconds))
 		{
 			gResult = 0;
 			InterlockedAnd(&bActive, false);
 			break;
 		};
-		//// FPS Counter
-		//if (k++ == 60)
-		//{
-		//	char* buf = alloca(10);
-		//	rtime = (int)(1.0 / fElapsedSeconds);
-		//	middle = (rtime + middle) / 2;
-		//	k = 0;
-		//	SetConsoleTitleA(_itoa(middle, buf, 10));
-		//}
+
+		self->fElapsedSeconds = (float)(EndingTime.QuadPart - StartingTime.QuadPart) / (float)Frequency.QuadPart;
+		StartingTime = EndingTime;
+
+		self->Window.method->OutputToScreen(&self->Window);
 	}
 
 	if (this->method->OnUserDestroy&&!this->method->OnUserDestroy(this))
@@ -129,56 +118,9 @@ DWORD VTHREAD GameThread(selfptr)
 
 	return gResult;
 }
-DWORD VTHREAD Render(selfptr)
-{
-	while (!bActive); //easy sync
-	while (bActive)
-	{
-		WaitForSingleObject(self->Output->hSemaphore, INFINITE);
-		self->Window->method->OutputToScreen(self->Window, self->Output->ReadFrame);
-		ReleaseSemaphore(self->Output->hSemaphore, 1, nullptr);
-	}
-	return 0;
-}
 void _Start(selfptr)
 {
-	DWORD dwThreadID[2];
-	HANDLE hRender, hGame;
-	DWORD ExitCode;
-	
-	// start a game thread
-	hGame = CreateThread(
-		NULL,
-		0,
-		&GameThread,
-		self,
-		0,
-		&dwThreadID[0]);
-
-	hRender = CreateThread(
-		NULL,
-		0,
-		&Render,
-		self,
-		0,
-		&dwThreadID[1]);
-
-	
-	WaitForMultipleObjects(2u, (const HANDLE[]){hRender, hGame}, TRUE, INFINITE);
-	GetExitCodeThread(hGame, &ExitCode);
-
-	switch (ExitCode)
-	{
-	case 0:
-	case 1:
-		CloseHandle(hGame);
-		CloseHandle(hRender);
-		break;
-	default:
-		CloseHandle(hGame);
-		CloseHandle(hRender);
-		throw(new(Exception, __LINE__, __FILE__));
-	}
+	GameThread(self);
 }
 
 VirtualTable{
@@ -189,20 +131,20 @@ VirtualTable{
 };
 Constructor(selfptr, va_list* ap)
 {
-	account(self);
-	assignMethodTable(this);
+	assignMethodTable(self);
 
-	this->AppName = "Veritas Engine Test";
-	this->Window = new(ConsoleWindow);
+	self->AppName = "Veritas Engine Test";
+	construct(&self->Window, ConsoleWindow);
+	self->Control = new(MessageWindow, &self->Window);
 
-	return this;
+	return self;
 }
 Destructor(selfptr)
 {
 	account(self);
 	delete_s(this->Output);
 	delete_s(this->Control);
-	delete(this->Window);
+	deconstruct(&this->Window);
 	return this;
 }
 ENDCLASSDESC

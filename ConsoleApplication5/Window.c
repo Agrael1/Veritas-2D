@@ -83,10 +83,41 @@ COORD _CreateConsole(selfptr, Word width, Word height, Byte fontw, Byte fonth)
 	return coordLargest;
 }
 
-void _OutputToScreen(selfptr, CHAR_INFO* buffer)
+void _OutputToScreen(selfptr)
 {
-	WriteConsoleOutputW(self->hOut, buffer, (COORD) { (short)self->Width, (short)self->Height}, (COORD) { 0, 0 }, &self->rWindowRect);
+	WriteConsoleOutputW(
+		self->hOut,
+		*self->ppBuffer,
+		(COORD) {(short)self->Width, (short)self->Height},
+		(COORD) {0, 0},
+		&self->rWindowRect);
+	//WaitForMultipleObjects(2, self->ThreadPool, true, INFINITE);
 }
+
+//DWORD VTHREAD PassToRender1(selfptr)
+//{
+//	WriteConsoleOutputW(
+//		self->hOut, 
+//		*self->ppBuffer, 
+//		(COORD) { (short)self->Width, (short)self->Height/2 }, 
+//		(COORD) { 0, 0 }, 
+//		&self->rWindowRect
+//	);
+//}
+//DWORD VTHREAD PassToRender2(selfptr)
+//{
+//	SMALL_RECT rect = self->rWindowRect;
+//	rect.Top = rect.Bottom / 2;
+//
+//	WriteConsoleOutputW(
+//		self->hOut,
+//		*self->ppBuffer,
+//		(COORD) { (short)self->Width, (short)self->Height/2 }, 
+//		(COORD) { 0, (short)self->Height / 2 }, 
+//		&rect
+//	);
+//}
+
 void _SetPalette(selfptr, COLORREF palette[16])
 {
 	CONSOLE_SCREEN_BUFFER_INFOEX csbiex = { 0 };
@@ -97,26 +128,25 @@ void _SetPalette(selfptr, COLORREF palette[16])
 	SetConsoleScreenBufferInfoEx(self->hOut, &csbiex);
 }
 
-constructMethodTable(
+VirtualTable{
 	.CreateConsole = _CreateConsole,
 	.SetCursor = _SetCursor,
 	.Restore = _Restore,
 	.OutputToScreen = _OutputToScreen,
-	
+
 	.SetPalette = _SetPalette
-);
+};
 
 Constructor(selfptr, va_list* ap)
 {
-	account(self);
-	assignMethodTable(this);
+	assignMethodTable(self);
 
-	this->consoleWindow = GetConsoleWindow();
-	this->hIn = GetStdHandle(STD_INPUT_HANDLE);
-	this->hOriginalConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-	this->hOut = this->hOriginalConsole;
+	self->consoleWindow = GetConsoleWindow();
+	self->hIn = GetStdHandle(STD_INPUT_HANDLE);
+	self->hOriginalConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	self->hOut = self->hOriginalConsole;
 
-	return this;
+	return self;
 }
 Destructor(selfptr)
 {

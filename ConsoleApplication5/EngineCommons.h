@@ -69,6 +69,7 @@ const void* c_class = &ctab;
 
 #define operator(x) virtual(x)
 #define GENERATED_DESC const void* _class;
+#define VTHREAD __stdcall
 #endif
 
 #undef c_class

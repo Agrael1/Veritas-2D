@@ -9,8 +9,9 @@ typedef struct
 void InitializeCodex();
 void DestroyCodex();
 
+// Automatically templated on c_class
 #define __Resolve(infoset,...)													\
-char* key = virtual(GenerateUID)(infoset);										\
+const char* key = virtual(GenerateUID)(infoset);								\
 Node* result = codex.binds.method->find(&codex.binds, key);						\
 shared_ptr* insert;																\
 if (!result)																	\
