@@ -43,8 +43,8 @@ Constructor(selfptr, va_list *ap)
 		((virtual(Vertex)*)base.trilist.vertices)[i + 5].tc = (SVMVECTOR) { 1.0f, 1.0f, 0.0f, 0.0f };
 	}
 
-	base.method->AddBind(self, Resolve_VertexShader((char*)stringOf(GouraudVST), GouraudVST));
-	base.method->AddBind(self, Resolve_PixelShader((char*)stringOf(GouraudPST), GouraudPST));
+	base.method->AddBind(self, Resolve_VertexShader((char*)typeOf_t(GouraudVST), GouraudVST));
+	base.method->AddBind(self, Resolve_PixelShader((char*)typeOf_t(GouraudPST), GouraudPST));
 	base.method->AddBind(self, Resolve_TextureBuffer("Models\\Nano\\Test.cm", 0u));
 	base.method->AddBind(self, make_shared(TransformBuffer, self, 0));
 	return self;

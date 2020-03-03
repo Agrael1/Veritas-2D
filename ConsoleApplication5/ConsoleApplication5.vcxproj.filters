@@ -261,6 +261,9 @@
     <ClCompile Include="Model.c">
       <Filter>Файлы исходного кода\Engine\Framework\Drawable</Filter>
     </ClCompile>
+    <ClCompile Include="VString.c">
+      <Filter>Файлы исходного кода\Engine\Framework\Containers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BitField.h">
@@ -445,6 +448,9 @@
     </ClInclude>
     <ClInclude Include="Colormap.h">
       <Filter>Заголовочные файлы\Engine\Framework\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="VString.h">
+      <Filter>Заголовочные файлы\Engine\Framework\Containers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

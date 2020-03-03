@@ -209,6 +209,7 @@
     <ClCompile Include="VeritasEngine.c" />
     <ClCompile Include="VertexShader.c" />
     <ClCompile Include="VLine.c" />
+    <ClCompile Include="VString.c" />
     <ClCompile Include="Window.c" />
   </ItemGroup>
   <ItemGroup>
@@ -271,6 +272,7 @@
     <ClInclude Include="StringStream.h" />
     <ClInclude Include="Test.h" />
     <ClInclude Include="VeritasEngine.h" />
+    <ClInclude Include="VString.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="WinSetup.h" />
   </ItemGroup>

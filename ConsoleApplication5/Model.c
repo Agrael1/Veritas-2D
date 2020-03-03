@@ -139,7 +139,7 @@ struct Mesh* ParseMesh(const struct aiMesh* mesh, const struct aiMaterial* const
 	const struct aiMaterial* curMaterial = pMaterials[mesh->mMaterialIndex];
 	if (aiGetMaterialTexture(curMaterial, aiTextureType_DIFFUSE, 0, &texFileName, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr) == aiReturn_SUCCESS)
 	{
-		char* path = alloca(128);
+		char path [128];
 		strcpy(path, "Models\\Nano\\");
 		strcat(path, texFileName.data);
 		pBinds[2] = Resolve_TextureBuffer(path, 0u);
@@ -150,8 +150,8 @@ struct Mesh* ParseMesh(const struct aiMesh* mesh, const struct aiMaterial* const
 	}
 
 	
-	pBinds[0] = Resolve_VertexShader((char*)stringOf(GouraudVST), GouraudVST);
-	pBinds[1] = Resolve_PixelShader((char*)stringOf(GouraudPST), GouraudPST);
+	pBinds[0] = Resolve_VertexShader((char*)typeOf_t(GouraudVST), GouraudVST);
+	pBinds[1] = Resolve_PixelShader((char*)typeOf_t(GouraudPST), GouraudPST);
 
 	struct Mesh* pMesh = new(Mesh, pBinds, 3);
 	pMesh->_base.trilist.indices = indices;

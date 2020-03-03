@@ -1,30 +1,44 @@
 #pragma once
 #include <setjmp.h>
+#include <memory.h>
+#include "VString.h"
 #include "EngineCommons.h"
 
 #define c_class Exception
 
 class
 {
-	const void* _class;
-	unsigned int line;
+	GENERATED_DESC
 	const char* file;
 	
 	methods(
-		const char* (*GetType)();
-		char* (*what)(void* self);
-		char* (*GetOriginString)(const void* self);
+		const char* (*GetType)(void);
+		const char* (*what)(void* self);
+		String (*GetOriginString)(const void* self);
 	);
 
-	char* whatBuffer;
+	String whatBuffer;
+	unsigned int line;
 };
 
-// macros for supporting exceptions
-#define setupException jmp_buf env = { 0 }; struct Exception *__e = NULL;
-#define try if (!setjmp(env))  
-#define catch(x,y) else { struct x* y = __e; if(__e) 
-#define endtry } if(__e) {delete(__e); __e = NULL;}
-#define throw(x) {__e = x; longjmp(env,1);}
 
-extern  jmp_buf env;
-extern  struct Exception *__e;
+extern jmp_buf env;
+extern struct Exception *__e;
+
+
+inline void throw(void* exception)
+{
+	__e = exception;
+	longjmp(env,1);
+}
+
+#define try jmp_buf __proxy_buf; memcpy(__proxy_buf, env, sizeof(jmp_buf)); if (!setjmp(env))  
+#define catch(x,y) else {  \
+	memcpy( env, __proxy_buf, sizeof(jmp_buf)); \
+	struct x* y = __e;\
+	if(typeOf(y) == #x) 
+#define catchn(x,y)\
+	struct x* y = __e;\
+	if(typeOf(y) == #x)
+#define endtry } if(__e){delete(__e); __e=NULL;}
+

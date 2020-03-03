@@ -141,7 +141,7 @@ bool virtual(OnUserDestroy)(void* self)
 Constructor(void* self, va_list *ap)
 {
 	struct c_class *this = ((struct Class*)VeritasEngine)->ctor(self, ap);
-	base.AppName = stringOf(CubeDemo);
+	base.AppName = typeOf_t(CubeDemo);
 
 	override(OnUserCreate);
 	override(HandleControls);

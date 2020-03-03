@@ -1,55 +1,47 @@
 #include "Class.h"
-#include "StringStream.h"
 #include "Exception.h"
-#include <malloc.h>
 
-setupException
+jmp_buf env = { 0 }; 
+struct Exception* __e = NULL;
 
-const char* virtual(GetType)() 
+
+String _GetOriginString(const selfptr)
+{
+	return string_fmt("[File]: %s\n[Line]: %u", self->file, self->line);
+}
+const char* virtual(GetType)(void) 
 {
 	return "Veritas Exception\n\r";
 }
-char* _GetOriginString(const selfptr)
+const char* virtual(what)(selfptr)
 {
-	const account(self);
-	struct StringStream *oss = new(StringStream);
-	oss->method->Append(oss, "[File]: ")->method->Append(oss,this->file)
-		->method->Append(oss,"\n\r[Line]: ")->method->AppendI(oss,this->line);
-	return oss->method->EndStr(oss);
-}
-char* virtual(what) (selfptr)
-{
-	account(self);
-	struct StringStream *oss = new(StringStream);
-	char* _proxy = _GetOriginString(this);
-	oss->method->Append(oss,this->method->GetType())->method->Append(oss, _proxy);
+	String origin = _GetOriginString(self);
+	String out = string_fmt("%s\n%s", virtual(GetType), c_str(&origin));
+	string_move(&self->whatBuffer, &out);
 
-	this->whatBuffer = oss->method->EndStr(oss);
-
-	free(_proxy);
-	return this->whatBuffer;
+	string_remove(&origin);
+	return c_str(&self->whatBuffer);
 }
 
-constructMethodTable(
+VirtualTable{
 	.GetType = virtual(GetType),
 	.what = virtual(what),
 	.GetOriginString = _GetOriginString
-);
+};
 
 Constructor(void* self, va_list* ap)
 {
 	account(self);
 	assignMethodTable(this);
-	this->line = va_arg(*ap, Word);
+	this->line = va_arg(*ap, unsigned);
 	this->file = va_arg(*ap, const char*);
-	this->whatBuffer = NULL;
+	this->whatBuffer = (String){ 0 };
 	return this;
 }
 Destructor(void* self)
 {
 	account(self);
-	if (this->whatBuffer)
-		free(this->whatBuffer);
+	string_remove(&this->whatBuffer);
 	return this;
 }
 ENDCLASSDESC

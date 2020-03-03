@@ -46,7 +46,7 @@
 #define base (this->_base)
 
 // Private Handling
-#define privatev(...) Byte virtual(__internal_prtb)[ sizeof( struct _private{ __VA_ARGS__ } )]
+#define privatev(...)  __declspec(align(16)) Byte virtual(__internal_prtb)[ sizeof( struct _private{ __VA_ARGS__ } )]
 #define private (*(struct _private*)(self->virtual(__internal_prtb)))
 // Method Handling
 #define methods(...) struct vftb { __VA_ARGS__ }*method
@@ -70,6 +70,7 @@ const void* c_class = &ctab;
 #define operator(x) virtual(x)
 #define GENERATED_DESC const void* _class;
 #define VTHREAD __stdcall
+#define delete_s(block) if(block) delete(block)
 #endif
 
 #undef c_class

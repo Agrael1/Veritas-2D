@@ -91,32 +91,7 @@ void _OutputToScreen(selfptr)
 		(COORD) {(short)self->Width, (short)self->Height},
 		(COORD) {0, 0},
 		&self->rWindowRect);
-	//WaitForMultipleObjects(2, self->ThreadPool, true, INFINITE);
 }
-
-//DWORD VTHREAD PassToRender1(selfptr)
-//{
-//	WriteConsoleOutputW(
-//		self->hOut, 
-//		*self->ppBuffer, 
-//		(COORD) { (short)self->Width, (short)self->Height/2 }, 
-//		(COORD) { 0, 0 }, 
-//		&self->rWindowRect
-//	);
-//}
-//DWORD VTHREAD PassToRender2(selfptr)
-//{
-//	SMALL_RECT rect = self->rWindowRect;
-//	rect.Top = rect.Bottom / 2;
-//
-//	WriteConsoleOutputW(
-//		self->hOut,
-//		*self->ppBuffer,
-//		(COORD) { (short)self->Width, (short)self->Height/2 }, 
-//		(COORD) { 0, (short)self->Height / 2 }, 
-//		&rect
-//	);
-//}
 
 void _SetPalette(selfptr, COLORREF palette[16])
 {
@@ -159,7 +134,7 @@ ENDCLASSDESC
 #undef c_class
 #define c_class WindowException
 
-const char* virtual(GetType)()
+const char* virtual(GetType)(void)
 {
 	return "Console Window Exception\n\r";
 }
@@ -196,8 +171,8 @@ char* virtual(what)(selfptr)
 	LocalFree(_proxy);
 	free(_origin);
 
-	base.whatBuffer = oss->method->EndStr(oss);
-	return base.whatBuffer;
+	base.whatBuffer = make_string(oss->method->str(oss));
+	return c_str(&base.whatBuffer);
 }
 Constructor(selfptr, va_list* ap)
 {
