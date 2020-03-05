@@ -1,4 +1,4 @@
-#if defined(T)&&defined(N)
+#if defined(T)&&defined(N)&&N<=255
 #include "OptionalT.h"
 #include "Class.h"
 #include "EngineCommons.h"
@@ -14,8 +14,8 @@ struct c_class
 			void (*wipe)(selfptr);
 		);
 	T container[N];
-	size_t contains;
-	size_t current;
+	unsigned char contains;
+	unsigned char current;
 };
 
 inline void virtual(push)(selfptr, T value)

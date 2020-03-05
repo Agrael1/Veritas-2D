@@ -1,6 +1,4 @@
-#include "BitField.h"
 #include "Mouse.h"
-#include "Class.h"
 
 #ifndef HID_USAGE_PAGE_GENERIC
 #define HID_USAGE_PAGE_GENERIC         ((USHORT) 0x01)
@@ -9,30 +7,28 @@
 #define HID_USAGE_GENERIC_MOUSE        ((USHORT) 0x02)
 #endif
 
-#define nKeys 5
-
-int virtual(GetX)(const selfptr)
-{
-	return self->deltaX;
-}
-int virtual(GetY)(const selfptr)
-{
-	return self->deltaY;
-}
 
 bool virtual(ButtonPressed)(selfptr, MButtons BCode)
 {
-	return self->MBStates->method->IsSet(self->MBStates, BCode);
+	switch (BCode)
+	{
+	case LEFT_MB:
+		return self->LeftIsPressed;
+	case RIGHT_MB:
+		return self->RightIsPressed;
+	case MID_MB:
+		return self->MidIsPressed;
+	default:
+		return false;
+	}
 }
-void _ReadMouseMovement(selfptr, int* X, int* Y)
+void _ReadMouseMovement(selfptr, short* X, short* Y)
 {
-	account(self);
 	if (X)
-		*X = this->deltaX;
+		*X = self->deltaX;
 	if (Y)
-		*Y = this->deltaY;
-	
-	this->deltaX = 0; this->deltaY = 0;
+		*Y = self->deltaY;
+	self->deltaX = 0; self->deltaY = 0;
 }
 short _ReadWheelDelta(selfptr)
 {
@@ -40,68 +36,112 @@ short _ReadWheelDelta(selfptr)
 	self->WheelDelta = 0;
 	return _proxy;
 }
-void _TranslateMouseInput(selfptr, RAWMOUSE* mouse)
+void _OnRawMouse(selfptr, RAWMOUSE* mouse)
 {
 	// make Lerp
-	account(self);
 	if (mouse->usFlags == MOUSE_MOVE_RELATIVE)
 	{
-		this->deltaX += mouse->lLastX;
-		this->deltaY += mouse->lLastY;
+		self->deltaX += (short)mouse->lLastX;
+		self->deltaY += (short)mouse->lLastY;
 	}				 
 	if (mouse->usButtonFlags > 0)
 	{
 		if (mouse->usButtonFlags == RI_MOUSE_WHEEL)
 		{
-			this->WheelDelta = (short)mouse->usButtonData;
+			self->WheelDelta +=(short)mouse->usButtonData;
 			return;
 		}
-
-		Word NANDmask = 0, ORMask = 0;
-		MaxInt result = self->MBStates->BitArray[0];
-
-		for (Byte i = 0, j = 0; i < 10, j < 5; j++, i += 2)
-		{
-			NANDmask |= (((1 << (i + 1))&mouse->usButtonFlags)>>(j+1));
-			ORMask |= ((1 << i)&mouse->usButtonFlags)>>j;
-		}
-			result = result
-				& 	(~NANDmask)							// NAND Mask
-				| ORMask;								// OR Mask
-			self->MBStates->BitArray[0] = result;
 	}
 }
-inline void InitializeMouse(selfptr, HWND hWnd)
-{	
+void _OnMouseMove(selfptr, int newx, int newy)
+{
+	self->posX = newx;
+	self->posY = newy;
+}
+void _OnMouseLeave(selfptr)
+{
+	self->isInWindow = false;
+	self->MouseEvents.method->push(&self->MouseEvents, Leave);
+}
+void _OnMouseEnter(selfptr)
+{
+	self->isInWindow = true;
+	self->MouseEvents.method->push(&self->MouseEvents, Leave);
+}
+void _OnButtonPressed(selfptr, MButtons BCode) 
+{
+	switch (BCode)
+	{
+	case LEFT_MB:
+		self->LeftIsPressed = true;
+		self->MouseEvents.method->push(&self->MouseEvents, LPress);
+		return;
+	case RIGHT_MB:
+		self->RightIsPressed = true;
+		self->MouseEvents.method->push(&self->MouseEvents, RPress);
+		return;
+	case MID_MB:
+		self->MidIsPressed = true;
+		self->MouseEvents.method->push(&self->MouseEvents, MPress);
+		return;
+	default:
+		return;
+	}
+}
+void _OnButtonReleased(selfptr, MButtons BCode)
+{
+	switch (BCode)
+	{
+	case LEFT_MB:
+		self->LeftIsPressed = false;
+		self->MouseEvents.method->push(&self->MouseEvents, LRelease);
+		return;
+	case RIGHT_MB:
+		self->RightIsPressed = false;
+		self->MouseEvents.method->push(&self->MouseEvents, RRelease);
+		return;
+	case MID_MB:
+		self->MidIsPressed = false;
+		self->MouseEvents.method->push(&self->MouseEvents, MRelease);
+		return;
+	default:
+		return;
+	}
+}
+
+Optional(T) _ReadMouseEvents(selfptr)
+{
+	return self->MouseEvents.method->pop(&self->MouseEvents);
+}
+void virtual(Flush)(selfptr)
+{
+	self->MouseEvents.method->wipe(&self->MouseEvents);
+}
+
+VirtualTable{
+	.OnMouseMove = _OnMouseMove,
+	.OnMouseLeave = _OnMouseLeave,
+	.OnMouseEnter = _OnMouseEnter,
+	.OnRawMouse = _OnRawMouse,
+	.OnButtonPressed = _OnButtonPressed,
+	.OnButtonReleased = _OnButtonReleased,
+
+	.ReadMouseMovement = _ReadMouseMovement,
+	.ReadWheelDelta = _ReadWheelDelta,
+	.ReadMouseEvents = _ReadMouseEvents,
+	.Flush = virtual(Flush),
+	.ButtonPressed = virtual(ButtonPressed)	
+};
+Constructor(selfptr, va_list* ap)
+{
+	assignMethodTable(self);
 	RAWINPUTDEVICE Rid;
 	Rid.usUsagePage = HID_USAGE_PAGE_GENERIC;
 	Rid.usUsage = HID_USAGE_GENERIC_MOUSE;
 	Rid.dwFlags = RIDEV_INPUTSINK | RIDEV_NOLEGACY;
-	Rid.hwndTarget = hWnd;
-	RegisterRawInputDevices(&Rid, 1, sizeof(RAWINPUTDEVICE));	
-}
-
-
-constructMethodTable(
-	.GetX = virtual(GetX),
-	.GetY = virtual(GetY),
-	.ButtonPressed = virtual(ButtonPressed),
-	.ReadWheelDelta = _ReadWheelDelta,
-	.OnMouseMoved = _TranslateMouseInput,
-	.ReadMouseMovement = _ReadMouseMovement
-);
-
-Constructor(selfptr, va_list* ap)
-{
-	assignMethodTable(self);
-	self->MBStates = new(BitField, nKeys, nKeys);
-	InitializeMouse(self, va_arg(*ap, HWND));
+	Rid.hwndTarget = va_arg(*ap, HWND);
+	RegisterRawInputDevices(&Rid, 1, sizeof(Rid));
 
 	return self;
 }
-Destructor(selfptr)
-{
-	delete(self->MBStates);
-	return self;
-}
-ENDCLASSDESC
+ENDCLASSDESCDD

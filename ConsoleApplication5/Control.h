@@ -1,8 +1,10 @@
 #pragma once
-#include "WinSetup.h"
 #include "Keyboard.h"
 #include "Mouse.h"
 #include "EngineCommons.h"
+
+#define T WPARAM
+#include "OptionalT.h"
 
 #define c_class MessageWindow
 class
@@ -27,18 +29,18 @@ class
 	bool bCursorEnabled;
 };
 
-inline DWord ProcessMessages()
+inline Optional(WPARAM) ProcessMessages()
 {
 	MSG msg;
-	while (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
+	while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 	{
 		if (msg.message == WM_QUIT)
 		{
-			return (DWord)msg.wParam;
+			return (Optional(WPARAM)) { msg.wParam, true };
 		}
 
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
-	return 0;
+	return nullopt(WPARAM)();
 }
