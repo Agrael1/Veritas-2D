@@ -58,10 +58,6 @@ inline Constructor(selfptr, va_list* ap)
 	self->current = 0;
 	return self;
 }
-inline Destructor(void* self)
-{
-	return self;
-}
-ENDCLASSDESC
+ENDCLASSDESCDD
 #undef c_class
 #endif

@@ -132,9 +132,6 @@
     <ClCompile Include="Window.c">
       <Filter>Файлы исходного кода\Engine\Console</Filter>
     </ClCompile>
-    <ClCompile Include="BitField.c">
-      <Filter>Файлы исходного кода\Engine\Framework\Containers</Filter>
-    </ClCompile>
     <ClCompile Include="BitStack.c">
       <Filter>Файлы исходного кода\Engine\Framework\Containers</Filter>
     </ClCompile>
@@ -264,11 +261,11 @@
     <ClCompile Include="VString.c">
       <Filter>Файлы исходного кода\Engine\Framework\Containers</Filter>
     </ClCompile>
+    <ClCompile Include="BitSetBase.c">
+      <Filter>Файлы исходного кода\Engine\Framework\Containers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BitField.h">
-      <Filter>Заголовочные файлы\Engine\Framework\Containers</Filter>
-    </ClInclude>
     <ClInclude Include="BitStack.h">
       <Filter>Заголовочные файлы\Engine\Framework\Containers</Filter>
     </ClInclude>
@@ -459,6 +456,9 @@
       <Filter>Заголовочные файлы\Engine\Framework\Containers</Filter>
     </ClInclude>
     <ClInclude Include="BitsetT.h">
+      <Filter>Заголовочные файлы\Engine\Framework\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="BitSetBase.h">
       <Filter>Заголовочные файлы\Engine\Framework\Containers</Filter>
     </ClInclude>
   </ItemGroup>

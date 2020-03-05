@@ -165,7 +165,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BitField.c" />
+    <ClCompile Include="BitSetBase.c" />
     <ClCompile Include="BitStack.c" />
     <ClCompile Include="Camera.c" />
     <ClCompile Include="Class.c" />
@@ -215,7 +215,7 @@
   <ItemGroup>
     <ClInclude Include="BindableBase.h" />
     <ClInclude Include="BindingIncludes.h" />
-    <ClInclude Include="BitField.h" />
+    <ClInclude Include="BitSetBase.h" />
     <ClInclude Include="BitsetT.h" />
     <ClInclude Include="Box.h" />
     <ClInclude Include="Camera.h" />

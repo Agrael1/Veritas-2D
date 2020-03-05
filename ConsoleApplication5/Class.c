@@ -28,12 +28,7 @@ void* new(const void* _class,...){
 	va_list ap;
 	va_start(ap, _class);
 	const struct Class* rclass = _class;	// we need to convert pointer from void* to class*
-	size_t additional = 0;
-	if (rclass->ator)
-	{
-		additional = rclass->ator(&ap);
-	}
-	void *p = calloc(1, rclass->size + additional);	// allocation of memory for class .using size param
+	void *p = calloc(1, rclass->size);	// allocation of memory for class .using size param
 	
 	assert(p);							// if Null -> throw an error
 	*(const struct Class**)p = rclass;	// passing class descriptor to class (const void* _class)

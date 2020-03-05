@@ -1,11 +1,8 @@
 #include "Keyboard.h"
-#include "Class.h"
-
-#define nKeys 256u
 
 bool virtual(KeyPressed)(const selfptr, Byte keycode)
 {
-	return self->KeyStates->method->IsSet(self->KeyStates, keycode);
+	return self->KeyStates.method->IsSet(&self->KeyStates, keycode);
 }
 Optional(KeyboardEvent) virtual(ReadKey)(selfptr)
 {
@@ -34,12 +31,12 @@ void _Flush(selfptr)
 // Internal
 void _OnKeyPressed(selfptr, Byte keycode)
 {
-	self->KeyStates->method->Set(self->KeyStates, keycode);
+	self->KeyStates.method->Set(&self->KeyStates, keycode);
 	self->KeyBuffer.method->push(&self->KeyBuffer, (KeyboardEvent) { Press, keycode });
 }
 void _OnKeyReleased(selfptr, Byte keycode)
 {
-	self->KeyStates->method->Reset(self->KeyStates, keycode);
+	self->KeyStates.method->Reset(&self->KeyStates, keycode);
 	self->KeyBuffer.method->push(&self->KeyBuffer, (KeyboardEvent) { Release, keycode });
 }
 void _OnChar(selfptr, char character)
@@ -48,7 +45,7 @@ void _OnChar(selfptr, char character)
 }
 void _ClearState(selfptr)
 {
-	self->KeyStates->method->FullReset(self->KeyStates);
+	self->KeyStates.method->FullReset(&self->KeyStates);
 }
 
 VirtualTable{
@@ -67,16 +64,9 @@ VirtualTable{
 Constructor(selfptr, va_list *ap)
 {
 	assignMethodTable(self);
-	self->KeyStates = new(BitField, nKeys, nKeys);
+	construct(&self->KeyStates, Bitset(256));
 	construct(&self->KeyBuffer, FixedQueue(KeyboardEvent, 16));
 	construct(&self->CharBuffer, FixedQueue(char, 16));
 	return self;
 }
-Destructor(selfptr)
-{
-	delete(self->KeyStates);
-	deconstruct(&self->KeyBuffer);
-	deconstruct(&self->CharBuffer);
-	return self;
-}
-ENDCLASSDESC
+ENDCLASSDESCDD

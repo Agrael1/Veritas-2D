@@ -59,13 +59,14 @@
 #define assignMethodTable(x) ((struct c_class *)(x))->method = &meth
 #define override(vmethod) this->method->vmethod = virtual(vmethod)
 
-// Class construction handling
+// Class table construction handling
 #define ENDCLASSDESC const struct Class ctab = { sizeof(struct c_class),\
-.ator = NULL, .ctor = __rconcat(c_class,_ctor),.dtor = __rconcat(c_class,_dtor),.typestring = __rtypestr(c_class)}; \
+.ctor = __rconcat(c_class,_ctor),.dtor = __rconcat(c_class,_dtor),.typestring = __rtypestr(c_class)}; \
 const void* c_class = &ctab;
 
-#define ENDCLASSDESCWA const struct Class ctab = { sizeof(struct c_class),\
-.ator = __rconcat(c_class,_ator), .ctor = __rconcat(c_class,_ctor),.dtor = __rconcat(c_class,_dtor),.typestring = __rtypestr(c_class)}; \
+// Class table without destructor (may be automatically destroyed)
+#define ENDCLASSDESCDD const struct Class ctab = { sizeof(struct c_class),\
+.ctor = __rconcat(c_class,_ctor),.dtor = NULL,.typestring = __rtypestr(c_class)}; \
 const void* c_class = &ctab;
 
 #define selfptr struct c_class* self

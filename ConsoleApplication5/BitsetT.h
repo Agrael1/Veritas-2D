@@ -1,5 +1,6 @@
-#define N 16
 #ifdef N
+#include "BitSetBase.h"
+#include "Class.h"
 #include "EngineCommons.h"
 
 #define Bitset(x) concat3(Bitset, _, x)
@@ -7,16 +8,15 @@
 
 class
 {
-	GENERATED_DESC
-	methods(
-		bool(*Any)(selfptr);
-		bool(*IsSet)(selfptr, DWord pos);
-		bool(*Set)(selfptr, DWord pos);
-		bool(*Reset)(selfptr, DWord pos);
-		bool(*FullReset)(selfptr);
-	);
-
-	size_t Positions;
-	size_t BitArray[N/sizeof(size_t)+(N%sizeof(size_t)>0)];
+	inherits(__BitSetBase);
+	size_t BitArray[N / (sizeof(size_t) * 8) + (N % (sizeof(size_t) * 8))];
 };
+
+Constructor(selfptr, va_list* ap)
+{
+	construct(self, BitSetBase, N);
+	return self;
+}
+ENDCLASSDESCDD
+#undef c_class
 #endif

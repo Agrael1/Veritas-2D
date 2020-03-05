@@ -1,6 +1,4 @@
 #pragma once
-#include "EventQueue.h"
-#include "BitField.h"
 #include "EngineCommons.h"
 
 typedef struct 
@@ -24,6 +22,9 @@ typedef struct
 #include "QueueT.h"
 #undef T
 #undef N
+#define N 256
+#include "BitSetT.h"
+#undef N
 
 #define c_class Keyboard
 
@@ -44,8 +45,7 @@ class
 		void (*OnChar)(selfptr, char character);
 		void (*ClearState)(selfptr);
 	);
-	struct BitField* KeyStates;
-
+	struct Bitset(256) KeyStates;
 	struct FixedQueue(KeyboardEvent, 16) KeyBuffer;
 	struct FixedQueue(char,16) CharBuffer;
 };
