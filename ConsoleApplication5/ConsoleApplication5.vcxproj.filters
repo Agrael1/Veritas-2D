@@ -452,6 +452,15 @@
     <ClInclude Include="VString.h">
       <Filter>Заголовочные файлы\Engine\Framework\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="QueueT.h">
+      <Filter>Заголовочные файлы\Engine\Framework\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="OptionalT.h">
+      <Filter>Заголовочные файлы\Engine\Framework\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="BitsetT.h">
+      <Filter>Заголовочные файлы\Engine\Framework\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <MASM Include="memset32.asm">

@@ -13,6 +13,9 @@
 #include <VEngineTypes.h>
 
 #pragma region Automation
+#define alignas(x) __declspec(align(x))
+#define alignof(x) __alignof(x)
+
 // Easy mangling for method and private tables
 #define __rclass(x) extern const void* x; struct x
 #define class __rclass(c_class)
@@ -22,6 +25,7 @@
 
 #define __xconcat(x,y) x##y
 #define __rconcat(x,y) __xconcat(x,y)
+#define concat3(x,y,z) __rconcat(x,__rconcat(y, z))
 
 #define ctab __rconcat(_, c_class)
 #define virtual(x) __rconcat( x, __rctab(c_class))
@@ -40,13 +44,12 @@
 #define __rtypestr(x) __xtypestr(x)
 #pragma endregion
 
-#define inherits(x) struct x _base
+#define inherits(x) struct x
 
 #define account(x) struct c_class *this = x
-#define base (this->_base)
 
 // Private Handling
-#define privatev(...)  __declspec(align(16)) Byte virtual(__internal_prtb)[ sizeof( struct _private{ __VA_ARGS__ } )]
+#define privatev(...)  alignas(8) Byte virtual(__internal_prtb)[ sizeof( struct _private{ __VA_ARGS__ } )]
 #define private (*(struct _private*)(self->virtual(__internal_prtb)))
 // Method Handling
 #define methods(...) struct vftb { __VA_ARGS__ }*method
@@ -54,7 +57,7 @@
 
 #define VirtualTable struct vftb meth = 
 #define assignMethodTable(x) ((struct c_class *)(x))->method = &meth
-#define override(vmethod) base.method->vmethod = virtual(vmethod)
+#define override(vmethod) this->method->vmethod = virtual(vmethod)
 
 // Class construction handling
 #define ENDCLASSDESC const struct Class ctab = { sizeof(struct c_class),\

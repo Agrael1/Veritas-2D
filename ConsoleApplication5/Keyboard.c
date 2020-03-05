@@ -2,31 +2,28 @@
 #include "Class.h"
 
 #define nKeys 256u
-#define bufferSize 16u
 
 bool virtual(KeyPressed)(const selfptr, Byte keycode)
 {
 	return self->KeyStates->method->IsSet(self->KeyStates, keycode);
 }
-KeyboardEvent* virtual(ReadKey)(selfptr)
+Optional(KeyboardEvent) virtual(ReadKey)(selfptr)
 {
-	if (self->KeyBuffer.Contains == 0)
-		return nullptr;
-	return self->KeyBuffer.method->Read(&self->KeyBuffer);
+	return self->KeyBuffer.method->pop(&self->KeyBuffer);
 }
 void virtual(ClearKey)(selfptr)
 {
-	self->KeyBuffer.method->Wipe(&self->KeyBuffer);
+	self->KeyBuffer.method->wipe(&self->KeyBuffer);
 }
 
 // CharRoutines
-char _ReadChar(selfptr)
+Optional(char) _ReadChar(selfptr)
 {
-	return *(char*)self->CharBuffer.method->Read(&self->CharBuffer);
+	return self->CharBuffer.method->pop(&self->CharBuffer);
 }
 void _ClearChar(selfptr)
 {
-	self->CharBuffer.method->Wipe(&self->CharBuffer);
+	self->CharBuffer.method->wipe(&self->CharBuffer);
 }
 void _Flush(selfptr)
 {
@@ -38,28 +35,23 @@ void _Flush(selfptr)
 void _OnKeyPressed(selfptr, Byte keycode)
 {
 	self->KeyStates->method->Set(self->KeyStates, keycode);
-	KeyboardEvent* _p = self->KeyBuffer.method->GetNext(&self->KeyBuffer);
-	_p->type = Press;
-	_p->code = keycode;
+	self->KeyBuffer.method->push(&self->KeyBuffer, (KeyboardEvent) { Press, keycode });
 }
 void _OnKeyReleased(selfptr, Byte keycode)
 {
 	self->KeyStates->method->Reset(self->KeyStates, keycode);
-	KeyboardEvent* _p = self->KeyBuffer.method->GetNext(&self->KeyBuffer);
-	_p->type = Release;
-	_p->code = keycode;
+	self->KeyBuffer.method->push(&self->KeyBuffer, (KeyboardEvent) { Release, keycode });
 }
 void _OnChar(selfptr, char character)
 {
-	char* _p = self->CharBuffer.method->GetNext(&self->KeyBuffer);
-	*_p = character;
+	self->CharBuffer.method->push(&self->CharBuffer, character);
 }
 void _ClearState(selfptr)
 {
 	self->KeyStates->method->FullReset(self->KeyStates);
 }
 
-constructMethodTable(
+VirtualTable{
 	.KeyPressed = virtual(KeyPressed),
 	.ReadKey = virtual(ReadKey),
 	.ClearKey = virtual(ClearKey),
@@ -71,14 +63,13 @@ constructMethodTable(
 	.OnKeyPressed = _OnKeyPressed,
 	.OnKeyReleased = _OnKeyReleased,
 	.ClearState = _ClearState
-);
-
+};
 Constructor(selfptr, va_list *ap)
 {
 	assignMethodTable(self);
 	self->KeyStates = new(BitField, nKeys, nKeys);
-	construct(&self->KeyBuffer, EventQueue, sizeof(KeyboardEvent), bufferSize, sizeof(enum Type));
-	construct(&self->CharBuffer, EventQueue, sizeof(char), bufferSize, sizeof(char));
+	construct(&self->KeyBuffer, FixedQueue(KeyboardEvent, 16));
+	construct(&self->CharBuffer, FixedQueue(char, 16));
 	return self;
 }
 Destructor(selfptr)

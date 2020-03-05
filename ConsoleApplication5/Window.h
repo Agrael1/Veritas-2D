@@ -8,10 +8,7 @@
 class
 {
 	inherits(Exception);
-
-	privatev(
-		HRESULT hr;
-	);
+	HRESULT hr;
 };
 
 #undef c_class
@@ -32,14 +29,15 @@ class
 	HANDLE hIn;	
 
 	HANDLE hOriginalConsole;
+	HWND consoleWindow;
+	CHAR_INFO** ppBuffer;
+
 	SMALL_RECT rWindowRect;
 
-	HWND consoleWindow;
+	long lOriginalParams;
 
 	Word Width;
 	Word Height;
-
-	CHAR_INFO** ppBuffer;
 };
 
 #define WND_EXCEPT_AUTO() new(WindowException,__LINE__, __FILE__, GetLastError())

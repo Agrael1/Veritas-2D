@@ -12,6 +12,7 @@ typedef struct String
 	);
 }String;
 
+//API
 String make_string(char* data);
 String make_string_l(char* data, size_t length);
 void string_remove(String* self);

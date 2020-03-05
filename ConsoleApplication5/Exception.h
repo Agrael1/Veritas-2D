@@ -22,23 +22,36 @@ class
 };
 
 
-extern jmp_buf env;
-extern struct Exception *__e;
+typedef struct jmp_cache
+{
+	jmp_buf env;
+	void* __e;
+	bool validator;
+}jmp_cache;
+
+extern jmp_cache __cache__ex;
 
 
 inline void throw(void* exception)
 {
-	__e = exception;
-	longjmp(env,1);
+	__cache__ex.__e = exception;
+	longjmp(__cache__ex.env, 1);
 }
 
-#define try jmp_buf __proxy_buf; memcpy(__proxy_buf, env, sizeof(jmp_buf)); if (!setjmp(env))  
-#define catch(x,y) else {  \
-	memcpy( env, __proxy_buf, sizeof(jmp_buf)); \
-	struct x* y = __e;\
-	if(typeOf(y) == #x) 
-#define catchn(x,y)\
-	struct x* y = __e;\
-	if(typeOf(y) == #x)
-#define endtry } if(__e){delete(__e); __e=NULL;}
+#define try jmp_buf __proxy_buf = {0}; memcpy(__proxy_buf, __cache__ex.env, sizeof(jmp_buf)); __cache__ex.validator = false; if (!setjmp(__cache__ex.env))
+
+#define catch(type, name) else {  \
+	if(!__cache__ex.validator) \
+		{memcpy( __cache__ex.env, __proxy_buf, sizeof(jmp_buf)); __cache__ex.validator = true;}\
+	struct type* name = __cache__ex.__e;\
+	if(name) 
+
+//checked catch
+#define catchc(type, name)\
+	if(!__cache__ex.validator) \
+		{memcpy( __cache__ex.env, __proxy_buf, sizeof(jmp_buf)); __cache__ex.validator = true;}\
+	struct type* name = __cache__ex.__e;\
+	if(typeid(name) == type)
+
+#define endtry } if(__cache__ex.__e){delete(__cache__ex.__e); __cache__ex.__e = NULL;}
 

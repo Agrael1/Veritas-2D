@@ -1,5 +1,6 @@
 #pragma once
 #include "EngineCommons.h"
+#error StringStream is deprecated, use string_fmt
 
 #define c_class StringStream
 

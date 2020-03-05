@@ -1,23 +1,16 @@
 #include "Class.h"
-#include "StringStream.h"
 #include "Window.h"
-#include <malloc.h>
 
 // namespace ConsoleWindow
 #define c_class ConsoleWindow
 
-
 bool _Restore(const selfptr)
 {
-	const account(self);
-	if (!SetConsoleActiveScreenBuffer(this->hOriginalConsole))
-		return false;
-	return true;
+	SetWindowLongPtr(self->consoleWindow, GWL_STYLE, self->lOriginalParams);
+	return (bool)SetConsoleActiveScreenBuffer(self->hOriginalConsole);
 }
 bool _SetFont(const selfptr, Byte fontw, Byte fonth)
 {
-	const account(self);
-
 	CONSOLE_FONT_INFOEX cfi;
 	cfi.cbSize = sizeof(cfi);
 	cfi.nFont = 0;
@@ -25,36 +18,27 @@ bool _SetFont(const selfptr, Byte fontw, Byte fonth)
 	cfi.dwFontSize.Y = fonth;
 	cfi.FontFamily = FF_DONTCARE;
 	cfi.FontWeight = FW_NORMAL;
-
 	wcscpy_s(cfi.FaceName, 9, L"Consolas");
 
-	if (!SetCurrentConsoleFontEx(this->hOut, false, &cfi))
-		return 0;
-
-	return 1;
+	return (bool)SetCurrentConsoleFontEx(self->hOut, false, &cfi);
 }
 bool _SetCursor(selfptr, bool value)
 {
 	CONSOLE_CURSOR_INFO info;
 	info.dwSize = 100;
 	info.bVisible = value;
-	if (!SetConsoleCursorInfo(self->hOut, &info))
-		return false;
-	return true;
+	return (bool)SetConsoleCursorInfo(self->hOut, &info);
 }
 COORD _CreateConsole(selfptr, Word width, Word height, Byte fontw, Byte fonth)
 {
-	account(self);
+	self->lOriginalParams = GetWindowLong(self->consoleWindow, GWL_STYLE);
+	SetWindowLongPtr(self->consoleWindow, GWL_STYLE,
+		self->lOriginalParams & ~WS_SIZEBOX & ~WS_SYSMENU & ~WS_MINIMIZEBOX);	
 
-	SetWindowLongPtr(this->consoleWindow, GWL_STYLE,
-		GetWindowLong(this->consoleWindow, GWL_STYLE)
-		& ~WS_SIZEBOX & ~WS_SYSMENU & ~WS_MINIMIZEBOX);
-	
+	self->Height = height;
+	self->Width = width;
 
-	this->Height = height;
-	this->Width = width;
-
-	this->hOut = CreateConsoleScreenBuffer(
+	self->hOut = CreateConsoleScreenBuffer(
 		GENERIC_READ |           // read/write access 
 		GENERIC_WRITE,
 		FILE_SHARE_READ |
@@ -63,23 +47,29 @@ COORD _CreateConsole(selfptr, Word width, Word height, Byte fontw, Byte fonth)
 		CONSOLE_TEXTMODE_BUFFER, // must be TEXTMODE 
 		NULL);
 
-	WND_CALL_INFO(this->hOut != INVALID_HANDLE_VALUE);
-	WND_CALL_INFO(SetConsoleActiveScreenBuffer(this->hOut));
-	WND_CALL_INFO(_SetFont(this, fontw, fonth));
+	WND_CALL_INFO(self->hOut != INVALID_HANDLE_VALUE);
+	WND_CALL_INFO(SetConsoleActiveScreenBuffer(self->hOut));
+	WND_CALL_INFO(_SetFont(self, fontw, fonth));
 
-	COORD coordLargest = GetLargestConsoleWindowSize(this->hOut);
+	COORD coordLargest = GetLargestConsoleWindowSize(self->hOut);
 	if (height > coordLargest.Y)
-		this->Height = coordLargest.Y;
+		self->Height = coordLargest.Y;
 	if (width > coordLargest.X)
-		this->Width =  coordLargest.X;
-	coordLargest = (COORD) { this->Width, this->Height};
+		self->Width =  coordLargest.X;
+	coordLargest = (COORD) { self->Width, self->Height};
 
 	// Set size of buffer
-	WND_CALL_INFO(SetConsoleScreenBufferSize(this->hOut, coordLargest));
+	WND_CALL_INFO(SetConsoleScreenBufferSize(self->hOut, coordLargest));
 
 	// Set Physical Console Window Size
-	this->rWindowRect = (SMALL_RECT){ 0, 0, (short)this->Width - 1, (short)this->Height - 1 };
-	WND_CALL_INFO(SetConsoleWindowInfo(this->hOut, TRUE, &this->rWindowRect));
+	self->rWindowRect = (SMALL_RECT){ 0, 0, (short)self->Width - 1, (short)self->Height - 1 };
+	WND_CALL_INFO(SetConsoleWindowInfo(self->hOut, TRUE, &self->rWindowRect));
+
+	CONSOLE_SCREEN_BUFFER_INFO csbi = { 0 };
+	GetConsoleScreenBufferInfo(self->hOut, &csbi);
+	csbi.dwSize.Y--;
+	SetConsoleScreenBufferSize(self->hOut, csbi.dwSize);// a little fix of scrollbars
+
 	return coordLargest;
 }
 
@@ -97,8 +87,7 @@ void _SetPalette(selfptr, COLORREF palette[16])
 {
 	CONSOLE_SCREEN_BUFFER_INFOEX csbiex = { 0 };
 	csbiex.cbSize = sizeof(CONSOLE_SCREEN_BUFFER_INFOEX);
-	GetConsoleScreenBufferInfoEx(self->hOut, &csbiex);
-	csbiex.dwSize.Y--;					// a little fix of scrollbars
+	GetConsoleScreenBufferInfoEx(self->hOut, &csbiex);				
 	memcpy(csbiex.ColorTable, palette, 16 * sizeof(COLORREF));
 	SetConsoleScreenBufferInfoEx(self->hOut, &csbiex);
 }
@@ -108,19 +97,16 @@ VirtualTable{
 	.SetCursor = _SetCursor,
 	.Restore = _Restore,
 	.OutputToScreen = _OutputToScreen,
-
 	.SetPalette = _SetPalette
 };
 
 Constructor(selfptr, va_list* ap)
 {
 	assignMethodTable(self);
-
 	self->consoleWindow = GetConsoleWindow();
 	self->hIn = GetStdHandle(STD_INPUT_HANDLE);
 	self->hOriginalConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	self->hOut = self->hOriginalConsole;
-
 	return self;
 }
 Destructor(selfptr)
@@ -138,49 +124,46 @@ const char* virtual(GetType)(void)
 {
 	return "Console Window Exception\n\r";
 }
-char* TranslateErrorCode(HRESULT hr)
+String TranslateErrorCode(HRESULT hr)
 {
+	String out;
 	char* pMsgBuf = NULL;
 	DWORD nMsgLen = FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM |
-		FORMAT_MESSAGE_IGNORE_INSERTS, NULL, hr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR)&pMsgBuf,
+		FORMAT_MESSAGE_IGNORE_INSERTS, NULL, hr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), pMsgBuf,
 		0, NULL);
 
 	if (nMsgLen == 0)
 	{
-		return "Unknown error";
+		return make_string("Unknown error");
 	}
-	return pMsgBuf;
+	out = make_string_l(pMsgBuf, nMsgLen);
+	LocalFree(pMsgBuf);
+	return out;
 }
-char* GetErrorString(selfptr)
+String GetErrorString(selfptr)
 {
-	account(self);
-	return TranslateErrorCode(private.hr);
+	return TranslateErrorCode(self->hr);
 }
-char* virtual(what)(selfptr)
+const char* virtual(what)(selfptr)
 {
-	account(self);
-	struct StringStream *oss = new(StringStream);
-	char* _proxy = GetErrorString(this);
-	char* _origin = base.method->GetOriginString(this);
+	String error = GetErrorString(self);
+	String origin = self->method->GetOriginString(self);
 
-	oss->method->Append(oss, base.method->GetType())
-		->method->Append(oss, "[Error Code]: ")->method->AppendI(oss, private.hr)
-		->method->Append(oss, "\n[Description]: ")->method->Append(oss, _proxy)->method->Append(oss,"\n")
-		->method->Append(oss, _origin);
+	String out = string_fmt("%s\n%s[Error Code]: %lu\n[Description]: %s\n%s", virtual(GetType)(), self->hr, c_str(&error), c_str(&origin));
+	string_move(&self->whatBuffer, &out);
+	string_remove(&origin);
+	string_remove(&error);
 
-	LocalFree(_proxy);
-	free(_origin);
-
-	base.whatBuffer = make_string(oss->method->str(oss));
-	return c_str(&base.whatBuffer);
+	return c_str(&self->whatBuffer);
 }
+
 Constructor(selfptr, va_list* ap)
 {
 	struct c_class *this = ((struct Class*)Exception)->ctor(self,ap);
-	private.hr = va_arg(*ap, HRESULT);
+	self->hr = va_arg(*ap, HRESULT);
 
-	base.method->what = virtual(what);
-	base.method->GetType = virtual(GetType);
+	override(what);
+	override(GetType);
 
 	return this;
 }

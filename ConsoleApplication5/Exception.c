@@ -1,8 +1,8 @@
 #include "Class.h"
 #include "Exception.h"
 
-jmp_buf env = { 0 }; 
-struct Exception* __e = NULL;
+//initial value of jmp cache
+jmp_cache __cache__ex = { {0}, NULL, false };
 
 
 String _GetOriginString(const selfptr)

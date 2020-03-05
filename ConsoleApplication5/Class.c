@@ -53,7 +53,7 @@ void delete(void* self)
 }
 
 
-unsigned int sizeOf(const void* _self)
+size_t sizeOf(const void* _self)
 {
 	const struct Class* const * cp = _self;
 	assert(_self&&*cp);
@@ -70,5 +70,12 @@ const char* typeOf(const void* _self)
 	const struct Class* const* cp = _self;
 	assert(_self && *cp &&(*cp)->typestring);
 	return (*cp)->typestring;
+}
+
+uintptr_t typeid(const void* _self)
+{
+	const struct Class* const* cp = _self;
+	assert(_self && *cp);
+	return (uintptr_t)(*cp);
 }
 

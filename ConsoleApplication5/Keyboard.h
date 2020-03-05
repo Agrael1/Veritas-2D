@@ -14,6 +14,17 @@ typedef struct
 	Byte code;
 }KeyboardEvent;
 
+#define T KeyboardEvent
+#define N 16
+#include "QueueT.h"
+#undef T
+#undef N
+#define T char
+#define N 16
+#include "QueueT.h"
+#undef T
+#undef N
+
 #define c_class Keyboard
 
 class
@@ -21,10 +32,10 @@ class
 	GENERATED_DESC
 	methods(
 		bool (*KeyPressed)(const selfptr, Byte keycode);
-		KeyboardEvent* (*ReadKey)(selfptr);
+		Optional(KeyboardEvent) (*ReadKey)(selfptr);
 		void (*ClearKey)(selfptr);
 	// CharRoutines
-		char (*ReadChar)(selfptr);
+		Optional(char)(*ReadChar)(selfptr);
 		void (*ClearChar)(selfptr);
 		void (*Flush)(selfptr);
 	// Internal
@@ -35,6 +46,6 @@ class
 	);
 	struct BitField* KeyStates;
 
-	struct EventQueue KeyBuffer;
-	struct EventQueue CharBuffer;
+	struct FixedQueue(KeyboardEvent, 16) KeyBuffer;
+	struct FixedQueue(char,16) CharBuffer;
 };

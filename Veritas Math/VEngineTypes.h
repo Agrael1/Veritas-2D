@@ -9,10 +9,14 @@ typedef unsigned char Byte;
 typedef unsigned short Word;
 typedef unsigned int DWord;
 
-#if _WIN64
-typedef unsigned long long MaxInt;
+#ifdef _WIN64
+typedef unsigned __int64 size_t;
+typedef __int64          ptrdiff_t;
+typedef __int64          intptr_t;
 #else
-typedef unsingned int MaxInt;
+typedef unsigned int     size_t;
+typedef int              ptrdiff_t;
+typedef int              intptr_t;
 #endif
 
 #define true 1
