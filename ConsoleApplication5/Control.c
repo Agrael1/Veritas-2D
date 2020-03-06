@@ -3,6 +3,8 @@
 #include "Class.h"
 #include <malloc.h>
 
+#define HID_USAGE_PAGE_GENERIC         ((USHORT) 0x01)
+#define HID_USAGE_GENERIC_MOUSE        ((USHORT) 0x02)
 
 void _CatchFocus(selfptr)
 {
@@ -21,44 +23,172 @@ void _CatchFocus(selfptr)
 	}
 	_freea(records);
 }
-void _BlockCursor(selfptr)
+inline void _ConfineCursor(selfptr)
 {
 	RECT rekt;
 	GetWindowRect(self->refCon->consoleWindow, &rekt);
 	rekt.right = rekt.left + 1;
 	ClipCursor(&rekt);
-	while (ShowCursor(false)>=0);
-	self->bCursorEnabled = false;
 }
-void _ReleaseCursor(selfptr)
+inline void _FreeCursor(void)
 {
-	while (ShowCursor(true)<0);
-	ClipCursor(NULL);
+	ClipCursor(nullptr);
+}
+inline void _HideCursor(void)
+{
+	while (ShowCursor(FALSE) >= 0);
+}
+inline void _ShowCursor(void)
+{
+	while (ShowCursor(TRUE) < 0);
+}
+void _EnableCursor(selfptr)
+{
 	self->bCursorEnabled = true;
+	_ShowCursor();
+	_FreeCursor();
+}
+void _DisableCursor(selfptr)
+{
+	self->bCursorEnabled = false;
+	_HideCursor();
+	_ConfineCursor(self);
 }
 
 LRESULT _HandleMsg(selfptr, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {	
-	account(self);
 	switch (msg)
 	{
+	case WM_CLOSE:
+		PostQuitMessage(0);
+		return 0;
 	case WM_KILLFOCUS:
 	{
 		self->bInFocus = false;
-		_ReleaseCursor(self);
+		self->kbd.method->Flush(&self->kbd);
 		break;
 	}
+
+#pragma region Keyboard
 	case WM_KEYDOWN:
 	case WM_SYSKEYDOWN:
-		if (!(lParam & 0x40000000))
+		if (!(lParam & 0x40000000)||self->kbd.bAutorepeat)
 		{
-			this->kbd.method->OnKeyPressed(&this->kbd,(Byte)(wParam));
+			self->kbd.method->OnKeyPressed(&self->kbd,(Byte)(wParam));
 		}
 		break;
 	case WM_KEYUP:
 	case WM_SYSKEYUP:
-		this->kbd.method->OnKeyReleased(&this->kbd, (Byte)(wParam));
+		self->kbd.method->OnKeyReleased(&self->kbd, (Byte)(wParam));
 		break;
+	case WM_CHAR:
+		self->kbd.method->OnChar(&self->kbd, (Byte)(wParam));
+		break;
+#pragma endregion
+
+	case WM_MOUSEMOVE:
+	{
+		const POINTS pt = MAKEPOINTS(lParam);
+		// cursorless exclusive gets first dibs
+		if (!self->bCursorEnabled)
+		{
+			if (!self->mouse.isInWindow)
+			{
+				SetCapture(hWnd);
+				self->mouse.method->OnMouseEnter(&self->mouse);
+				_HideCursor();
+			}
+			break;
+		}
+
+		// in client region -> log move, and log enter + capture mouse (if not previously in window)
+		if (pt.x >= 0 && pt.x < self->refCon->Width && pt.y >= 0 && pt.y < self->refCon->Height)
+		{
+			self->mouse.method->OnMouseMove(&self->mouse, pt.x, pt.y);
+			if (!self->mouse.isInWindow)
+			{
+				SetCapture(hWnd);
+				self->mouse.method->OnMouseEnter(&self->mouse);
+			}
+		}
+		// not in client -> log move / maintain capture if button down
+		else
+		{
+			if (wParam & (MK_LBUTTON | MK_RBUTTON))
+			{
+				self->mouse.method->OnMouseMove(&self->mouse, pt.x, pt.y);
+			}
+			// button up -> release capture / log event for leaving
+			else
+			{
+				ReleaseCapture();
+				self->mouse.method->OnMouseLeave(&self->mouse);
+			}
+		}
+		break;
+	}
+	case WM_LBUTTONDOWN:
+	{
+		SetForegroundWindow(hWnd);
+		if (!cursorEnabled)
+		{
+			ConfineCursor();
+			HideCursor();
+		}
+		// stifle this mouse message if imgui wants to capture
+		if (imio.WantCaptureMouse)
+		{
+			break;
+		}
+		const POINTS pt = MAKEPOINTS(lParam);
+		mouse.OnLeftPressed(pt.x, pt.y);
+		break;
+	}
+	case WM_RBUTTONDOWN:
+	{
+		// stifle this mouse message if imgui wants to capture
+		if (imio.WantCaptureMouse)
+		{
+			break;
+		}
+		const POINTS pt = MAKEPOINTS(lParam);
+		mouse.OnRightPressed(pt.x, pt.y);
+		break;
+	}
+	case WM_LBUTTONUP:
+	{
+		// stifle this mouse message if imgui wants to capture
+		if (imio.WantCaptureMouse)
+		{
+			break;
+		}
+		const POINTS pt = MAKEPOINTS(lParam);
+		mouse.OnLeftReleased(pt.x, pt.y);
+		// release mouse if outside of window
+		if (pt.x < 0 || pt.x >= width || pt.y < 0 || pt.y >= height)
+		{
+			ReleaseCapture();
+			mouse.OnMouseLeave();
+		}
+		break;
+	}
+	case WM_RBUTTONUP:
+	{
+		// stifle this mouse message if imgui wants to capture
+		if (imio.WantCaptureMouse)
+		{
+			break;
+		}
+		const POINTS pt = MAKEPOINTS(lParam);
+		mouse.OnRightReleased(pt.x, pt.y);
+		// release mouse if outside of window
+		if (pt.x < 0 || pt.x >= width || pt.y < 0 || pt.y >= height)
+		{
+			ReleaseCapture();
+			mouse.OnMouseLeave();
+		}
+		break;
+	}
 	case WM_INPUT:
 	{
 		if (self->bCursorEnabled)
@@ -71,29 +201,42 @@ LRESULT _HandleMsg(selfptr, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			sizeof(RAWINPUTHEADER)) != dwSize)
 			OutputDebugString(TEXT("GetRawInputData does not return correct size !\n"));
 
-		if (raw.header.dwType == RIM_TYPEMOUSE)
-		{
-			this->mouse.method->OnMouseMoved(&this->mouse, &raw.data.mouse);
-		}
+		//if (raw.header.dwType == RIM_TYPEMOUSE)
+		//{
+		//	this->mouse.method->OnMouseMoved(&this->mouse, &raw.data.mouse);
+		//}
 
 		break;
 	}
 	case WM_ACTIVATE:
 	{
 		self->bInFocus = (bool)wParam;
+		if (!self->bCursorEnabled)
+		{
+			if (wParam & WA_ACTIVE)
+			{
+				_ConfineCursor(self);
+				_HideCursor();
+			}
+			else
+			{
+				_FreeCursor();
+				_ShowCursor();
+			}
+		}
 		break;
 	}
 	}
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
-LRESULT HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT WINAPI HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	// retrieve ptr to win class
 	struct MessageWindow* const pWnd = (struct MessageWindow*)(GetWindowLongPtr(hWnd, GWLP_USERDATA));
 	// forward msg to class handler
 	return pWnd->method->HandleMsg(pWnd, hWnd, msg, wParam, lParam);
 }
-LRESULT HandleMessageSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT WINAPI HandleMessageSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	if (msg == WM_NCCREATE)
 	{
@@ -109,34 +252,13 @@ LRESULT HandleMessageSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	}
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
-inline void _CreateControl(selfptr)
-{
-	WNDCLASSEX wx = {0};
-	wx.cbSize = sizeof(WNDCLASSEX);
-	wx.lpfnWndProc = HandleMessageSetup;        // function which will handle messages
-	wx.hInstance = self->hInst;
-	wx.lpszClassName = self->wndClassName;
 
-	if (RegisterClassEx(&wx)) 
-	{
-		self->Window = CreateWindow(
-			self->wndClassName,
-			L"dummy_name",
-			WS_CHILD, 0, 0, 0, 0,
-			self->refCon->consoleWindow,
-			NULL, self->hInst, self);
-		
-		SetFocus(self->Window);
-	}
-}
-
-constructMethodTable(
+VirtualTable{
 	.HandleMsg = _HandleMsg,
 	.CatchFocus = _CatchFocus,
-	.BlockCursor = _BlockCursor,
-	.ReleaseCursor = _ReleaseCursor
-);
-
+	.EnableCursor = _EnableCursor,
+	.DisableCursor = _DisableCursor
+};
 Constructor(selfptr, va_list *ap)
 {
 	assignMethodTable(self);
@@ -147,7 +269,30 @@ Constructor(selfptr, va_list *ap)
 	self->bCursorEnabled = true;
 	self->bInFocus = true;
 
-	_CreateControl(self);
+	WNDCLASSEX wx = { 0 };
+	wx.cbSize = sizeof(WNDCLASSEX);
+	wx.lpfnWndProc = HandleMessageSetup;        // function which will handle messages
+	wx.hInstance = self->hInst;
+	wx.lpszClassName = self->wndClassName;
+
+	if (RegisterClassEx(&wx))
+	{
+		WND_CALL_INFO(self->Window = CreateWindow(
+			self->wndClassName,
+			L"dummy_name",
+			WS_CHILD, 0, 0, 0, 0,
+			self->refCon->consoleWindow,
+			NULL, self->hInst, self));
+
+		SetFocus(self->Window);
+	}
+
+	RAWINPUTDEVICE Rid;
+	Rid.usUsagePage = HID_USAGE_PAGE_GENERIC;
+	Rid.usUsage = HID_USAGE_GENERIC_MOUSE;
+	Rid.dwFlags = RIDEV_INPUTSINK | RIDEV_NOLEGACY;
+	Rid.hwndTarget = va_arg(*ap, HWND);
+	WND_CALL_INFO(RegisterRawInputDevices(&Rid, 1, sizeof(Rid)));
 
 	// Create controls and bind mouse to the window
 	construct(&self->kbd, Keyboard);
@@ -156,9 +301,8 @@ Constructor(selfptr, va_list *ap)
 }
 Destructor(selfptr)
 {
+	DestroyWindow(self->Window);
 	UnregisterClass(self->wndClassName, self->hInst);
-	deconstruct(&self->kbd);
-	deconstruct(&self->mouse);
 	return self;
 }
 ENDCLASSDESC

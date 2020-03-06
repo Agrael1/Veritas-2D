@@ -67,6 +67,7 @@ Constructor(selfptr, va_list *ap)
 	construct(&self->KeyStates, Bitset(256));
 	construct(&self->KeyBuffer, FixedQueue(KeyboardEvent, 16));
 	construct(&self->CharBuffer, FixedQueue(char, 16));
+	self->bAutorepeat = false;
 	return self;
 }
 ENDCLASSDESCDD

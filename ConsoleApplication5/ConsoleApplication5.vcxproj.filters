@@ -461,6 +461,9 @@
     <ClInclude Include="BitSetBase.h">
       <Filter>Заголовочные файлы\Engine\Framework\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="Templates.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <MASM Include="memset32.asm">

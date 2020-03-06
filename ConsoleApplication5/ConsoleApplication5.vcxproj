@@ -252,6 +252,7 @@
     <ClInclude Include="PixelShader.h" />
     <ClInclude Include="QueueT.h" />
     <ClInclude Include="SharedPtr.h" />
+    <ClInclude Include="Templates.h" />
     <ClInclude Include="TextureBuffer.h" />
     <ClInclude Include="TransformBuffer.h" />
     <ClInclude Include="Tri.h" />

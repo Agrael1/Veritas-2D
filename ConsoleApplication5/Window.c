@@ -99,7 +99,6 @@ VirtualTable{
 	.OutputToScreen = _OutputToScreen,
 	.SetPalette = _SetPalette
 };
-
 Constructor(selfptr, va_list* ap)
 {
 	assignMethodTable(self);

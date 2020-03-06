@@ -1,5 +1,6 @@
 #pragma once
 #include "EngineCommons.h"
+#include "Templates.h"
 
 typedef struct 
 {
@@ -8,7 +9,8 @@ typedef struct
 		Press,
 		Release,
 		Invalid
-	}type;
+	};
+	Byte type;
 	Byte code;
 }KeyboardEvent;
 
@@ -16,14 +18,6 @@ typedef struct
 #define N 16
 #include "QueueT.h"
 #undef T
-#undef N
-#define T char
-#define N 16
-#include "QueueT.h"
-#undef T
-#undef N
-#define N 256
-#include "BitSetT.h"
 #undef N
 
 #define c_class Keyboard
@@ -48,4 +42,5 @@ class
 	struct Bitset(256) KeyStates;
 	struct FixedQueue(KeyboardEvent, 16) KeyBuffer;
 	struct FixedQueue(char,16) CharBuffer;
+	bool bAutorepeat;
 };

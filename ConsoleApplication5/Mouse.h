@@ -1,5 +1,6 @@
 #pragma once
 #include "WinSetup.h"
+#include "Templates.h"
 #include "EngineCommons.h"
 
 typedef enum 
@@ -24,10 +25,6 @@ typedef enum
 	Leave,
 }MouseEvent;
 
-#define T char
-#define N 16
-#include "QueueT.h"
-
 #define c_class Mouse
 
 class
@@ -43,12 +40,12 @@ class
 
 		void (*ReadMouseMovement)(selfptr, short* X, short* Y);
 		short(*ReadWheelDelta)(selfptr);
-		Optional(T) (*ReadMouseEvents)(selfptr);
+		Optional(char) (*ReadMouseEvents)(selfptr);
 		void (*Flush)(selfptr);
 		bool(*ButtonPressed)(selfptr, MButtons BCode);
 	);
 
-	struct FixedQueue(T, N) MouseEvents;
+	struct FixedQueue(char, 16) MouseEvents;
 
 	short posX, posY;
 	short deltaX, deltaY;

@@ -5,6 +5,7 @@
 
 #define T WPARAM
 #include "OptionalT.h"
+#undef T
 
 #define c_class MessageWindow
 class
@@ -13,8 +14,8 @@ class
 	methods(
 		LRESULT(*HandleMsg)(void* self, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 		void(*CatchFocus)(selfptr);
-		void(*BlockCursor)(selfptr);
-		void(*ReleaseCursor)(selfptr);
+		void (*EnableCursor)(selfptr);
+		void (*DisableCursor)(selfptr);
 	);
 
 	struct ConsoleWindow* refCon;

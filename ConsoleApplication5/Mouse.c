@@ -1,12 +1,5 @@
 #include "Mouse.h"
 
-#ifndef HID_USAGE_PAGE_GENERIC
-#define HID_USAGE_PAGE_GENERIC         ((USHORT) 0x01)
-#endif
-#ifndef HID_USAGE_GENERIC_MOUSE
-#define HID_USAGE_GENERIC_MOUSE        ((USHORT) 0x02)
-#endif
-
 
 bool virtual(ButtonPressed)(selfptr, MButtons BCode)
 {
@@ -109,7 +102,7 @@ void _OnButtonReleased(selfptr, MButtons BCode)
 	}
 }
 
-Optional(T) _ReadMouseEvents(selfptr)
+Optional(char) _ReadMouseEvents(selfptr)
 {
 	return self->MouseEvents.method->pop(&self->MouseEvents);
 }
@@ -135,13 +128,6 @@ VirtualTable{
 Constructor(selfptr, va_list* ap)
 {
 	assignMethodTable(self);
-	RAWINPUTDEVICE Rid;
-	Rid.usUsagePage = HID_USAGE_PAGE_GENERIC;
-	Rid.usUsage = HID_USAGE_GENERIC_MOUSE;
-	Rid.dwFlags = RIDEV_INPUTSINK | RIDEV_NOLEGACY;
-	Rid.hwndTarget = va_arg(*ap, HWND);
-	RegisterRawInputDevices(&Rid, 1, sizeof(Rid));
-
 	return self;
 }
 ENDCLASSDESCDD

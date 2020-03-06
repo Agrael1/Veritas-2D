@@ -14,4 +14,5 @@ inline c_class virtual(_nullopt)()
 {
 	return (c_class) { 0 };
 }
+#undef c_class
 #endif // T
