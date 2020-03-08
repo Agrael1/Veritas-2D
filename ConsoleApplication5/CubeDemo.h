@@ -17,7 +17,7 @@ class
 
 	struct Drawable* mesh;
 	struct VActor* actor;
-	struct Physics* physics;
+	//struct Physics* physics;
 	struct Model* model;
 	
 	float fTheta;

@@ -4,12 +4,12 @@
 
 volatile BOOL bActive = false;
 
-bool virtual(HandleInputEvents)(void* self, const KeyboardEvent* event)
+bool virtual(HandleInputEvents)(void* self, const KeyboardEvent event)
 {
-	if (event->type == Press)
+	if (event.type == Press)
 	{
 		// check if the event was for the escape key
-		if (event->code == VK_ESCAPE)
+		if (event.code == VK_ESCAPE)
 		{
 			return false;
 		}
@@ -18,10 +18,11 @@ bool virtual(HandleInputEvents)(void* self, const KeyboardEvent* event)
 }
 bool _PassEvents(selfptr)
 {
-	KeyboardEvent *event;
-	while ((event = self->Control->kbd.method->ReadKey(&self->Control->kbd))!=nullptr)
+	Optional(KeyboardEvent) event = { 0 };
+
+	while ((event = self->Control.kbd.method->ReadKey(&self->Control.kbd)).bValid)
 	{
-		return self->method->HandleInputEvents(self, event);
+		return self->method->HandleInputEvents(self, event.Value);
 	}
 	return true;
 }
@@ -41,85 +42,84 @@ void _SetupScreen(selfptr, Word width, Word height, Byte fontw, Byte fonth)
 }
 DWORD GameThread(selfptr)
 {
-	account(self);
-	int gResult;
-
-	if (!this->method->OnUserCreate(this))
-		return 2;
+	int gResult = 0;
+	Optional(WPARAM) message = {0};
 
 	// Time counting
-	int rtime = 0;
-	int middle = 0, k = 0;
-
 	LARGE_INTEGER StartingTime, EndingTime;
 	LARGE_INTEGER Frequency;
-
 	QueryPerformanceFrequency(&Frequency);
-	QueryPerformanceCounter(&StartingTime);
+
+	if (!self->method->OnUserCreate(self))
+		return 2;
 
 	// first try
-	if (!this->method->OnUserUpdate(this, this->fElapsedSeconds))
+	QueryPerformanceCounter(&StartingTime);
+	if (!self->method->OnUserUpdate(self, self->fElapsedSeconds))
 	{
 		gResult = 4;
 		bActive = false;
-	};
+	}
+	else
+	{
+		bActive = true;
+	}
 
-	bActive = true;
 	// Game Loop
-
 	while (bActive)
 	{
 		QueryPerformanceCounter(&EndingTime);
 		// Catch a focus if not in it
-		if (!self->Control->bInFocus)
-			self->Control->method->CatchFocus(self->Control);
+		if (!self->Control.bInFocus)
+			self->Control.method->CatchFocus(&self->Control);
 
 		// Read Messages
-		if (gResult = ProcessMessages() != 0)
+		if ((message = ProcessMessages()).bValid)
 		{
-			InterlockedAnd(&bActive, false);
+			bActive = false;
 			break;
 		};
 
 		// Process queue
-		if (!_PassEvents(this))
+		if (!_PassEvents(self))
 		{
 			gResult = 1;
-			InterlockedAnd(&bActive, false);
+			bActive = false;
 			break;
 		};
 
 		// Process mouse
-		if (this->method->HandleMouse)
-			this->method->HandleMouse(this, &this->Control->mouse, this->fElapsedSeconds);
+		if (self->method->HandleMouse)
+			self->method->HandleMouse(self, &self->Control.mouse, self->fElapsedSeconds);
 
 		// Process continuous input
-		if (this->method->HandleControls)
-			this->method->HandleControls(this, &this->Control->kbd, this->fElapsedSeconds);
+		if (self->method->HandleControls)
+			self->method->HandleControls(self, &self->Control.kbd, self->fElapsedSeconds);
 
 		// render frame
-		if (!this->method->OnUserUpdate(this, this->fElapsedSeconds))
+		if (!self->method->OnUserUpdate(self, self->fElapsedSeconds))
 		{
 			gResult = 0;
-			InterlockedAnd(&bActive, false);
+			bActive = false;
 			break;
 		};
 
 		self->fElapsedSeconds = (float)(EndingTime.QuadPart - StartingTime.QuadPart) / (float)Frequency.QuadPart;
 		StartingTime = EndingTime;
 
-		self->Window.method->OutputToScreen(&self->Window);
+		// present frame
+		_Show(self);
 	}
 
-	if (this->method->OnUserDestroy&&!this->method->OnUserDestroy(this))
+	if (self->method->OnUserDestroy&&!self->method->OnUserDestroy(self))
 	{
 		gResult = 3;
 	}
-
 	return gResult;
 }
 void _Start(selfptr)
 {
+	// parse game output (or not)
 	GameThread(self);
 }
 
@@ -140,10 +140,9 @@ Constructor(selfptr, va_list* ap)
 }
 Destructor(selfptr)
 {
-	account(self);
-	delete_s(this->Output);
-	deconstruct(&this->Control);
-	deconstruct(&this->Window);
-	return this;
+	delete_s(self->Output);
+	deconstruct(&self->Control);
+	deconstruct(&self->Window);
+	return self;
 }
 ENDCLASSDESC

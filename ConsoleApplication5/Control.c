@@ -187,7 +187,7 @@ LRESULT _HandleMsg(selfptr, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	}
 	case WM_INPUT:
 	{
-		if (self->bCursorEnabled)
+		if (!self->mouse.rawEnabled)
 			break;
 
 		UINT dwSize = 48;
@@ -201,7 +201,6 @@ LRESULT _HandleMsg(selfptr, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		{
 			self->mouse.method->OnRawMouse(&self->mouse, &raw.data.mouse);
 		}
-
 		break;
 	}
 	case WM_ACTIVATE:

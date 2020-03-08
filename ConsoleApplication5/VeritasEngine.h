@@ -1,6 +1,6 @@
 #pragma once
 #include "Window.h"
-#include "Frame.h"
+#include "SwapChain.h"
 #include "Control.h"
 #include "EngineCommons.h"
 
@@ -18,7 +18,7 @@ class
 		bool(*OnUserUpdate)(void* self, double fElapsedSeconds);
 		bool(*OnUserDestroy)(void* self);
 		void(*HandleMouse)(void* self, struct Mouse* mouse, double fElapsedTime);
-		bool(*HandleInputEvents)(void* self, const KeyboardEvent* event);
+		bool(*HandleInputEvents)(void* self, const KeyboardEvent event);
 		void(*HandleControls)(void* self, const struct Keyboard* kbd, double fElapsedTime);
 
 		// Internals

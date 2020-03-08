@@ -159,9 +159,6 @@
     <ClCompile Include="Camera.c">
       <Filter>Файлы исходного кода\Engine\Graphics\VObjects</Filter>
     </ClCompile>
-    <ClCompile Include="Frame.c">
-      <Filter>Файлы исходного кода\Engine\Graphics</Filter>
-    </ClCompile>
     <ClCompile Include="Pipeline.c">
       <Filter>Файлы исходного кода\Engine\Graphics\Pipeline</Filter>
     </ClCompile>
@@ -216,9 +213,6 @@
     <ClCompile Include="VActor.c">
       <Filter>Файлы исходного кода\Engine\Graphics\VObjects</Filter>
     </ClCompile>
-    <ClCompile Include="CubeDemo.cpp">
-      <Filter>Файлы исходного кода\Demo</Filter>
-    </ClCompile>
     <ClCompile Include="Maze3D.c">
       <Filter>Файлы исходного кода\Demo</Filter>
     </ClCompile>
@@ -263,6 +257,12 @@
     </ClCompile>
     <ClCompile Include="BitSetBase.c">
       <Filter>Файлы исходного кода\Engine\Framework\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="CubeDemo.c">
+      <Filter>Файлы исходного кода\Demo</Filter>
+    </ClCompile>
+    <ClCompile Include="SwapChain.c">
+      <Filter>Файлы исходного кода\Engine\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -328,9 +328,6 @@
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Заголовочные файлы\Engine\Graphics\VObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="Frame.h">
-      <Filter>Заголовочные файлы\Engine\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Color.h">
       <Filter>Заголовочные файлы\Engine\Graphics\Shading</Filter>
@@ -463,6 +460,9 @@
     </ClInclude>
     <ClInclude Include="Templates.h">
       <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="SwapChain.h">
+      <Filter>Заголовочные файлы\Engine\Graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

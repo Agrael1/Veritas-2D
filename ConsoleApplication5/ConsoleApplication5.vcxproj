@@ -171,7 +171,7 @@
     <ClCompile Include="Class.c" />
     <ClCompile Include="Codex.c" />
     <ClCompile Include="Control.c" />
-    <ClCompile Include="CubeDemo.cpp" />
+    <ClCompile Include="CubeDemo.c" />
     <ClCompile Include="CubeSceneTex.c" />
     <ClCompile Include="CubeTexDr.c" />
     <ClCompile Include="DefaultVS.c" />
@@ -181,7 +181,7 @@
     <ClCompile Include="ColorIndexPS.c" />
     <ClCompile Include="ExperimentalPS.c" />
     <ClCompile Include="FlatLightGS.c" />
-    <ClCompile Include="Frame.c" />
+    <ClCompile Include="SwapChain.c" />
     <ClCompile Include="GouraudPS.c" />
     <ClCompile Include="GouraudPST.c" />
     <ClCompile Include="GouraudVS.c" />
@@ -234,7 +234,7 @@
     <ClInclude Include="Exception.h" />
     <ClInclude Include="ExperimentalPS.h" />
     <ClInclude Include="FlatLightGS.h" />
-    <ClInclude Include="Frame.h" />
+    <ClInclude Include="SwapChain.h" />
     <ClInclude Include="BitStack.h" />
     <ClInclude Include="GouraudPS.h" />
     <ClInclude Include="GouraudPST.h" />

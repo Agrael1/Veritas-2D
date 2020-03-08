@@ -5,7 +5,6 @@ typedef _Bool bool;
 #endif // !__cplusplus
 
 typedef unsigned char Byte;
-
 typedef unsigned short Word;
 
 #ifdef _WIN64

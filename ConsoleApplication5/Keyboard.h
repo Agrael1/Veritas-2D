@@ -11,7 +11,6 @@ enum Type
 
 typedef struct 
 {
-
 	Byte type;
 	Byte code;
 }KeyboardEvent;
