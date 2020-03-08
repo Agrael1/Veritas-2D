@@ -20,23 +20,33 @@ struct c_class
 
 inline void virtual(push)(selfptr, T value)
 {
-	if (self->contains < N)
+	if (self->current + 1 < N)
 	{
-		self->contains++;
 		self->container[self->current++] = value;
 	}
 	else
 	{
 		self->container[self->current] = value;
-		self->current = self->current == N ? 0 : self->current + 1;
+		self->current = 0;
 	}
+	if (self->contains != N)
+		self->contains++;
 }
 inline Optional(T) virtual(pop)(selfptr)
 {
+	register unsigned char index = 0;
 	if (self->contains > 0)
 	{
+		if ((short)self->current - self->contains > 0)
+		{
+			index = self->current - self->contains;
+		}
+		else
+		{
+			index = self->current + N - self->contains;
+		}
 		self->contains--;
-		return (Optional(T)){ self->container[--self->current], true };
+		return (Optional(T)){ self->container[index], true };
 	}
 	return nullopt(T)();
 }

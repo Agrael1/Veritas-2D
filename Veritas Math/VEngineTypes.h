@@ -7,7 +7,6 @@ typedef _Bool bool;
 typedef unsigned char Byte;
 
 typedef unsigned short Word;
-typedef unsigned int DWord;
 
 #ifdef _WIN64
 typedef unsigned __int64 size_t;

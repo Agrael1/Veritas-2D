@@ -132,10 +132,9 @@ VirtualTable{
 Constructor(selfptr, va_list* ap)
 {
 	assignMethodTable(self);
-
 	self->AppName = "Veritas Engine Test";
 	construct(&self->Window, ConsoleWindow);
-	self->Control = new(MessageWindow, &self->Window);
+	construct(&self->Control, MessageWindow, &self->Window);
 
 	return self;
 }
@@ -143,7 +142,7 @@ Destructor(selfptr)
 {
 	account(self);
 	delete_s(this->Output);
-	delete_s(this->Control);
+	deconstruct(&this->Control);
 	deconstruct(&this->Window);
 	return this;
 }

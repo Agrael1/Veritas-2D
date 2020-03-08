@@ -2,14 +2,16 @@
 #include "EngineCommons.h"
 #include "Templates.h"
 
+enum Type
+{
+	Press,
+	Release,
+	Invalid
+};
+
 typedef struct 
 {
-	enum Type
-	{
-		Press,
-		Release,
-		Invalid
-	};
+
 	Byte type;
 	Byte code;
 }KeyboardEvent;

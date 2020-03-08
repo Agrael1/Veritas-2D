@@ -1,23 +1,21 @@
-#include "Color.h"
 #include "Frame.h"
 #include "Class.h"
-#include <math.h>
 #include <malloc.h>
 #include "Standard.h"
 #include <float.h>
 
-void _Clip(selfptr, Word *x, Word *y)
+void _Clip(selfptr, int*x, int*y)
 {
 	if (*x > self->nFrameLength) *x = self->nFrameLength;
 	if (*y > self->nFrameHeight) *y = self->nFrameHeight;
 }
-void _PrintFrame(selfptr, Word x, Word y, CHAR_INFO color)
+void _PrintFrame(selfptr, int x, int y, CHAR_INFO color)
 {
 	self->WriteFrame[y*self->nFrameLength + x] = color;
 }
 bool _DepthTest(selfptr, unsigned x, unsigned y, float zValue)
 {
-	float *zv = self->ZBuffer+y*self->nFrameLength + x;
+	float* zv = self->ZBuffer + y * self->nFrameLength + x;
 	if (zValue < *zv)
 	{
 		*zv = zValue;
@@ -26,15 +24,9 @@ bool _DepthTest(selfptr, unsigned x, unsigned y, float zValue)
 	return false;
 }
 
-void _ClearFrame(selfptr, wchar_t c, Word col)
+void _ClearFrame(selfptr, CHAR_INFO color)
 {
-	union
-	{
-		CHAR_INFO r;
-		unsigned int i;
-	}imp = { .r.Attributes = col,.r.Char.UnicodeChar = c };
-
-	memset32(self->WriteFrame, imp.i, self->nFrameHeight*self->nFrameLength);
+	memset32(self->WriteFrame, *(unsigned int*)&color, (size_t)self->nFrameHeight*self->nFrameLength);
 }
 void _ClearDepth(selfptr)
 {
@@ -43,112 +35,88 @@ void _ClearDepth(selfptr)
 		unsigned int i;
 		float f;
 	}imp = {.f = FLT_MAX };
-	memset32(self->ZBuffer, imp.i, self->nFrameHeight*self->nFrameLength);
+	memset32(self->ZBuffer, imp.i, (size_t)self->nFrameHeight*self->nFrameLength);
 }
-void _BeginFrame(selfptr, wchar_t c, Word col)
+void _BeginFrame(selfptr, CHAR_INFO color)
 {
-	_ClearFrame(self, c, col);
+	_ClearFrame(self, color);
 	_ClearDepth(self);
 }
 void _PresentFrame(selfptr)
 {
-	WaitForSingleObject(self->hSemaphore, INFINITE);
 	swapptr(&self->ReadFrame, &self->WriteFrame);
-	ReleaseSemaphore(self->hSemaphore, 1, nullptr);
 }
 
 // Old Functions
-void _FillRegion(selfptr, Word x1, Word y1, Word x2, Word y2, wchar_t c, Word col)
+void _FillRegion(selfptr, int x1, int y1, int x2, int y2, CHAR_INFO color)
 {
 	_Clip(self, &x1, &y1);
 	_Clip(self, &x2, &y2);
 
-	CHAR_INFO r;
-	r.Attributes = col;
-	r.Char.UnicodeChar = c;
+	unsigned value = *(unsigned*)&color;
 
-	DWord value = *(DWord*)&r;
-
-	for (int y = y1; y < y2; y++)
+	for (size_t y = y1; y < y2; y++)
 		memset32(self->WriteFrame + y*self->nFrameLength + x1, value, x2 - x1);
 }
-void _DrawRectangle(selfptr, Word x1, Word y1, Word x2, Word y2, Word color)
+void _DrawRectangle(selfptr, int x1, int y1, int x2, int y2, unsigned short color)
 {
 	if ((x2 <= x1) && (y2 >= y1))
-		_FillRegion(self, x2, y1, x1, y2, L' ', color);
+		_FillRegion(self, x2, y1, x1, y2, (CHAR_INFO) { L' ', color });
 	else if ((x2 >= x1) && (y2 <= y1))
-		_FillRegion(self, x1, y2, x2, y1, L' ', color);
+		_FillRegion(self, x1, y2, x2, y1, (CHAR_INFO) { L' ', color });
 	else if ((x2 <= x1) && (y2 <= y1))
-		_FillRegion(self, x2, y2, x1, y1, L' ', color);
+		_FillRegion(self, x2, y2, x1, y1, (CHAR_INFO) { L' ', color });
 	else
-		_FillRegion(self, x1, y1, x2, y2, L' ', color);
+		_FillRegion(self, x1, y1, x2, y2, (CHAR_INFO) { L' ', color });
 }
-void _DrawLine(selfptr, Word x1, Word y1, Word x2, Word y2, wchar_t character, Word color)
+
+#define FRAC_BITS 8
+void _DrawLine(selfptr, int x1, int y1, int x2, int y2, CHAR_INFO color)
 {
-	account(self);
-	CHAR_INFO r = { character , color };
-	int x, y, dx, dy, dx1, dy1, px, py, xe, ye, i;
-	dx = x2 - x1; dy = y2 - y1;
-	dx1 = abs(dx); dy1 = abs(dy);
-	px = 2 * dy1 - dx1;	py = 2 * dx1 - dy1;
-	if (dy1 <= dx1)
+	_Clip(self, &x1, &y1);
+	_Clip(self, &x2, &y2);
+
+	int dx = x2 - x1;
+	int dy = y2 - y1;
+	bool isSwapped = false;
+
+	if (!dx && !dy)
+		_PrintFrame(self, x1, y1, color);
+
+	if (dy > dx)
 	{
-		if (dx >= 0)
-		{
-			x = x1; y = y1; xe = x2;
-		}
-		else
-		{
-			x = x2; y = y2; xe = x1;
-		}
-
-		_PrintFrame(this, x, y, r);
-
-		for (i = 0; x<xe; i++)
-		{
-			x = x + 1;
-			if (px<0)
-				px = px + 2 * dy1;
-			else
-			{
-				if ((dx<0 && dy<0) || (dx>0 && dy>0)) y = y + 1; else y = y - 1;
-				px = px + 2 * (dy1 - dx1);
-			}
-			_PrintFrame(this, x, y, r);
-		}
+		swapptr((void**)&dx, (void**)&dy);
+		swapptr((void**)&x1, (void**)&y1);
+		swapptr((void**)&x2, (void**)&y2);
+		isSwapped = false;
 	}
+	if (x1 > x2)
+	{
+		swapptr((void**)&x1, (void**)&x2);
+		swapptr((void**)&y1, (void**)&y2);
+	}
+	
+	int y = y1 << FRAC_BITS;
+	int k = (dy << FRAC_BITS) / dx;
+
+	if(!isSwapped)
+		for (int x = x1; x <= x2; x++)
+		{
+			_PrintFrame(self, x, y >> FRAC_BITS, color);
+			y += k;
+		}
 	else
-	{
-		if (dy >= 0)
+		for (int x = x1; x <= x2; x++)
 		{
-			x = x1; y = y1; ye = y2;
+			_PrintFrame(self,  y >> FRAC_BITS, x, color);
+			y += k;
 		}
-		else
-		{
-			x = x2; y = y2; ye = y1;
-		}
-
-		_PrintFrame(this, x, y, r);
-
-		for (i = 0; y<ye; i++)
-		{
-			y = y + 1;
-			if (py <= 0)
-				py = py + 2 * dx1;
-			else
-			{
-				if ((dx<0 && dy<0) || (dx>0 && dy>0)) x = x + 1; else x = x - 1;
-				py = py + 2 * (dx1 - dy1);
-			}
-			_PrintFrame(this, x, y, r);
-		}
-	}
 }
-void _DrawTriangleWireframe(selfptr, Word x1, Word y1, Word x2, Word y2, Word x3, Word y3, wchar_t c, Word col)
+void _DrawTriangleWireframe(selfptr, int x1, int y1, int x2, int y2, int x3, int y3, CHAR_INFO color)
 {
-	_DrawLine(self, x1, y1, x2, y2, c, col);
-	_DrawLine(self, x2, y2, x3, y3, c, col);
-	_DrawLine(self, x3, y3, x1, y1, c, col);
+	_DrawLine(self, x1, y1, x2, y2, color);
+	_DrawLine(self, x2, y2, x3, y3, color);
+	_DrawLine(self, x3, y3, x1, y1, color);
 }
 
 
@@ -166,28 +134,23 @@ VirtualTable{
 Constructor(selfptr, va_list *ap)
 {
 	assignMethodTable(self);
-	Word Width = va_arg(*ap, Word);
-	Word Height = va_arg(*ap, Word);
-	self->nFrameLength = Width;
-	self->nFrameHeight = Height;
+	Word Width = self->nFrameLength = va_arg(*ap, Word);
+	Word Height = self->nFrameHeight = va_arg(*ap, Word);
 
-	self->WriteFrame = _aligned_malloc(Width * Height * sizeof(CHAR_INFO), sizeof(CHAR_INFO));
-	self->ReadFrame = _aligned_malloc(Width * Height * sizeof(CHAR_INFO), sizeof(CHAR_INFO));
-	self->ZBuffer = _aligned_malloc(Width * Height * sizeof(float), sizeof(float));
-
-	ZeroMemory(self->ReadFrame, Width * Height * sizeof(CHAR_INFO));
-	self->hSemaphore = CreateSemaphoreW(NULL, 1, 1, TEXT("Buffer"));
+	self->WriteFrame = _aligned_malloc((size_t)Width * Height * sizeof(CHAR_INFO), alignof(CHAR_INFO));
+	self->ReadFrame = _aligned_malloc((size_t)Width * Height * sizeof(CHAR_INFO), alignof(CHAR_INFO));
+	self->ZBuffer = _aligned_malloc((size_t)Width * Height * sizeof(float), alignof(float));
 
 	if (self->ZBuffer)
 		_ClearDepth(self);
 	if (self->WriteFrame)
-		_ClearFrame(self, L' ', 0);
-
+		_ClearFrame(self, (CHAR_INFO) { L' ', 0 });
+	if (self->ReadFrame)
+		_ClearFrame(self, (CHAR_INFO) { L' ', 0 });
 	return self;
 }
 Destructor(selfptr)
 {
-	CloseHandle(self->hSemaphore);
 	_aligned_free(self->WriteFrame);
 	_aligned_free(self->ReadFrame);
 	_aligned_free(self->ZBuffer);

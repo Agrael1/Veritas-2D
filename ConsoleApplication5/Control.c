@@ -130,62 +130,58 @@ LRESULT _HandleMsg(selfptr, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_LBUTTONDOWN:
 	{
 		SetForegroundWindow(hWnd);
-		if (!cursorEnabled)
+		if (!self->bCursorEnabled)
 		{
-			ConfineCursor();
-			HideCursor();
+			_ConfineCursor(self);
+			_HideCursor();
 		}
-		// stifle this mouse message if imgui wants to capture
-		if (imio.WantCaptureMouse)
-		{
-			break;
-		}
-		const POINTS pt = MAKEPOINTS(lParam);
-		mouse.OnLeftPressed(pt.x, pt.y);
+		
+		self->mouse.method->OnButtonPressed(&self->mouse, LEFT_MB);
 		break;
 	}
 	case WM_RBUTTONDOWN:
 	{
-		// stifle this mouse message if imgui wants to capture
-		if (imio.WantCaptureMouse)
-		{
-			break;
-		}
-		const POINTS pt = MAKEPOINTS(lParam);
-		mouse.OnRightPressed(pt.x, pt.y);
+		self->mouse.method->OnButtonPressed(&self->mouse, RIGHT_MB);
+		break;
+	}
+	case WM_MBUTTONDOWN:
+	{
+		self->mouse.method->OnButtonPressed(&self->mouse, MID_MB);
 		break;
 	}
 	case WM_LBUTTONUP:
 	{
-		// stifle this mouse message if imgui wants to capture
-		if (imio.WantCaptureMouse)
-		{
-			break;
-		}
 		const POINTS pt = MAKEPOINTS(lParam);
-		mouse.OnLeftReleased(pt.x, pt.y);
+		self->mouse.method->OnButtonReleased(&self->mouse, LEFT_MB);
 		// release mouse if outside of window
-		if (pt.x < 0 || pt.x >= width || pt.y < 0 || pt.y >= height)
+		if (!(pt.x >= 0 && pt.x < self->refCon->Width && pt.y >= 0 && pt.y < self->refCon->Height))
 		{
 			ReleaseCapture();
-			mouse.OnMouseLeave();
+			self->mouse.method->OnMouseLeave(&self->mouse);
 		}
 		break;
 	}
 	case WM_RBUTTONUP:
 	{
-		// stifle this mouse message if imgui wants to capture
-		if (imio.WantCaptureMouse)
-		{
-			break;
-		}
 		const POINTS pt = MAKEPOINTS(lParam);
-		mouse.OnRightReleased(pt.x, pt.y);
+		self->mouse.method->OnButtonReleased(&self->mouse, RIGHT_MB);
 		// release mouse if outside of window
-		if (pt.x < 0 || pt.x >= width || pt.y < 0 || pt.y >= height)
+		if (!(pt.x >= 0 && pt.x < self->refCon->Width && pt.y >= 0 && pt.y < self->refCon->Height))
 		{
 			ReleaseCapture();
-			mouse.OnMouseLeave();
+			self->mouse.method->OnMouseLeave(&self->mouse);
+		}
+		break;
+	}
+	case WM_MBUTTONUP:
+	{
+		const POINTS pt = MAKEPOINTS(lParam);
+		self->mouse.method->OnButtonReleased(&self->mouse, MID_MB);
+		// release mouse if outside of window
+		if (!(pt.x >= 0 && pt.x < self->refCon->Width && pt.y >= 0 && pt.y < self->refCon->Height))
+		{
+			ReleaseCapture();
+			self->mouse.method->OnMouseLeave(&self->mouse);
 		}
 		break;
 	}
@@ -201,10 +197,10 @@ LRESULT _HandleMsg(selfptr, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			sizeof(RAWINPUTHEADER)) != dwSize)
 			OutputDebugString(TEXT("GetRawInputData does not return correct size !\n"));
 
-		//if (raw.header.dwType == RIM_TYPEMOUSE)
-		//{
-		//	this->mouse.method->OnMouseMoved(&this->mouse, &raw.data.mouse);
-		//}
+		if (raw.header.dwType == RIM_TYPEMOUSE)
+		{
+			self->mouse.method->OnRawMouse(&self->mouse, &raw.data.mouse);
+		}
 
 		break;
 	}
@@ -291,12 +287,12 @@ Constructor(selfptr, va_list *ap)
 	Rid.usUsagePage = HID_USAGE_PAGE_GENERIC;
 	Rid.usUsage = HID_USAGE_GENERIC_MOUSE;
 	Rid.dwFlags = RIDEV_INPUTSINK | RIDEV_NOLEGACY;
-	Rid.hwndTarget = va_arg(*ap, HWND);
+	Rid.hwndTarget = self->Window;
 	WND_CALL_INFO(RegisterRawInputDevices(&Rid, 1, sizeof(Rid)));
 
 	// Create controls and bind mouse to the window
 	construct(&self->kbd, Keyboard);
-	construct(&self->mouse, Mouse, self->Window);
+	construct(&self->mouse, Mouse);
 	return self;
 }
 Destructor(selfptr)

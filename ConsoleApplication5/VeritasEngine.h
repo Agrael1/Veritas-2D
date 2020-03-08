@@ -1,6 +1,4 @@
 #pragma once
-
-#include "WinSetup.h"
 #include "Window.h"
 #include "Frame.h"
 #include "Control.h"
@@ -12,10 +10,8 @@ class
 {
 	GENERATED_DESC
 	const char* AppName;
-	struct ConsoleWindow Window;
 	struct SwapChain* Output;
-	struct MessageWindow* Control;
-
+	
 	methods(
 		// Pure Virtuals
 		bool(*OnUserCreate)(void* self);
@@ -31,5 +27,7 @@ class
 		void(*Show)(selfptr);
 		);
 
+	struct ConsoleWindow Window;
+	struct MessageWindow Control;
 	float fElapsedSeconds;
 };

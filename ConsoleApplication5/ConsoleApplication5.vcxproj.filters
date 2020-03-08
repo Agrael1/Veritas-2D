@@ -477,5 +477,6 @@
     <None Include="DB16.palette">
       <Filter>Заголовочные файлы\Engine\Graphics\Palettes</Filter>
     </None>
+    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>

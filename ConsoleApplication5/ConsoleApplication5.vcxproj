@@ -284,6 +284,7 @@
     <MASM Include="memset32.asm" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="cpp.hint" />
     <None Include="DB16.palette" />
     <None Include="L16TC.palette" />
   </ItemGroup>

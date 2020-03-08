@@ -1,7 +1,6 @@
 #pragma once
 #include "WinSetup.h"
 #include "EngineCommons.h"
-#include "VMathTypes.h"
 
 #define c_class SwapChain
 
@@ -11,23 +10,21 @@ class
 
 	CHAR_INFO* WriteFrame;
 	CHAR_INFO* ReadFrame;
-	HANDLE hSemaphore;
-
 	float* ZBuffer;
+
 	methods(
 		bool (*DepthTest)(selfptr, unsigned x, unsigned y, float zValue);
-		void (*ClearFrame)(selfptr, wchar_t c, Word col);
-		void (*BeginFrame)(selfptr, wchar_t c, Word col);
+		void (*ClearFrame)(selfptr, CHAR_INFO color);
+		void (*BeginFrame)(selfptr, CHAR_INFO color);
 		void (*PresentFrame)(selfptr);
 
-		void (*DrawTriangleWireframe)(selfptr, Word x1, Word y1, Word x2, Word y2, Word x3, Word y3, wchar_t c, Word col);
-		void (*DrawTriangle)(selfptr, VMVECTOR* v0, VMVECTOR* v1, VMVECTOR* v2, wchar_t c, Word col);
-		void (*DrawLine)(selfptr, Word x1, Word y1, Word x2, Word y2, wchar_t character, Word col);
-		void (*PrintFrame)(selfptr, Word x, Word y, CHAR_INFO color);
-		void (*DrawRectangle)(selfptr, Word x1, Word y1, Word x2, Word y2, Word color);
+		void (*DrawTriangleWireframe)(selfptr, int x1, int y1, int x2, int y2, int x3, int y3, CHAR_INFO color);
+		void (*DrawLine)(selfptr, int x1, int y1, int x2, int y2, CHAR_INFO color);
+		void (*PrintFrame)(selfptr, int x, int y, CHAR_INFO color); //do not use if unchecked (x,y)
+		void (*DrawRectangle)(selfptr, int x1, int y1, int x2, int y2, unsigned short color);
 	);
 
-	Word nFrameLength;
-	Word nFrameHeight;
+	unsigned short nFrameLength;
+	unsigned short nFrameHeight;
 };
 
