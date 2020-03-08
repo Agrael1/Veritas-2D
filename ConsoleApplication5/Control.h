@@ -1,4 +1,5 @@
 #pragma once
+#include "Templates.h"
 #include "Keyboard.h"
 #include "Mouse.h"
 #include "EngineCommons.h"

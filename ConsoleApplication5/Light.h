@@ -11,7 +11,7 @@ class
 	struct LightCBuf
 	{
 		VMVECTOR dir;
-		DWord diffuse;
-		DWord ambientForce;
+		unsigned diffuse;
+		unsigned ambientForce;
 	}Buf;
 };

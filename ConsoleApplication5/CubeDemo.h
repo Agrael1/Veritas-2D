@@ -12,7 +12,6 @@ class
 	inherits(VeritasEngine);
 	
 	struct Camera* pActiveCamera;
-	struct VLine* pPl;
 	struct DirectionalLight* pLight;
 
 	struct Drawable* mesh;

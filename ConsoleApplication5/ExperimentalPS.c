@@ -15,12 +15,7 @@ CHAR_INFO virtual(Apply)(void* self, void* _in)
 
 Constructor(selfptr, va_list *ap)
 {
-	account(self);
-	base.Apply = virtual(Apply);
+	self->Apply = virtual(Apply);
 	return self;
 }
-Destructor(selfptr)
-{
-	return self;
-}
-ENDCLASSDESC
+ENDCLASSDESCDD

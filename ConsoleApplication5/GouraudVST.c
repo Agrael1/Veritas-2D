@@ -9,10 +9,10 @@ virtual(cBuf)GVSCB;
 void virtual(Apply)(void* self, void* _out, IndexedTriangleList* _in)
 {
 	account(self);
-	VMMATRIX ModelViewProj = VMLoadFloat4x4A(base.ConstantBuffer[1]);
-	struct LightCBuf* light = base.ConstantBuffer[0];
+	VMMATRIX ModelViewProj = VMLoadFloat4x4A(this->ConstantBuffer[1]);
+	struct LightCBuf* light = this->ConstantBuffer[0];
 
-	VMVector3TransformStream(_out, base.VSOutSize, _in->vertices, _in->VSize, _in->numVerts, ModelViewProj);
+	VMVector3TransformStream(_out, this->VSOutSize, _in->vertices, _in->VSize, _in->numVerts, ModelViewProj);
 	for (int i = 0; i < _in->numVerts; i++)
 	{
 		VMVECTOR normal = VMVector3TransformNormal(((Vertex_CubeTex*)_in->vertices)[i].n, ModelViewProj);
@@ -25,12 +25,8 @@ void virtual(Apply)(void* self, void* _out, IndexedTriangleList* _in)
 Constructor(selfptr, va_list *ap)
 {
 	account(self);
-	base.VSOutSize = sizeof(Vertex_CubeTex);
-	base.Apply = virtual(Apply);
+	this->VSOutSize = sizeof(Vertex_CubeTex);
+	this->Apply = virtual(Apply);
 	return self;
 }
-Destructor(selfptr)
-{
-	return self;
-}
-ENDCLASSDESC
+ENDCLASSDESCDD

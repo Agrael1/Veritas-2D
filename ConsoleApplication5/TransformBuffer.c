@@ -14,13 +14,8 @@ void virtual(Bind)(void* self, struct VLine* gfx)
 
 Constructor(selfptr, va_list *ap)
 {
-	account(self);
-	base.Bind = virtual(Bind);
-	this->parent = va_arg(*ap, void*);
+	self->Bind = virtual(Bind);
+	self->parent = va_arg(*ap, void*);
 	return self;
 }
-Destructor(selfptr)
-{
-	return self;
-}
-ENDCLASSDESC
+ENDCLASSDESCDD

@@ -38,9 +38,9 @@ constructMethodTable(
 Constructor(selfptr, va_list *ap)
 {
 	assignMethodTable(self);
-	self->ElementSize = va_arg(*ap, DWord);
-	self->Capacity = va_arg(*ap, DWord);
-	self->Container = _aligned_malloc(self->ElementSize*self->Capacity, va_arg(*ap, DWord));
+	self->ElementSize = va_arg(*ap, unsigned);
+	self->Capacity = va_arg(*ap, unsigned);
+	self->Container = _aligned_malloc(self->ElementSize*self->Capacity, va_arg(*ap, unsigned));
 	self->Contains = self->cur = 0;
 	return self;
 }

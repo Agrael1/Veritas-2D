@@ -56,6 +56,8 @@
 #define constructMethodTable(...) struct vftb meth = { __VA_ARGS__ }
 
 #define VirtualTable struct vftb meth = 
+#define TMethodTable __declspec(selectany) struct vftb meth = 
+
 #define assignMethodTable(x) ((struct c_class *)(x))->method = &meth
 #define override(vmethod) this->method->vmethod = virtual(vmethod)
 
@@ -68,6 +70,10 @@ const void* c_class = &ctab;
 #define ENDCLASSDESCDD const struct Class ctab = { sizeof(struct c_class),\
 .ctor = __rconcat(c_class,_ctor),.dtor = NULL,.typestring = __rtypestr(c_class)}; \
 const void* c_class = &ctab;
+
+#define ENDTEMPLATEDESCDD __declspec(selectany) const struct Class ctab = { sizeof(struct c_class),\
+.ctor = __rconcat(c_class,_ctor),.dtor = NULL,.typestring = __rtypestr(c_class)}; \
+__declspec(selectany) const void* c_class = &ctab;
 
 #define selfptr struct c_class* self
 

@@ -29,7 +29,7 @@ class
 	{
 		VMVECTOR Offset;
 		VMVECTOR Scale;
-	}Global;
+	};
 	
 	VMMATRIX projection;
 	VMMATRIX camera;

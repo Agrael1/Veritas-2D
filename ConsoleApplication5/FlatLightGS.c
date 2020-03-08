@@ -24,12 +24,7 @@ void virtual(Apply)(void* self, void* v0, void* v1, void* v2)
 
 Constructor(selfptr, va_list *ap)
 {
-	account(self);
-	base.Apply = virtual(Apply);
+	self->Apply = virtual(Apply);
 	return self;
 }
-Destructor(selfptr)
-{
-	return self;
-}
-ENDCLASSDESC
+ENDCLASSDESCDD

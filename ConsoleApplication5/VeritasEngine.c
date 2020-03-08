@@ -1,4 +1,3 @@
-#include <stdlib.h>
 #include "VeritasEngine.h"
 #include "Class.h"
 
@@ -31,14 +30,23 @@ void _Show(selfptr)
 {
 	self->Window.method->OutputToScreen(&self->Window);
 }
-void _SetupScreen(selfptr, Word width, Word height, Byte fontw, Byte fonth)
+void _CreateDevice(selfptr)
+{
+	self->pDevice = new(VLine, self->pSwap);
+}
+void _CreateSwapChain(selfptr, VConsoleDesc VPDesc)
 {
 	// default setup for fast access
-	COORD frame = self->Window.method->CreateConsole(&self->Window, width, height, fontw, fonth);
+	COORD frame = self->Window.method->CreateConsole(&self->Window, VPDesc.width, VPDesc.height, VPDesc.fontw, VPDesc.fonth);
 
-	self->Output = new(SwapChain, frame.X, frame.Y);
-	self->Window.ppBuffer = &self->Output->ReadFrame;
+	self->pSwap = new(SwapChain, frame.X, frame.Y);
+	self->Window.ppBuffer = &self->pSwap->ReadFrame;
 	_Show(self);
+}
+void _CreateDeviceAndSwapChain(selfptr, VConsoleDesc VPDesc)
+{
+	_CreateSwapChain(self, VPDesc);
+	_CreateDevice(self);
 }
 DWORD GameThread(selfptr)
 {
@@ -124,7 +132,8 @@ void _Start(selfptr)
 }
 
 VirtualTable{
-	.SetupScreen = _SetupScreen,
+	.CreateSwapChain = _CreateSwapChain,
+	.CreateDeviceAndSwapChain = _CreateDeviceAndSwapChain,
 	.Start = _Start,
 	.HandleInputEvents = virtual(HandleInputEvents),
 	.Show = _Show
@@ -133,6 +142,7 @@ Constructor(selfptr, va_list* ap)
 {
 	assignMethodTable(self);
 	self->AppName = "Veritas Engine Test";
+	self->pDevice = NULL;
 	construct(&self->Window, ConsoleWindow);
 	construct(&self->Control, MessageWindow, &self->Window);
 
@@ -140,7 +150,8 @@ Constructor(selfptr, va_list* ap)
 }
 Destructor(selfptr)
 {
-	delete_s(self->Output);
+	delete_s(self->pSwap);
+	delete_s(self->pDevice);
 	deconstruct(&self->Control);
 	deconstruct(&self->Window);
 	return self;

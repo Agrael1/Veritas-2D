@@ -1,4 +1,6 @@
 #pragma once
+
+
 #define T char
 #define N 16
 #include "QueueT.h"

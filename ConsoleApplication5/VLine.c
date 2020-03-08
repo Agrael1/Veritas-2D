@@ -182,9 +182,9 @@ void _ProcessTriangle(selfptr, VMVECTOR* v0, VMVECTOR* v1, VMVECTOR* v2)
 		X.r[1] = VMVectorSplatY( _mm_and_ps(wInv, g_XMMaskY.v));
 		X.r[2] = VMVectorSplatZ( _mm_and_ps(wInv, g_XMMaskZ.v));
 
-	*v0 = VMVectorMultiplyAdd(_mm_mul_ps(*v0, X.r[0]), self->Global.Scale, self->Global.Offset); _mm_store_ss((float*)v0 + 3, X.r[0]);
-	*v1 = VMVectorMultiplyAdd(_mm_mul_ps(*v1, X.r[1]), self->Global.Scale, self->Global.Offset); _mm_store_ss((float*)v1 + 3, X.r[1]);
-	*v2 = VMVectorMultiplyAdd(_mm_mul_ps(*v2, X.r[2]), self->Global.Scale, self->Global.Offset); _mm_store_ss((float*)v2 + 3, X.r[2]);
+	*v0 = VMVectorMultiplyAdd(_mm_mul_ps(*v0, X.r[0]), self->Scale, self->Offset); _mm_store_ss((float*)v0 + 3, X.r[0]);
+	*v1 = VMVectorMultiplyAdd(_mm_mul_ps(*v1, X.r[1]), self->Scale, self->Offset); _mm_store_ss((float*)v1 + 3, X.r[1]);
+	*v2 = VMVectorMultiplyAdd(_mm_mul_ps(*v2, X.r[2]), self->Scale, self->Offset); _mm_store_ss((float*)v2 + 3, X.r[2]);
 
 	for (unsigned i = 1; i < self->VS.VSOutSize / 16; i++)
 	{
@@ -332,17 +332,13 @@ VirtualTable{
 Constructor(selfptr, va_list *ap)
 {
 	assignMethodTable(self);
-	self->gfx = va_arg(*ap, struct Frame*);
+	self->gfx = va_arg(*ap, struct SwapChain*);
 
 	const float HalfViewportWidth = self->gfx->nFrameLength * 0.5f;
 	const float HalfViewportHeight = self->gfx->nFrameHeight * 0.5f;
-	self->Global.Scale = VMVectorSet(HalfViewportWidth, -HalfViewportHeight, 1.0f, 0.0f);
-	self->Global.Offset = VMVectorSet(HalfViewportWidth, HalfViewportHeight, 1.0f, 0.0f);
+	self->Scale = VMVectorSet(HalfViewportWidth, -HalfViewportHeight, 1.0f, 0.0f);
+	self->Offset = VMVectorSet(HalfViewportWidth, HalfViewportHeight, 1.0f, 0.0f);
 
 	return self;
 }
-Destructor(selfptr)
-{
-	return self;
-}
-ENDCLASSDESC
+ENDCLASSDESCDD

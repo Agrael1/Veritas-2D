@@ -24,29 +24,29 @@ VMMATRIX virtual(GetTransformXM)(const void* self)
 Constructor(selfptr, va_list *ap)
 {
 	struct c_class *this = ((struct Class*)Drawable)->ctor(self, ap);
-	base.method->GetTransformXM = virtual(GetTransformXM);
+	self->method->GetTransformXM = virtual(GetTransformXM);
 
 	self->pos = (VMFLOAT3A) { 0.0f, 0.0f, 0.0f };
 	self->orientation = (VMFLOAT3A) { 0.0f, 0.0f, 0.0f };
 
-	base.trilist = Box_Make(sizeof(virtual(Vertex)));
-	MakeIndependent(&base.trilist);
-	CalcNormalsIndependentFlat(&base.trilist, 16);
+	self->trilist = Box_Make(sizeof(virtual(Vertex)));
+	MakeIndependent(&self->trilist);
+	CalcNormalsIndependentFlat(&self->trilist, 16);
 
-	for (size_t i = 0; i < base.trilist.numVerts; i += 6)
+	for (size_t i = 0; i < self->trilist.numVerts; i += 6)
 	{
-		((virtual(Vertex)*)base.trilist.vertices)[i + 0].tc = (SVMVECTOR) { 0.0f, 1.0f, 0.0f, 0.0f };
-		((virtual(Vertex)*)base.trilist.vertices)[i + 1].tc = (SVMVECTOR) { 0.0f, 0.0f, 0.0f, 0.0f };
-		((virtual(Vertex)*)base.trilist.vertices)[i + 2].tc = (SVMVECTOR) { 1.0f, 1.0f, 0.0f, 0.0f };
-		((virtual(Vertex)*)base.trilist.vertices)[i + 3].tc = (SVMVECTOR) { 0.0f, 0.0f, 0.0f, 0.0f };
-		((virtual(Vertex)*)base.trilist.vertices)[i + 4].tc = (SVMVECTOR) { 1.0f, 0.0f, 0.0f, 0.0f };
-		((virtual(Vertex)*)base.trilist.vertices)[i + 5].tc = (SVMVECTOR) { 1.0f, 1.0f, 0.0f, 0.0f };
+		((virtual(Vertex)*)self->trilist.vertices)[i + 0].tc = (SVMVECTOR) { 0.0f, 1.0f, 0.0f, 0.0f };
+		((virtual(Vertex)*)self->trilist.vertices)[i + 1].tc = (SVMVECTOR) { 0.0f, 0.0f, 0.0f, 0.0f };
+		((virtual(Vertex)*)self->trilist.vertices)[i + 2].tc = (SVMVECTOR) { 1.0f, 1.0f, 0.0f, 0.0f };
+		((virtual(Vertex)*)self->trilist.vertices)[i + 3].tc = (SVMVECTOR) { 0.0f, 0.0f, 0.0f, 0.0f };
+		((virtual(Vertex)*)self->trilist.vertices)[i + 4].tc = (SVMVECTOR) { 1.0f, 0.0f, 0.0f, 0.0f };
+		((virtual(Vertex)*)self->trilist.vertices)[i + 5].tc = (SVMVECTOR) { 1.0f, 1.0f, 0.0f, 0.0f };
 	}
 
-	base.method->AddBind(self, Resolve_VertexShader((char*)typeOf_t(GouraudVST), GouraudVST));
-	base.method->AddBind(self, Resolve_PixelShader((char*)typeOf_t(GouraudPST), GouraudPST));
-	base.method->AddBind(self, Resolve_TextureBuffer("Models\\Nano\\Test.cm", 0u));
-	base.method->AddBind(self, make_shared(TransformBuffer, self, 0));
+	self->method->AddBind(self, Resolve_VertexShader((char*)typeOf_t(GouraudVST), GouraudVST));
+	self->method->AddBind(self, Resolve_PixelShader((char*)typeOf_t(GouraudPST), GouraudPST));
+	self->method->AddBind(self, Resolve_TextureBuffer("Models\\Nano\\Test.cm", 0u));
+	self->method->AddBind(self, make_shared(TransformBuffer, self, 0));
 	return self;
 }
 Destructor(selfptr)

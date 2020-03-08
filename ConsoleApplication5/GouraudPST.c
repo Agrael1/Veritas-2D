@@ -10,7 +10,7 @@ extern cBuf_GouraudVST GVSCB;
 CHAR_INFO virtual(Apply)(void* self, void* _in)
 {
 	account(self);
-	ColorMap* Diffuse = &base.TextureBuffer[0];
+	ColorMap* Diffuse = &this->TextureBuffer[0];
 	VMFLOAT2A* Coord = (VMVECTOR*)_in + 2;
 	//SVMVECTOR Sample = { .v = VMVectorMultiply(((VMVECTOR*)_in)[2], VMLoadFloat2(&Diffuse->Width)) };
 	//UINT y = (UINT)Sample.c.y * Diffuse->Stride + (UINT)Sample.c.x;
@@ -20,12 +20,7 @@ CHAR_INFO virtual(Apply)(void* self, void* _in)
 
 Constructor(selfptr, va_list *ap)
 {
-	account(self);
-	base.Apply = virtual(Apply);
+	self->Apply = virtual(Apply);
 	return self;
 }
-Destructor(selfptr)
-{
-	return self;
-}
-ENDCLASSDESC
+ENDCLASSDESCDD

@@ -1,5 +1,6 @@
 #include "Keyboard.h"
 
+
 bool virtual(KeyPressed)(const selfptr, Byte keycode)
 {
 	return self->KeyStates.method->IsSet(&self->KeyStates, keycode);
@@ -59,6 +60,7 @@ VirtualTable{
 
 	.OnKeyPressed = _OnKeyPressed,
 	.OnKeyReleased = _OnKeyReleased,
+	.OnChar = _OnChar,
 	.ClearState = _ClearState
 };
 Constructor(selfptr, va_list *ap)

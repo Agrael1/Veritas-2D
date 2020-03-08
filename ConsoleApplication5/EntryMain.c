@@ -8,12 +8,11 @@
 int main(void)
 {
 	struct CubeDemo Demo;
-	construct(&Demo, CubeDemo);
-
+	struct Maze3D Maze;
 	try
 	{
-		Demo.method->SetupScreen(&Demo, 640, 360, 2, 2);
-		Demo.method->Start(&Demo);
+		construct(&Maze, Maze3D);
+		Maze.method->Start(&Maze);
 	}
 	catch (Exception, e)
 	{
@@ -23,6 +22,6 @@ int main(void)
 	}
 	endtry;
 
-	deconstruct(&Demo);
+	deconstruct(&Maze);
 	return 0;
 }

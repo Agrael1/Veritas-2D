@@ -15,6 +15,6 @@ class
 
 	bool bShowMap;
 
-	struct Frame* MapLayer;
+	struct SwapChain* MapLayer;
 	struct Maze* maze;
 };

@@ -139,7 +139,7 @@ Constructor(selfptr, va_list *ap)
 	for (int i = 0; i < private.ByteX*this->DimY; i++)
 		*(private.matrix + i) = 0;
 
-	srand((DWord)time(NULL));
+	srand((unsigned)time(NULL));
 	_GetStart(this);
 	return this;
 }

@@ -7,7 +7,7 @@
 
 typedef struct
 {
-	DWord diffuse;
+	unsigned diffuse;
 }virtual(cBuf);
 
 class

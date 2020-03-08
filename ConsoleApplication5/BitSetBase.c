@@ -57,7 +57,7 @@ VirtualTable{
 Constructor(selfptr, va_list* ap)
 {
 	assignMethodTable(self);
-	self->Positions = va_arg(*ap, DWord);
+	self->Positions = va_arg(*ap, unsigned);
 	return self;
 }
 ENDCLASSDESCDD

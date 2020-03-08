@@ -9,7 +9,7 @@ void virtual(Bind)(void* self, struct VLine* gfx)
 Constructor(selfptr, va_list *ap)
 {
 	account(self);
-	base.Bind = virtual(Bind);
+	self->Bind = virtual(Bind);
 	self->pPixelShader = new(va_arg(*ap, void*));
 	return self;
 }

@@ -84,9 +84,7 @@ void virtual(HandleMouse)(selfptr, struct Mouse* mouse, double fElapsedTime)
 bool virtual(OnUserCreate)(selfptr)
 {
 	InitializeCodex();
-	self->pPl = new(VLine, self->Output);
 	self->pLight = new(DirectionalLight);
-
 	self->Window.method->SetPalette(&self->Window, pPalette);
 
 	self->bStop = false;
@@ -97,9 +95,9 @@ bool virtual(OnUserCreate)(selfptr)
 	self->pActiveCamera = self->actor->ACamera;
 	self->model = new(Model, "Models\\Nano\\nanosuit.obj");
 
-	self->pPl->projection = VMMatrixPerspectiveLH(1.0f, (float)self->Output->nFrameHeight / (float)self->Output->nFrameLength, 0.5f, 40.0f);
-	self->pLight->Bind(self->pLight, self->pPl);
-	self->pPl->Debug = &self->Window;
+	self->pDevice->projection = VMMatrixPerspectiveLH(1.0f, (float)self->pSwap->nFrameHeight / (float)self->pSwap->nFrameLength, 0.5f, 40.0f);
+	self->pLight->Bind(self->pLight, self->pDevice);
+	self->pDevice->Debug = &self->Window;
 	return true;
 }
 bool virtual(OnUserUpdate)(selfptr, double fElapsedSeconds)
@@ -110,21 +108,20 @@ bool virtual(OnUserUpdate)(selfptr, double fElapsedSeconds)
 	//self->physics->method->Tick(self->physics);
 
 
-	self->pPl->camera = self->pActiveCamera->method->GetViewMatrix(self->pActiveCamera);
-	self->Output->method->BeginFrame(self->Output, (CHAR_INFO){ ' ', BG_Sky });
+	self->pDevice->camera = self->pActiveCamera->method->GetViewMatrix(self->pActiveCamera);
+	self->pSwap->method->BeginFrame(self->pSwap, (CHAR_INFO){ ' ', BG_Sky });
 
 	//self->mesh->method->Draw(self->mesh, self->pPl);
 	//self->actor->Mesh->_base.method->Draw(self->actor->Mesh, self->pPl);
-  	self->model->method->Draw(self->model, self->pPl);
+  	self->model->method->Draw(self->model, self->pDevice);
 	//self->physics->pMesh->method->Draw(self->physics->pMesh, self->pPl);
-	self->Output->method->PresentFrame(self->Output);
+	self->pSwap->method->PresentFrame(self->pSwap);
 	return true;
 }
 bool virtual(OnUserDestroy)(selfptr)
 {
 	delete_s(self->mesh);
 	delete_s(self->actor);
-	delete_s(self->pPl);
 	delete_s(self->model);
 	delete_s(self->pLight);
 
@@ -136,6 +133,9 @@ Constructor(void* self, va_list *ap)
 {
 	struct c_class *this = ((struct Class*)VeritasEngine)->ctor(self, ap);
 	this->AppName = typeOf_t(CubeDemo);
+
+	VConsoleDesc desc = { 640, 360, 2, 2 };
+	this->method->CreateDeviceAndSwapChain(self, desc);
 
 	override(OnUserCreate);
 	override(HandleControls);

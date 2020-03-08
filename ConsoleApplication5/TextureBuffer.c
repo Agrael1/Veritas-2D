@@ -41,7 +41,7 @@ HRESULT LoadTextureFromFileW(const char* const wFile, ColorMap* map)
 Constructor(selfptr, va_list *ap)
 {
 	account(self);
-	base.Bind = virtual(Bind);
+	self->Bind = virtual(Bind);
 	const char* Filename = va_arg(*ap, char*);
 	if (FAILED(LoadTextureFromFileW(Filename, &this->Texture)))
 	{

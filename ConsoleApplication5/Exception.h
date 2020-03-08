@@ -32,7 +32,7 @@ typedef struct jmp_cache
 extern jmp_cache __cache__ex;
 
 
-__declspec(noreturn) void throw(void* exception)
+inline __declspec(noreturn) void throw(void* exception)
 {
 	__cache__ex.__e = exception;
 	longjmp(__cache__ex.env, 1);

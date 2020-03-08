@@ -12,11 +12,11 @@ class
 	size_t BitArray[N / (sizeof(size_t) * 8) + (N % (sizeof(size_t) * 8))];
 };
 
-Constructor(selfptr, va_list* ap)
+inline Constructor(selfptr, va_list* ap)
 {
 	construct(self, BitSetBase, N);
 	return self;
 }
-ENDCLASSDESCDD
+ENDTEMPLATEDESCDD
 #undef c_class
 #endif

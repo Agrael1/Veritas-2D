@@ -13,8 +13,8 @@ class
 		void (*Wipe)(selfptr);
 	);
 
-	DWord ElementSize;
-	DWord Contains;
-	DWord Capacity;
-	DWord cur;
+	unsigned ElementSize;
+	unsigned Contains;
+	unsigned Capacity;
+	unsigned cur;
 };

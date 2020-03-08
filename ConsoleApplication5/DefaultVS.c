@@ -8,21 +8,17 @@
 void virtual(Apply)(void* self, void* _out, IndexedTriangleList* _in)
 {
 	account(self);
-	VMVector3TransformStream(_out, base.VSOutSize, _in->vertices, _in->VSize, _in->numVerts, this->ModelViewProj);
-	VMVector3TransformNormalStream((VMFLOAT3*)((Byte*)_out + sizeof(VMVECTOR)), base.VSOutSize,
+	VMVector3TransformStream(_out, this->VSOutSize, _in->vertices, _in->VSize, _in->numVerts, this->ModelViewProj);
+	VMVector3TransformNormalStream((VMFLOAT3*)((Byte*)_out + sizeof(VMVECTOR)), this->VSOutSize,
 		(VMFLOAT3*)((Byte*)_in->vertices + sizeof(VMVECTOR)), _in->VSize, _in->numVerts, this->ModelViewProj);
 }
 
 Constructor(selfptr, va_list *ap)
 {
 	account(self);
-	base.Apply = virtual(Apply);
-	base.VSOutSize = sizeof(Vertex_Icosphere);
+	this->Apply = virtual(Apply);
+	this->VSOutSize = sizeof(Vertex_Icosphere);
 	self->ModelViewProj = VMMatrixIdentity();
 	return self;
 }
-Destructor(selfptr)
-{
-	return self;
-}
-ENDCLASSDESC
+ENDCLASSDESCDD

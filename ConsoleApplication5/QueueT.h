@@ -56,7 +56,7 @@ inline void virtual(wipe)(selfptr)
 	self->current = 0;
 }
 
-VirtualTable{
+TMethodTable{
 	.pop = virtual(pop),
 	.push = virtual(push),
 	.wipe = virtual(wipe)
@@ -68,6 +68,6 @@ inline Constructor(selfptr, va_list* ap)
 	self->current = 0;
 	return self;
 }
-ENDCLASSDESCDD
+ENDTEMPLATEDESCDD
 #undef c_class
 #endif

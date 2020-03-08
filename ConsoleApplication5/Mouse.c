@@ -128,6 +128,15 @@ VirtualTable{
 Constructor(selfptr, va_list* ap)
 {
 	assignMethodTable(self);
+	construct(&self->MouseEvents, FixedQueue(char, 16));
+	self->posX = self->posY = 0;
+	self->deltaX = self->deltaY = 0;
+	self->WheelDelta = 0;
+	self->isInWindow = false;
+	self->LeftIsPressed = false;
+	self->RightIsPressed = false;
+	self->MidIsPressed = false;
+	self->rawEnabled = false;
 	return self;
 }
 ENDCLASSDESCDD

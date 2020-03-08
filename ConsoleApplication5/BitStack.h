@@ -38,6 +38,6 @@ class
 		void(*Reset)(void* self);
 	);
 	privatev(
-		MaxInt data[DST];			// storage for stack values
+		size_t data[DST];			// storage for stack values
 	);
 };

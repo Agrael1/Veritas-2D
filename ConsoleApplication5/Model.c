@@ -20,7 +20,7 @@ void virtual(Draw)(selfptr, struct VLine* gfx, FXMMATRIX accumulatedTransform)
 {
 	const account(self);
 	VMStoreFloat4x4A(&self->transform, accumulatedTransform);
-	base.method->Draw(self, gfx);
+	self->method->Draw(self, gfx);
 }
 VMMATRIX virtual(GetTransformXM)(const void* self)
 {
@@ -40,10 +40,10 @@ Constructor(selfptr, va_list *ap)
 
 	for (size_t i = 0; i < nbinds; i++)
 	{
-		base.method->AddBind(this, bindptrs[i]);
+		self->method->AddBind(this, bindptrs[i]);
 	}
 
-	base.method->AddBind(self, make_shared(TransformBuffer, self, 0));
+	self->method->AddBind(self, make_shared(TransformBuffer, self, 0));
 	return self;
 }
 Destructor(selfptr)
@@ -154,11 +154,11 @@ struct Mesh* ParseMesh(const struct aiMesh* mesh, const struct aiMaterial* const
 	pBinds[1] = Resolve_PixelShader((char*)typeOf_t(GouraudPST), GouraudPST);
 
 	struct Mesh* pMesh = new(Mesh, pBinds, 3);
-	pMesh->_base.trilist.indices = indices;
-	pMesh->_base.trilist.vertices = vertices;
-	pMesh->_base.trilist.numInds = mesh->mNumFaces * 3;
-	pMesh->_base.trilist.numVerts = mesh->mNumVertices;
-	pMesh->_base.trilist.VSize = sizeof(Vertex_Model);
+	pMesh->trilist.indices = indices;
+	pMesh->trilist.vertices = vertices;
+	pMesh->trilist.numInds = mesh->mNumFaces * 3;
+	pMesh->trilist.numVerts = mesh->mNumVertices;
+	pMesh->trilist.VSize = sizeof(Vertex_Model);
 
 	free(pBinds);
 	return pMesh;

@@ -10,13 +10,8 @@ void virtual(Bind)(void* self, struct VLine* gfx)
 }
 Constructor(selfptr, va_list *ap)
 {
-	account(self);
-	base.Bind = virtual(Bind);
+	self->Bind = virtual(Bind);
 	construct(&self->pVertexShader, (va_arg(*ap, void*)));
 	return self;
 }
-Destructor(selfptr)
-{
-	return self;
-}
-ENDCLASSDESC
+ENDCLASSDESCDD

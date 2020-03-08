@@ -1,8 +1,17 @@
 #pragma once
 #include "Window.h"
-#include "SwapChain.h"
+#include "VLine.h"
 #include "Control.h"
 #include "EngineCommons.h"
+
+typedef struct
+{
+	Word width;
+	Word height; 
+	Byte fontw;
+	Byte fonth;
+}VConsoleDesc;
+
 
 #define c_class VeritasEngine
 
@@ -10,7 +19,9 @@ class
 {
 	GENERATED_DESC
 	const char* AppName;
-	struct SwapChain* Output;
+
+	struct SwapChain* pSwap;
+	struct VLine* pDevice;
 	
 	methods(
 		// Pure Virtuals
@@ -22,7 +33,8 @@ class
 		void(*HandleControls)(void* self, const struct Keyboard* kbd, double fElapsedTime);
 
 		// Internals
-		void(*SetupScreen)(selfptr, Word width, Word height, Byte fontw, Byte fonth);
+		void(*CreateSwapChain)(selfptr, VConsoleDesc VPDesc);
+		void(*CreateDeviceAndSwapChain)(selfptr, VConsoleDesc VPDesc);
 		void(*Start)(selfptr);
 		void(*Show)(selfptr);
 		);
