@@ -1,6 +1,7 @@
 #ifdef N
 #include "BitSetBase.h"
 #include "Class.h"
+#include "Standard.h"
 #include "EngineCommons.h"
 
 #define Bitset(x) concat3(Bitset, _, x)
@@ -15,6 +16,7 @@ class
 inline Constructor(selfptr, va_list* ap)
 {
 	construct(self, BitSetBase, N);
+	memset32(self->BitArray, 0, sizeof(self->BitArray));
 	return self;
 }
 ENDTEMPLATEDESCDD

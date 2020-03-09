@@ -145,6 +145,7 @@ Constructor(selfptr, va_list *ap)
 		_ClearDepth(self);
 	if (self->WriteFrame)
 		_ClearFrame(self, (CHAR_INFO) { L' ', 0 });
+	_PresentFrame(self);
 	return self;
 }
 Destructor(selfptr)

@@ -1,5 +1,4 @@
-﻿#include "Maze3D.h"
-#include "CubeDemo.h"
+﻿#include "CubeDemo.h"
 #include "Exception.h"
 
 #pragma warning(disable:4133)
@@ -8,11 +7,10 @@
 int main(void)
 {
 	struct CubeDemo Demo;
-	struct Maze3D Maze;
 	try
 	{
-		construct(&Maze, Maze3D);
-		Maze.method->Start(&Maze);
+		construct(&Demo, CubeDemo);
+		Demo.method->Start(&Demo);
 	}
 	catch (Exception, e)
 	{
@@ -22,6 +20,6 @@ int main(void)
 	}
 	endtry;
 
-	deconstruct(&Maze);
+	deconstruct(&Demo);
 	return 0;
 }
