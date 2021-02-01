@@ -320,7 +320,7 @@
 //
 //Constructor(selfptr, va_list *ap)
 //{
-//	assignMethodTable(self);
+//	InitializeVtable(self);
 //	self->gfx = va_arg(*ap, struct Frame*);
 //	return self;
 //}

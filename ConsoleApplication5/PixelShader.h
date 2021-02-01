@@ -1,20 +1,27 @@
 #pragma once
-#include "BindableBase.h"
-#include "EngineCommons.h"
+#include "Codex.h"
+#include "PSBase.h"
 
 #define c_class PixelShader
 
 class
 {
-	inherits(Bindable);
-	struct PSBase* pPixelShader;
+	implements(PSBase);
 };
+interface
+{
+	implements(Bindable);
+};
+ComposeType;
 
-inline char* virtual(GenerateUID)(char* info)
+inline String virtual(GenerateUID)(char* info)
 {
-	return info;
+	return make_string(info);
 }
-inline shared_ptr virtual(Resolve)(char* info, void* pPS)
+inline shared_ptr(Bindable)* virtual(Resolve)(char* info, void* pPS)
 {
-	__Resolve(info, pPS)
+	__Resolve(info, pPS);
 }
+#ifndef PS_IMPL
+#undef c_class
+#endif // !PS_IMPL

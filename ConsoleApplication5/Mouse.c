@@ -1,3 +1,4 @@
+#define MOUSE_IMPL
 #include "Mouse.h"
 
 
@@ -127,8 +128,8 @@ VirtualTable{
 };
 Constructor(selfptr, va_list* ap)
 {
-	assignMethodTable(self);
-	construct(&self->MouseEvents, FixedQueue(char, 16));
+	InitializeVtableEx(self);
+	construct(&self->MouseEvents, RingT(char, 16));
 	self->posX = self->posY = 0;
 	self->deltaX = self->deltaY = 0;
 	self->WheelDelta = 0;
@@ -137,6 +138,5 @@ Constructor(selfptr, va_list* ap)
 	self->RightIsPressed = false;
 	self->MidIsPressed = false;
 	self->rawEnabled = false;
-	return self;
 }
 ENDCLASSDESCDD

@@ -24,7 +24,7 @@ VirtualTable{
 };
 Constructor(selfptr, va_list *ap)
 {
-	assignMethodTable(self);
+	InitializeVtable(self);
 	construct(&self->Binds, Vector, sizeof(shared_ptr));
 	return self;
 }

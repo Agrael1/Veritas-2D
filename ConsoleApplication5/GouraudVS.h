@@ -12,7 +12,7 @@ typedef struct
 
 class
 {
-	inherits(VSBase);
+	extends(VSBase);
 	struct DirectionalLight* light;
 	VMMATRIX ModelViewProj;
 };

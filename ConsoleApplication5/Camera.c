@@ -67,7 +67,7 @@ constructMethodTable(
 
 Constructor(selfptr, va_list *ap)
 {
-	assignMethodTable(self);
+	InitializeVtable(self);
 	virtual(Reset)(self);
 	self->Anchor = va_arg(*ap, VMFLOAT3A*);
 	return self;

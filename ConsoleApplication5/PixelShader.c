@@ -1,21 +1,22 @@
-#include "PixelShader.h"
+#define PS_IMPL
+#include "VLine.h"
 #include "Class.h"
+#include "PixelShader.h"
 
-void virtual(Bind)(void* self, struct VLine* gfx)
+
+void virtual(Bind)(selfptr, struct VLine* gfx)
 {
-	account(self);
-	gfx->PS = this->pPixelShader;
+	gfx->PSApply = self->Apply;
 }
+VirtualTable{
+	.Bind = virtual(Bind)
+};
 Constructor(selfptr, va_list *ap)
 {
-	account(self);
-	self->Bind = virtual(Bind);
-	self->pPixelShader = new(va_arg(*ap, void*));
-	return self;
+	InitializeVtable(self);
+	self->Apply = va_arg(*ap, void*);
 }
-Destructor(selfptr)
-{
-	delete(self->pPixelShader);
-	return self;
-}
-ENDCLASSDESC
+ENDCLASSDESCDD
+
+extern inline String virtual(GenerateUID)(char* info);
+extern inline shared_ptr(Bindable)* virtual(Resolve)(char* info, void* pPS);

@@ -1,17 +1,22 @@
-#include "VSBase.h"
-#include "VertexShader.h"
+#define VS_IMPL
 #include "Class.h"
+#include "VLine.h"
+#include "VertexShader.h"
 
-void virtual(Bind)(void* self, struct VLine* gfx)
+void virtual(Bind)(selfptr, struct VLine* gfx)
 {
-	account(self);
-	gfx->VS.Apply = this->pVertexShader.Apply;
-	gfx->VS.VSOutSize = this->pVertexShader.VSOutSize;
+	gfx->VSApply = self->Apply;
 }
+
+VirtualTable{
+	.Bind = virtual(Bind)
+};
 Constructor(selfptr, va_list *ap)
 {
-	self->Bind = virtual(Bind);
-	construct(&self->pVertexShader, (va_arg(*ap, void*)));
-	return self;
+	InitializeVtable(self);
+	self->Apply = va_arg(*ap, void*);
 }
 ENDCLASSDESCDD
+
+extern inline String virtual(GenerateUID)(char* info);
+extern inline shared_ptr(Bindable)* virtual(Resolve)(char* info, void* pVS);

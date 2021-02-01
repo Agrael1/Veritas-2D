@@ -1,5 +1,4 @@
 #pragma once
-#include "EngineCommons.h"
 #include "Templates.h"
 
 enum Type
@@ -11,13 +10,13 @@ enum Type
 
 typedef struct 
 {
-	Byte type;
-	Byte code;
+	uint8_t type;
+	uint8_t code;
 }KeyboardEvent;
 
 #define T KeyboardEvent
 #define N 16
-#include "QueueT.h"
+#include "RingT.h"
 #undef T
 #undef N
 
@@ -25,23 +24,28 @@ typedef struct
 
 class
 {
-	GENERATED_DESC
-	methods(
-		bool (*KeyPressed)(const selfptr, Byte keycode);
-		Optional(KeyboardEvent) (*ReadKey)(selfptr);
-		void (*ClearKey)(selfptr);
-	// CharRoutines
-		Optional(char)(*ReadChar)(selfptr);
-		void (*ClearChar)(selfptr);
-		void (*Flush)(selfptr);
-	// Internal
-		void (*OnKeyPressed)(selfptr, Byte keycode);
-		void (*OnKeyReleased)(selfptr, Byte keycode);
-		void (*OnChar)(selfptr, char character);
-		void (*ClearState)(selfptr);
-	);
-	struct Bitset(256) KeyStates;
-	struct FixedQueue(KeyboardEvent, 16) KeyBuffer;
-	struct FixedQueue(char,16) CharBuffer;
+	Bitset(256) KeyStates;
+	Ring(KeyboardEvent, 16) KeyBuffer;
+	Ring(char,16) CharBuffer;
 	bool bAutorepeat;
 };
+interface
+{
+	bool (*KeyPressed)(const selfptr, uint8_t keycode);
+	Optional(KeyboardEvent) (*ReadKey)(selfptr);
+	void (*ClearKey)(selfptr);
+	// CharRoutines
+	Optional(char)(*ReadChar)(selfptr);
+	void (*ClearChar)(selfptr);
+	void (*Flush)(selfptr);
+	// Internal
+	void (*OnKeyPressed)(selfptr, uint8_t keycode);
+	void (*OnKeyReleased)(selfptr, uint8_t keycode);
+	void (*OnChar)(selfptr, char character);
+	void (*ClearState)(selfptr);
+};
+ComposeTypeEx;
+
+#ifndef KEYBOARD_IMPL
+#undef c_class
+#endif

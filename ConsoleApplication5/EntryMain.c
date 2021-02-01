@@ -1,11 +1,11 @@
 ﻿#include "CubeDemo.h"
-#include "Exception.h"
+#include <Exception.h>
 
 #pragma warning(disable:4133)
-
-
 int main(void)
 {
+	FunctionPrologue;
+
 	struct CubeDemo Demo;
 	try
 	{
@@ -16,10 +16,9 @@ int main(void)
 	{
 		MessageBoxA(NULL, e->method->what(e), e->method->GetType(), MB_OK | MB_ICONEXCLAMATION);
 		delete(e);
-		return 1;
+		Return 1;
 	}
 	endtry;
 
-	deconstruct(&Demo);
-	return 0;
+	Return 0;
 }

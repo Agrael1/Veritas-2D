@@ -123,7 +123,7 @@ constructMethodTable(
 Constructor(selfptr, va_list *ap)
 {
 	account(self);
-	assignMethodTable(this);
+	InitializeVtable(this);
 
 	this->DimX = va_arg(*ap, Byte);
 	this->DimY = va_arg(*ap, Byte);

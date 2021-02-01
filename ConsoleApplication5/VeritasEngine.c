@@ -1,3 +1,4 @@
+#define VENGINE_IMPL
 #include "VeritasEngine.h"
 #include "Class.h"
 
@@ -140,13 +141,11 @@ VirtualTable{
 };
 Constructor(selfptr, va_list* ap)
 {
-	assignMethodTable(self);
+	InitializeVtable(self);
 	self->AppName = "Veritas Engine Test";
 	self->pDevice = NULL;
 	construct(&self->Window, ConsoleWindow);
 	construct(&self->Control, MessageWindow, &self->Window);
-
-	return self;
 }
 Destructor(selfptr)
 {
@@ -154,6 +153,5 @@ Destructor(selfptr)
 	delete_s(self->pDevice);
 	deconstruct(&self->Control);
 	deconstruct(&self->Window);
-	return self;
 }
 ENDCLASSDESC

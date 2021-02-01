@@ -1,7 +1,6 @@
 #pragma once
 #include "WinSetup.h"
 #include "Templates.h"
-#include "EngineCommons.h"
 
 typedef enum 
 {
@@ -29,23 +28,7 @@ typedef enum
 
 class
 {
-	GENERATED_DESC
-	methods(
-		void (*OnMouseMove)(selfptr, int newx, int newy);
-		void (*OnMouseLeave)(selfptr);
-		void (*OnMouseEnter)(selfptr);
-		void (*OnRawMouse)(selfptr, RAWMOUSE* mouse);
-		void (*OnButtonPressed)(selfptr, MButtons BCode);
-		void (*OnButtonReleased)(selfptr, MButtons BCode);
-
-		void (*ReadMouseMovement)(selfptr, short* X, short* Y);
-		short(*ReadWheelDelta)(selfptr);
-		Optional(char) (*ReadMouseEvents)(selfptr);
-		void (*Flush)(selfptr);
-		bool(*ButtonPressed)(selfptr, MButtons BCode);
-	);
-
-	struct FixedQueue(char, 16) MouseEvents;
+	Ring(char, 16) MouseEvents;
 
 	short posX, posY;
 	short deltaX, deltaY;
@@ -56,3 +39,23 @@ class
 	bool MidIsPressed;
 	bool rawEnabled;
 };
+interface
+{
+	void (*OnMouseMove)(selfptr, int newx, int newy);
+	void (*OnMouseLeave)(selfptr);
+	void (*OnMouseEnter)(selfptr);
+	void (*OnRawMouse)(selfptr, RAWMOUSE* mouse);
+	void (*OnButtonPressed)(selfptr, MButtons BCode);
+	void (*OnButtonReleased)(selfptr, MButtons BCode);
+
+	void (*ReadMouseMovement)(selfptr, short* X, short* Y);
+	short(*ReadWheelDelta)(selfptr);
+	Optional(char) (*ReadMouseEvents)(selfptr);
+	void (*Flush)(selfptr);
+	bool(*ButtonPressed)(selfptr, MButtons BCode);
+};
+ComposeTypeEx;
+
+#ifndef MOUSE_IMPL
+#undef c_class
+#endif

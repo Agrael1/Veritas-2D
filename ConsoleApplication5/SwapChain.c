@@ -133,7 +133,7 @@ VirtualTable{
 };
 Constructor(selfptr, va_list *ap)
 {
-	assignMethodTable(self);
+	InitializeVtable(self);
 	Word Width = self->nFrameLength = va_arg(*ap, Word);
 	Word Height = self->nFrameHeight = va_arg(*ap, Word);
 

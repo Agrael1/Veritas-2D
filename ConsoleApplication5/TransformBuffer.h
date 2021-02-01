@@ -1,17 +1,18 @@
 #pragma once
+#include "Codex.h"
 #include "Drawable.h"
 #include "VeritasMath.h"
-#include "BindableBase.h"
-#include "EngineCommons.h"
 
 #define c_class TransformBuffer
 
 class
 {
-	inherits(Bindable);
+	implements(Bindable);
 	VMMATRIX ModelViewProjection;
 	struct Drawable* parent;
 };
+
+ComposeType;
 
 inline char* virtual(GenerateUID)(struct Drawable* info)
 {

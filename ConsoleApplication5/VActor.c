@@ -23,7 +23,7 @@ VirtualTable{
 Constructor(selfptr, va_list *ap)
 {
 	account(self);
-	assignMethodTable(self);
+	InitializeVtable(self);
 	self->Mesh = new(CubeDr);
 
 	Reset_VActor(self);

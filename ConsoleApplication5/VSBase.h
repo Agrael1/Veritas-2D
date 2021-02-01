@@ -1,16 +1,16 @@
 #pragma once
 #include "VeritasMath.h"
 #include "IndexedTriangleList.h"
-#include "EngineCommons.h"
+#include "VDefs.h"
 
-#define c_class VSBase
-
-class
+struct VSBase
 {
-	GENERATED_DESC
-	void(*Apply)(selfptr, void* _out, IndexedTriangleList* _in);
-	void* ConstantBuffer[2];
+	void* ConstantBuffers[2];
 	unsigned VSOutSize;
+};
+struct VSBase_vtbl
+{
+	void(*Apply)(void* self, void** _out, void** _in, void* buffers[2]);
 };
 
 inline VMVECTOR* VSOutInterpolate(void* _out, SVMVECTOR* v0, SVMVECTOR* v1, float alpha, size_t VSize)

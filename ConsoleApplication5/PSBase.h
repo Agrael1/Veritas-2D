@@ -1,12 +1,12 @@
 #pragma once
 #include "Colormap.h"
-#include "EngineCommons.h"
+#include "VDefs.h"
 
-#define c_class PSBase
-
-class
+struct PSBase
 {
-	GENERATED_DESC
-	struct _CHAR_INFO(*Apply)(selfptr, void* _unIn);
-	ColorMap TextureBuffer[4];
+	ColorMap TextureBuffer;
+};
+struct PSBase_vtbl
+{
+	struct _CHAR_INFO(*Apply)(void* self, void* _unIn);
 };

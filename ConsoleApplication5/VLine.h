@@ -1,6 +1,7 @@
 #pragma once
 #include "SwapChain.h"
 #include "VSBase.h"
+#include "PSBase.h"
 #include "EngineCommons.h"
 
 #define c_class VLine
@@ -12,17 +13,15 @@ typedef struct
 
 class
 {
-	GENERATED_DESC
-
-	methods(
-		void(*Draw)(selfptr, IndexedTriangleList* trilist);
-	);
-
 	struct SwapChain* gfx;
 
 	struct VSBase VS;
+	void (*VSApply)(void* self, void** _outVertex, void** _inVertex, void* buffers[2]);
+	struct PSBase PS;
+	CHAR_INFO(*PSApply)(void* self, void** _PixelIn);
+
 	struct GSBase* GS;
-	struct PSBase* PS;
+	
 	struct ConsoleWindow* Debug;
 
 	__declspec(align(16))struct
@@ -34,3 +33,12 @@ class
 	VMMATRIX projection;
 	VMMATRIX camera;
 };
+interface
+{
+	void(*Draw)(selfptr, IndexedTriangleList* trilist);
+};
+ComposeType;
+
+#ifndef VLINE_IMPL
+#undef c_class
+#endif // !VLINE_IMPL

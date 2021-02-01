@@ -12,7 +12,7 @@ class
 	GENERATED_DESC
 	methods(
 		VMMATRIX(*GetTransformXM)(void* self);
-		void(*AddBind)(selfptr, shared_ptr bindable);
+		void(*AddBind)(selfptr, shared_ptr(Bindable)* bindable);
 		void(*Draw)(selfptr, struct VLine* gfx);
 	);
 	struct Vector Binds;

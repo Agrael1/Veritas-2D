@@ -1,40 +1,30 @@
 #pragma once
-#include "HashMap.h"
+#include <HashMap.h>
+#include "BindableBase.h"
+#include "Templates.h"
 
 typedef struct
 {
 	struct HashMap binds;
 }Codex;
 
-void InitializeCodex();
 void DestroyCodex();
+Codex* GetCodex();
 
 // Automatically templated on c_class
-#define __Resolve(infoset,...)													\
-const char* key = virtual(GenerateUID)(infoset);								\
-Node* result = codex.binds.method->find(&codex.binds, key);						\
-shared_ptr* insert;																\
-if (!result)																	\
-{																				\
-	insert = codex.binds.method->insert(&codex.binds, key);						\
-	*insert = make_shared(c_class, __VA_ARGS__);								\
-	return *insert;																\
-}																				\
-else																			\
-{																				\
-	insert = (shared_ptr*)(&result->info);										\
-	insert->control->counter++;													\
-	return *insert;																\
-}																				
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+#define  __Resolve(...)\
+{\
+	String key = virtual(GenerateUID)(__VA_ARGS__);\
+	Codex* codex = GetCodex();\
+	Node_HashMap* result = codex->binds.method->find(&codex->binds, key);\
+	if (!result)\
+	{\
+		string_remove(&key);\
+		return codex->binds.method->try_emplace(&codex->binds, key, c_class, __VA_ARGS__);\
+	}\
+	else\
+	{\
+		string_remove(&key);\
+		return (shared_ptr(Bindable)*)(result->element); \
+	} \
+}	

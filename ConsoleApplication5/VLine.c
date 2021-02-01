@@ -316,7 +316,7 @@ void _ProcessVertices(selfptr, IndexedTriangleList* trilist)
 	if (pVSOut)
 	{
 		// Transform all the verts accordingly
-		self->VS.Apply(&self->VS, pVSOut, trilist);
+		self->VSApply(&self->VS, pVSOut, trilist);
 		_AssembleTriangles(self, pVSOut, self->VS.VSOutSize, trilist->indices, trilist->numInds);
 	}
 	_aligned_free(pVSOut);
@@ -331,7 +331,7 @@ VirtualTable{
 };
 Constructor(selfptr, va_list *ap)
 {
-	assignMethodTable(self);
+	InitializeVtable(self);
 	self->gfx = va_arg(*ap, struct SwapChain*);
 
 	const float HalfViewportWidth = self->gfx->nFrameLength * 0.5f;

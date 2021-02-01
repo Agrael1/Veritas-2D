@@ -1,13 +1,12 @@
-#include "PSBase.h"
-#include "TextureBuffer.h"
+#define TB_IMPL
+#include "VLine.h"
 #include "Class.h"
-
+#include "TextureBuffer.h"
 #include <stdio.h>
 
-void virtual(Bind)(void* self, struct VLine* gfx)
+void virtual(Bind)(selfptr, struct VLine* gfx)
 {
-	account(self);
-	gfx->PS->TextureBuffer[this->slot] = this->Texture;
+	gfx->PS.TextureBuffer = self->Texture;
 }
 HRESULT LoadTextureFromFileW(const char* const wFile, ColorMap* map)
 {
@@ -33,27 +32,27 @@ HRESULT LoadTextureFromFileW(const char* const wFile, ColorMap* map)
 	map->map = malloc(sizeof(CHAR_INFO)*width*height);	// allocate and try buffer
 	if (!map->map) return HRESULT_FROM_WIN32(ERROR_NOT_ENOUGH_MEMORY);
 
-	CHAR_INFO x[16];
 	fread(map->map, sizeof(CHAR_INFO), width*height, Texture);
 	return S_OK;
 }
 
+VirtualTable{
+	.Bind = virtual(Bind)
+};
 Constructor(selfptr, va_list *ap)
 {
-	account(self);
-	self->Bind = virtual(Bind);
+	InitializeVtable(self);
 	const char* Filename = va_arg(*ap, char*);
-	if (FAILED(LoadTextureFromFileW(Filename, &this->Texture)))
+	if (FAILED(LoadTextureFromFileW(Filename, &self->Texture)))
 	{
-		delete(this);
-		return nullptr;
+		delete(self);
 	}
-	this->slot = va_arg(*ap, unsigned);
-	return self;
 }
 Destructor(selfptr)
 {
 	if(self->Texture.map) free(self->Texture.map);
-	return self;
 }
 ENDCLASSDESC
+
+extern inline String virtual(GenerateUID)(const char* fileName);
+extern inline shared_ptr(Bindable)* virtual(Resolve)(const char* fileName);

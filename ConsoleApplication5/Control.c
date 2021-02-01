@@ -1,3 +1,4 @@
+#define CONTROL_IMPL
 #include "Window.h"
 #include "Control.h"
 #include "Class.h"
@@ -32,7 +33,7 @@ inline void _ConfineCursor(selfptr)
 }
 inline void _FreeCursor(void)
 {
-	ClipCursor(nullptr);
+	ClipCursor(NULL);
 }
 inline void _HideCursor(void)
 {
@@ -74,15 +75,15 @@ LRESULT _HandleMsg(selfptr, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_SYSKEYDOWN:
 		if (!(lParam & 0x40000000)||self->kbd.bAutorepeat)
 		{
-			self->kbd.method->OnKeyPressed(&self->kbd,(Byte)(wParam));
+			self->kbd.method->OnKeyPressed(&self->kbd,(uint8_t)(wParam));
 		}
 		break;
 	case WM_KEYUP:
 	case WM_SYSKEYUP:
-		self->kbd.method->OnKeyReleased(&self->kbd, (Byte)(wParam));
+		self->kbd.method->OnKeyReleased(&self->kbd, (uint8_t)(wParam));
 		break;
 	case WM_CHAR:
-		self->kbd.method->OnChar(&self->kbd, (Byte)(wParam));
+		self->kbd.method->OnChar(&self->kbd, (uint8_t)(wParam));
 		break;
 #pragma endregion
 
@@ -256,7 +257,7 @@ VirtualTable{
 };
 Constructor(selfptr, va_list *ap)
 {
-	assignMethodTable(self);
+	InitializeVtable(self);
 
 	self->refCon = va_arg(*ap, void*);
 	self->wndClassName = L"DUMMY_CLASS";
@@ -292,12 +293,12 @@ Constructor(selfptr, va_list *ap)
 	// Create controls and bind mouse to the window
 	construct(&self->kbd, Keyboard);
 	construct(&self->mouse, Mouse);
-	return self;
 }
 Destructor(selfptr)
 {
 	DestroyWindow(self->Window);
 	UnregisterClass(self->wndClassName, self->hInst);
-	return self;
 }
 ENDCLASSDESC
+
+extern inline Optional(WPARAM) ProcessMessages();

@@ -2,7 +2,6 @@
 #include "Templates.h"
 #include "Keyboard.h"
 #include "Mouse.h"
-#include "EngineCommons.h"
 
 #define T WPARAM
 #include "OptionalT.h"
@@ -11,14 +10,6 @@
 #define c_class MessageWindow
 class
 {
-	GENERATED_DESC
-	methods(
-		LRESULT(*HandleMsg)(void* self, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-		void(*CatchFocus)(selfptr);
-		void (*EnableCursor)(selfptr);
-		void (*DisableCursor)(selfptr);
-	);
-
 	struct ConsoleWindow* refCon;
 	LPCWSTR wndClassName;
 	HINSTANCE hInst;
@@ -30,11 +21,19 @@ class
 	bool bInFocus;
 	bool bCursorEnabled;
 };
+interface
+{
+	LRESULT(*HandleMsg)(void* self, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+	void(*CatchFocus)(selfptr);
+	void (*EnableCursor)(selfptr);
+	void (*DisableCursor)(selfptr);
+};
+ComposeType;
 
 inline Optional(WPARAM) ProcessMessages()
 {
 	MSG msg;
-	while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+	while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 	{
 		if (msg.message == WM_QUIT)
 		{
@@ -44,5 +43,9 @@ inline Optional(WPARAM) ProcessMessages()
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
-	return nullopt(WPARAM)();
+	return nullopt(WPARAM);
 }
+
+#ifndef CONTROL_IMPL
+#undef c_class
+#endif

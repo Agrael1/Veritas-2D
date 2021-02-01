@@ -42,7 +42,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>ClangCL</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
@@ -110,7 +110,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <CompileAs>CompileAsC</CompileAs>
-      <AdditionalIncludeDirectories>$(SolutionDir)VPhysics\include;$(SolutionDir)Veritas Math;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)VFramework;$(SolutionDir)VPhysics\include;$(SolutionDir)Veritas Math;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
     </ClCompile>
@@ -165,10 +165,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BitSetBase.c" />
-    <ClCompile Include="BitStack.c" />
     <ClCompile Include="Camera.c" />
-    <ClCompile Include="Class.c" />
     <ClCompile Include="Codex.c" />
     <ClCompile Include="Control.c" />
     <ClCompile Include="CubeDemo.c" />
@@ -176,8 +173,6 @@
     <ClCompile Include="CubeTexDr.c" />
     <ClCompile Include="DefaultVS.c" />
     <ClCompile Include="Drawable.c" />
-    <ClCompile Include="EventQueue.c" />
-    <ClCompile Include="Exception.c" />
     <ClCompile Include="ColorIndexPS.c" />
     <ClCompile Include="ExperimentalPS.c" />
     <ClCompile Include="FlatLightGS.c" />
@@ -186,7 +181,6 @@
     <ClCompile Include="GouraudPST.c" />
     <ClCompile Include="GouraudVS.c" />
     <ClCompile Include="GouraudVST.c" />
-    <ClCompile Include="HashMap.c" />
     <ClCompile Include="Icosphere.c" />
     <ClCompile Include="Keyboard.c" />
     <ClCompile Include="EntryMain.c" />
@@ -199,7 +193,6 @@
     <ClCompile Include="PhysicsAggregate.c" />
     <ClCompile Include="Pipeline.c" />
     <ClCompile Include="PixelShader.c" />
-    <ClCompile Include="StringStream.c" />
     <ClCompile Include="Test.c" />
     <ClCompile Include="TextureBuffer.c" />
     <ClCompile Include="TransformBuffer.c" />
@@ -208,18 +201,24 @@
     <ClCompile Include="Vector.c" />
     <ClCompile Include="VeritasEngine.c" />
     <ClCompile Include="VertexShader.c" />
+    <ClCompile Include="VFramework\Auto_ptr.c" />
+    <ClCompile Include="VFramework\BitSetBase.c" />
+    <ClCompile Include="VFramework\BitStack.c" />
+    <ClCompile Include="VFramework\Class.c" />
+    <ClCompile Include="VFramework\Exception.c" />
+    <ClCompile Include="VFramework\HashMap.c" />
+    <ClCompile Include="VFramework\Shared_ptr.c" />
+    <ClCompile Include="VFramework\Unwinder.c" />
+    <ClCompile Include="VFramework\va_raw.c" />
+    <ClCompile Include="VFramework\VString.c" />
     <ClCompile Include="VLine.c" />
-    <ClCompile Include="VString.c" />
     <ClCompile Include="Window.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BindableBase.h" />
     <ClInclude Include="BindingIncludes.h" />
-    <ClInclude Include="BitSetBase.h" />
-    <ClInclude Include="BitsetT.h" />
     <ClInclude Include="Box.h" />
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="Class.h" />
     <ClInclude Include="Codex.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="Colormap.h" />
@@ -230,28 +229,21 @@
     <ClInclude Include="DefaultVS.h" />
     <ClInclude Include="Drawable.h" />
     <ClInclude Include="EngineCommons.h" />
-    <ClInclude Include="EventQueue.h" />
-    <ClInclude Include="Exception.h" />
     <ClInclude Include="ExperimentalPS.h" />
     <ClInclude Include="FlatLightGS.h" />
     <ClInclude Include="SwapChain.h" />
-    <ClInclude Include="BitStack.h" />
     <ClInclude Include="GouraudPS.h" />
     <ClInclude Include="GouraudPST.h" />
     <ClInclude Include="GouraudVS.h" />
     <ClInclude Include="GouraudVST.h" />
     <ClInclude Include="GSBase.h" />
-    <ClInclude Include="HashMap.h" />
     <ClInclude Include="Header.h" />
     <ClInclude Include="Icosahedron.h" />
     <ClInclude Include="Icosphere.h" />
     <ClInclude Include="IndexedTriangleList.h" />
     <ClInclude Include="Model.h" />
-    <ClInclude Include="OptionalT.h" />
     <ClInclude Include="PhysicsAggregate.h" />
     <ClInclude Include="PixelShader.h" />
-    <ClInclude Include="QueueT.h" />
-    <ClInclude Include="SharedPtr.h" />
     <ClInclude Include="Templates.h" />
     <ClInclude Include="TextureBuffer.h" />
     <ClInclude Include="TransformBuffer.h" />
@@ -260,6 +252,22 @@
     <ClInclude Include="VActor.h" />
     <ClInclude Include="Vector.h" />
     <ClInclude Include="VertexShader.h" />
+    <ClInclude Include="VFramework\Auto_ptr.h" />
+    <ClInclude Include="VFramework\BitSetBase.h" />
+    <ClInclude Include="VFramework\BitsetT.h" />
+    <ClInclude Include="VFramework\BitStack.h" />
+    <ClInclude Include="VFramework\Class.h" />
+    <ClInclude Include="VFramework\Exception.h" />
+    <ClInclude Include="VFramework\HashMap.h" />
+    <ClInclude Include="VFramework\New.h" />
+    <ClInclude Include="VFramework\OptionalT.h" />
+    <ClInclude Include="VFramework\RingT.h" />
+    <ClInclude Include="VFramework\Shared_ptr.h" />
+    <ClInclude Include="VFramework\Unwinder.h" />
+    <ClInclude Include="VFramework\va_raw.h" />
+    <ClInclude Include="VFramework\VDefs.h" />
+    <ClInclude Include="VFramework\VString.h" />
+    <ClInclude Include="VFramework\WinSetup.h" />
     <ClInclude Include="VLine.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="Light.h" />
@@ -267,16 +275,13 @@
     <ClInclude Include="Maze3D.h" />
     <ClInclude Include="LoaderTest.h" />
     <ClInclude Include="Mouse.h" />
-    <ClInclude Include="New.h" />
     <ClInclude Include="ColorIndexPS.h" />
     <ClInclude Include="Pipeline.h" />
     <ClInclude Include="PSBase.h" />
     <ClInclude Include="VSBase.h" />
     <ClInclude Include="Standard.h" />
-    <ClInclude Include="StringStream.h" />
     <ClInclude Include="Test.h" />
     <ClInclude Include="VeritasEngine.h" />
-    <ClInclude Include="VString.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="WinSetup.h" />
   </ItemGroup>

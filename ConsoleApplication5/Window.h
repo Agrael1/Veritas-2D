@@ -1,30 +1,27 @@
 #pragma once
 #include "WinSetup.h"
 #include "Exception.h"
-#include "EngineCommons.h"
+#include <stdint.h>
 
 #define c_class WindowException
 
 class
 {
-	inherits(Exception);
+	inherit(Exception);
 	HRESULT hr;
 };
+interface
+{
+	implements(Exception);
+	String(*GetErrorString)(selfptr);
+};
+ComposeType;
 
 #undef c_class
 #define c_class ConsoleWindow
 
 class 
 {
-	GENERATED_DESC
-	methods(
-		COORD(*CreateConsole)(selfptr, Word width, Word height, Byte fontw, Byte fonth);
-		bool(*SetCursor)(selfptr, bool value);
-		bool(*Restore)(const selfptr);
-		void(*OutputToScreen)(selfptr);
-		void(*SetPalette)(selfptr, COLORREF palette[16]);
-	);
-
 	HANDLE hOut;	
 	HANDLE hIn;	
 
@@ -36,9 +33,21 @@ class
 
 	long lOriginalParams;
 
-	Word Width;
-	Word Height;
+	uint16_t Width;
+	uint16_t Height;
 };
+interface
+{
+	COORD(*CreateConsole)(selfptr, uint16_t width, uint16_t height, uint8_t fontw, uint8_t fonth);
+	bool(*SetCursor)(selfptr, bool value);
+	bool(*Restore)(const selfptr);
+	void(*OutputToScreen)(selfptr);
+	void(*SetPalette)(selfptr, COLORREF palette[16]);
+};
+ComposeType;
 
 #define WND_EXCEPT_AUTO() new(WindowException,__LINE__, __FILE__, GetLastError())
 #define WND_CALL_INFO(call) if(!(call)) throw(WND_EXCEPT_AUTO())
+#ifndef WINDOW_IMPL
+#undef c_class
+#endif

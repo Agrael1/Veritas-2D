@@ -1,20 +1,27 @@
 #pragma once
-#include "BindableBase.h"
-#include "EngineCommons.h"
+#include "Codex.h"
+#include "VSBase.h"
 
 #define c_class VertexShader
 
 class
 {
-	inherits(Bindable);
-	struct VSBase pVertexShader;
+	implements(VSBase);
 };
+interface
+{
+	implements(Bindable);
+};
+ComposeType;
 
-inline char* virtual(GenerateUID)(char* info)
+inline String virtual(GenerateUID)(char* info)
 {
-	return info;
+	return make_string(info);
 }
-inline shared_ptr virtual(Resolve)(char* info, void* pVS)
+inline shared_ptr(Bindable)* virtual(Resolve)(char* info, void* pVS)
 {
-	__Resolve(info, pVS)
+	__Resolve(info, pVS);
 }
+#ifndef VS_IMPL
+#undef c_class
+#endif // !VS_IMPL

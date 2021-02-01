@@ -191,7 +191,7 @@ VirtualTable{
 };
 Constructor(selfptr, va_list *ap)
 {
-	assignMethodTable(self);
+	InitializeVtable(self);
 	const char* filename = va_arg(*ap, const char*);
 
 	const struct aiScene* pScene = aiImportFile(filename,

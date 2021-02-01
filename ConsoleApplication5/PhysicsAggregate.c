@@ -74,7 +74,7 @@
 //};
 //Constructor(selfptr, va_list *ap)
 //{
-//	assignMethodTable(self);
+//	InitializeVtable(self);
 //
 //	dInitODE2(0);
 //	self->World = dWorldCreate();		//Create World ODE

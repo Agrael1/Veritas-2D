@@ -1,3 +1,4 @@
+#define WINDOW_IMPL
 #include "Class.h"
 #include "Window.h"
 
@@ -9,7 +10,7 @@ bool _Restore(const selfptr)
 	SetWindowLongPtr(self->consoleWindow, GWL_STYLE, self->lOriginalParams);
 	return (bool)SetConsoleActiveScreenBuffer(self->hOriginalConsole);
 }
-bool _SetFont(const selfptr, Byte fontw, Byte fonth)
+bool _SetFont(const selfptr, uint8_t fontw, uint8_t fonth)
 {
 	CONSOLE_FONT_INFOEX cfi;
 	cfi.cbSize = sizeof(cfi);
@@ -29,7 +30,7 @@ bool _SetCursor(selfptr, bool value)
 	info.bVisible = value;
 	return (bool)SetConsoleCursorInfo(self->hOut, &info);
 }
-COORD _CreateConsole(selfptr, Word width, Word height, Byte fontw, Byte fonth)
+COORD _CreateConsole(selfptr, uint16_t width, uint16_t height, uint8_t fontw, uint8_t fonth)
 {
 	self->lOriginalParams = GetWindowLong(self->consoleWindow, GWL_STYLE);
 	SetWindowLongPtr(self->consoleWindow, GWL_STYLE,
@@ -101,17 +102,15 @@ VirtualTable{
 };
 Constructor(selfptr, va_list* ap)
 {
-	assignMethodTable(self);
+	InitializeVtable(self);
 	self->consoleWindow = GetConsoleWindow();
 	self->hIn = GetStdHandle(STD_INPUT_HANDLE);
 	self->hOriginalConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	self->hOut = self->hOriginalConsole;
-	return self;
 }
 Destructor(selfptr)
 {
 	_Restore(self);
-	return self;
 }
 ENDCLASSDESC
 
@@ -145,30 +144,31 @@ String GetErrorString(selfptr)
 }
 const char* virtual(what)(selfptr)
 {
-	String error = GetErrorString(self);
-	String origin = self->method->GetOriginString(self);
+	if (!c_str(&self->whatBuffer))
+	{
+		String error = GetErrorString(self);
+		String origin = self->method->GetOriginString(self);
 
-	String out = string_fmt("%s\n%s[Error Code]: %lu\n[Description]: %s\n%s", virtual(GetType)(), self->hr, c_str(&error), c_str(&origin));
-	string_move(&self->whatBuffer, &out);
-	string_remove(&origin);
-	string_remove(&error);
-
+		self->whatBuffer = string_fmt("%s\n%s[Error Code]: %lu\n[Description]: %s\n%s", virtual(GetType)(), self->hr, c_str(&error), c_str(&origin));
+		string_remove(&origin);
+		string_remove(&error);
+	}
 	return c_str(&self->whatBuffer);
 }
 
+VirtualTable{
+	.GetType = virtual(GetType),
+	.what = virtual(what),
+	.GetErrorString = GetErrorString
+};
 Constructor(selfptr, va_list* ap)
 {
-	struct c_class *this = ((struct Class*)Exception)->ctor(self,ap);
+	((struct Class*)Exception)->ctor(self,ap);
+	InitializeVtable(self);
 	self->hr = va_arg(*ap, HRESULT);
-
-	override(what);
-	override(GetType);
-
-	return this;
 }
 Destructor(selfptr)
 {
-	struct c_class *this = ((struct Class*)Exception)->dtor(self);
-	return this;
+	((struct Class*)Exception)->dtor(self);
 }
 ENDCLASSDESC 

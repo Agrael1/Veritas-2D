@@ -31,7 +31,7 @@ constructMethodTable(
 
 Constructor(selfptr, va_list *ap)
 {
-	assignMethodTable(self);
+	InitializeVtable(self);
 
 	self->roll = 0.0f;
 	self->pitch = 0.0f;

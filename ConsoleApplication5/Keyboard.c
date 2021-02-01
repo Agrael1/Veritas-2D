@@ -1,7 +1,7 @@
+#define KEYBOARD_IMPL
 #include "Keyboard.h"
 
-
-bool virtual(KeyPressed)(const selfptr, Byte keycode)
+bool virtual(KeyPressed)(const selfptr, uint8_t keycode)
 {
 	return self->KeyStates.method->IsSet(&self->KeyStates, keycode);
 }
@@ -30,12 +30,12 @@ void _Flush(selfptr)
 }
 
 // Internal
-void _OnKeyPressed(selfptr, Byte keycode)
+void _OnKeyPressed(selfptr, uint8_t keycode)
 {
 	self->KeyStates.method->Set(&self->KeyStates, keycode);
 	self->KeyBuffer.method->push(&self->KeyBuffer, (KeyboardEvent) { Press, keycode });
 }
-void _OnKeyReleased(selfptr, Byte keycode)
+void _OnKeyReleased(selfptr, uint8_t keycode)
 {
 	self->KeyStates.method->Reset(&self->KeyStates, keycode);
 	self->KeyBuffer.method->push(&self->KeyBuffer, (KeyboardEvent) { Release, keycode });
@@ -65,11 +65,10 @@ VirtualTable{
 };
 Constructor(selfptr, va_list *ap)
 {
-	assignMethodTable(self);
-	construct(&self->KeyStates, Bitset(256));
-	construct(&self->KeyBuffer, FixedQueue(KeyboardEvent, 16));
-	construct(&self->CharBuffer, FixedQueue(char, 16));
+	InitializeVtableEx(self);
+	construct(&self->KeyStates, BitsetT(256));
+	construct(&self->KeyBuffer, RingT(KeyboardEvent, 16));
+	construct(&self->CharBuffer, RingT(char, 16));
 	self->bAutorepeat = false;
-	return self;
 }
 ENDCLASSDESCDD
