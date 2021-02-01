@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <assert.h>
 
 
 static inline bool is_short(const String* self)
@@ -18,23 +19,52 @@ static inline size_t max_size()
 {
 	return 1ull << ((sizeof(size_t) * 8) - 2);
 }
-static inline size_t _Calculate_growth(size_t _Oldcapacity, size_t _Newsize) //MS STL Impl
+static inline size_t Calculate_growth(size_t Oldcapacity, size_t Newsize) //MS STL Impl
 {
 	// given _Oldcapacity and _Newsize, calculate geometric growth
-	const size_t _Max = max_size();
+	const size_t Max = max_size();
 
-	if (_Oldcapacity > _Max - _Oldcapacity / 2)
+	if (Oldcapacity > Max - Oldcapacity / 2)
 	{
-		return _Max; // geometric growth would overflow
+		return Max; // geometric growth would overflow
 	}
 
-	const size_t _Geometric = _Oldcapacity + _Oldcapacity / 2;
-	if (_Geometric < _Newsize)
+	const size_t Geometric = Oldcapacity + Oldcapacity / 2;
+	if (Geometric < Newsize)
 	{
-		return _Newsize; // geometric growth would be insufficient
+		return Newsize; // geometric growth would be insufficient
 	}
 
-	return _Geometric; // geometric growth is sufficient
+	return Geometric; // geometric growth is sufficient
+}
+static void Reallocate_for(String* self, size_t InputSize)
+{
+	const size_t Oldsize = string_length(self);
+	const size_t Newsize = Oldsize + InputSize;
+
+	if (Newsize <= string_capacity(self))return;
+	const size_t Newcapacity = Calculate_growth(Oldsize, Newsize);
+
+	if (!is_short(self))
+	{
+		if (Oldsize == max_size() - 1)
+		{
+			assert(false);
+		}
+
+		ALLOC_CHECK(self->data = realloc(self->data, Newcapacity));
+		self->capacity = Newcapacity - 1;
+		return;
+	}
+
+	char* Replacement = malloc(Newcapacity);
+	ALLOC_CHECK(Replacement);
+	memcpy(Replacement, self, Oldsize - 1);
+
+	self->data = Replacement;
+	self->size = Oldsize;
+	self->capacity = Newcapacity - 1;
+	self->flag = 1;				//reasoning, 2^64 is not a good string to begin with
 }
 
 void Constructor(String* self, const char* data, size_t size)
@@ -81,6 +111,10 @@ extern inline bool string_empty(const String* self);
 extern inline size_t string_capacity(const String* self);
 extern inline bool string_cmp(const String* left, const String* right);
 
+extern inline StringView string_view(const String* self);
+extern inline StringView string_view_c(const char* str);
+extern inline StringView substr(StringView str, size_t start, size_t count);
+
 String string_copy(const String* from)
 {
 	if (!from->flag)
@@ -92,49 +126,16 @@ String string_copy(const String* from)
 
 void string_push_back(String* self, char c)
 {
-	if (is_short(self))
+	if (is_short(self) && self->altrepr[sizeof(String) - 1])
 	{
-		if (self->altrepr[sizeof(String) - 1])
-		{
-			self->altrepr[sizeof(String) - 1 - self->altrepr[sizeof(String) - 1]--] = c;
-			self->altrepr[sizeof(String) - 1 - self->altrepr[sizeof(String) - 1]] = '\0';
-		}
-		else
-		{
-			size_t _NewSize = _Calculate_growth(sizeof(String), sizeof(String) + 1);
-			char* _Replacement = malloc(_NewSize);
-			memcpy(_Replacement, self, sizeof(String) - 1);
-
-			_Replacement[sizeof(String) - 1] = c;
-			_Replacement[sizeof(String)] = '\0';
-			self->data = _Replacement;
-			self->size = sizeof(String);
-			self->capacity = _NewSize - 1;
-			self->flag = 1;				//reasoning, 2^64 is not a good string to begin with
-		}
+		self->altrepr[sizeof(String) - 1 - self->altrepr[sizeof(String) - 1]--] = c;
+		self->altrepr[sizeof(String) - 1 - self->altrepr[sizeof(String) - 1]] = '\0';
 		return;
 	}
-	if (self->size < self->capacity)
-	{
-		self->data[self->size++] = c;
-		self->data[self->size] = '\0';
-	}
-	else
-	{
-		const size_t _Oldsize = self->size;
-		if (_Oldsize == max_size() - 1)
-		{
-			ALLOC_CHECK(false);
-		}
 
-		const size_t _Newsize = _Oldsize + 1;
-		const size_t _Newcapacity = _Calculate_growth(_Oldsize, _Newsize);
-
-		ALLOC_CHECK(self->data = realloc(self->data, _Newcapacity));
-		self->data[self->size++] = c;
-		self->data[self->size] = '\0';
-		self->capacity = _Newcapacity - 1;
-	}
+	Reallocate_for(self, 1);
+	self->data[self->size++] = c;
+	self->data[self->size] = '\0';
 }
 void string_clear(String* self)
 {
@@ -150,25 +151,39 @@ void string_clear(String* self)
 	}
 }
 
-void string_insert_range(String* self, size_t start, const String* from, size_t offset_begin)
+void string_insert_range(String* self, size_t start, StringView from)
 {
 	size_t Mylength = string_length(self);
-	size_t FromLength = string_length(from);
-	if (offset_begin > FromLength) return;
 
 	char* raw_inserter = (char*)c_str(self) + start;
 	char* end_inserter = Mylength - start + raw_inserter;
-	const char* from_offset = c_str(from) + offset_begin;
 
-	while (raw_inserter != end_inserter && *from_offset)
+	while (raw_inserter != end_inserter && *from.data)
 	{
-		*raw_inserter++ = *from_offset++;
+		*raw_inserter++ = *from.data++;
 	}
-	while (*from_offset)
-		string_push_back(self, *from_offset++);
+	while (*from.data)
+		string_push_back(self, *from.data++);
+}
+void string_append(String* self, const char* input)
+{
+	StringView x = string_view_c(input);
+	Reallocate_for(self, x.size);
+
+	if (is_short(self))
+	{
+		while(*input)
+			self->altrepr[sizeof(String) - 1 - self->altrepr[sizeof(String) - 1]--] = *input++;
+		self->altrepr[sizeof(String) - 1 - self->altrepr[sizeof(String) - 1]] = '\0';
+		return;
+	}
+	memcpy(self->data, x.data, x.size);
+	self->size += x.size;
+	self->data[self->size] = '\0';
 }
 void string_cat(String* self, const String* from)
 {
 	size_t start = string_length(self);
-	string_insert_range(self, start, from, 0);
+	string_append(self, c_str(from));
 }
+
