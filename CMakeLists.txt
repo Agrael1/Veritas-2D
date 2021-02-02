@@ -7,3 +7,5 @@ project ("ConsoleApplication5")
 
 # Включите подпроекты.
 add_subdirectory ("Vlib")
+add_subdirectory ("VEngine")
+add_subdirectory ("BadApple")
