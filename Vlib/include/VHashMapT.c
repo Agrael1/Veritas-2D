@@ -29,9 +29,9 @@ size_t hashFunction(const char* key)
 }
 #endif // !__HASH__F
 
-HASHMAP_T* Template(emplace)(selfptr, const String* key)
+HASHMAP_T* Template(emplace)(selfptr, StringView key)
 {
-    size_t value = hashFunction(c_str(key));
+    size_t value = hashFunction(key.data);
     uint32_t idx = value % (*self)->bucket_cnt;
 
     //alloc new item
@@ -39,7 +39,7 @@ HASHMAP_T* Template(emplace)(selfptr, const String* key)
     ALLOC_CHECK(new_item);
 
     new_item->next = (*self)->bucket[idx];
-    new_item->key = string_copy(key);
+    String_ctor(&new_item->key, key.data, key.size);
     
     (*self)->bucket[idx] = new_item;
     (*self)->size++;
