@@ -1,23 +1,17 @@
 #pragma once
+#include "../Vlib/include/RuntimeClass.h"
 #include "VeritasMath.h"
-#include "EngineCommons.h"
 
 #define TravelSpeed 0.2f
 #define RotationSpeed 0.2f
 
 #define c_class Camera
+typedef struct Camera Camera;
 
-class
-{
-	GENERATED_DESC
-	methods(
-		VMMATRIX(*GetViewMatrix)(selfptr);
-		void(*Reset)(selfptr);
-		void(*Rotate)(selfptr, float dx, float dy);
-		void(*LookAround)(selfptr, float dx, float dy);
-		void(*Translate)(selfptr, VMFLOAT3A translation);
-	);
-	
+void Constructor(selfptr, VMFLOAT3A* Anchor);
+
+struct Camera
+{	
 	VMFLOAT3A* Anchor;
 	VMFLOAT3A RelativePos;
 	
@@ -27,3 +21,10 @@ class
 	float phi;
 	float theta;
 };
+
+//API
+VMMATRIX CamGetViewMatrix(const selfptr);
+void CamReset(selfptr);
+void CamRotate(selfptr, float dx, float dy);
+void CamLookAround(selfptr, float dx, float dy);
+void CamTranslate(selfptr, VMFLOAT3A translation);

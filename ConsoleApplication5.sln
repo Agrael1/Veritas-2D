@@ -11,8 +11,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Veritas Math", "Veritas Mat
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ColorMap", "ColorMap\ColorMap.vcxproj", "{0A6DAEC3-B7C9-411C-9DCF-A87790B6E203}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Vlibx", "Vlibx\Vlibx.vcxproj", "{80D2991E-1E48-45B3-A110-253CB32B345E}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -89,22 +87,6 @@ Global
 		{0A6DAEC3-B7C9-411C-9DCF-A87790B6E203}.RelWithDebInfo|x64.Build.0 = Release|x64
 		{0A6DAEC3-B7C9-411C-9DCF-A87790B6E203}.RelWithDebInfo|x86.ActiveCfg = Release|Win32
 		{0A6DAEC3-B7C9-411C-9DCF-A87790B6E203}.RelWithDebInfo|x86.Build.0 = Release|Win32
-		{80D2991E-1E48-45B3-A110-253CB32B345E}.Debug|x64.ActiveCfg = Debug|x64
-		{80D2991E-1E48-45B3-A110-253CB32B345E}.Debug|x64.Build.0 = Debug|x64
-		{80D2991E-1E48-45B3-A110-253CB32B345E}.Debug|x86.ActiveCfg = Debug|Win32
-		{80D2991E-1E48-45B3-A110-253CB32B345E}.Debug|x86.Build.0 = Debug|Win32
-		{80D2991E-1E48-45B3-A110-253CB32B345E}.MinSizeRel|x64.ActiveCfg = Debug|x64
-		{80D2991E-1E48-45B3-A110-253CB32B345E}.MinSizeRel|x64.Build.0 = Debug|x64
-		{80D2991E-1E48-45B3-A110-253CB32B345E}.MinSizeRel|x86.ActiveCfg = Debug|Win32
-		{80D2991E-1E48-45B3-A110-253CB32B345E}.MinSizeRel|x86.Build.0 = Debug|Win32
-		{80D2991E-1E48-45B3-A110-253CB32B345E}.Release|x64.ActiveCfg = Release|x64
-		{80D2991E-1E48-45B3-A110-253CB32B345E}.Release|x64.Build.0 = Release|x64
-		{80D2991E-1E48-45B3-A110-253CB32B345E}.Release|x86.ActiveCfg = Release|Win32
-		{80D2991E-1E48-45B3-A110-253CB32B345E}.Release|x86.Build.0 = Release|Win32
-		{80D2991E-1E48-45B3-A110-253CB32B345E}.RelWithDebInfo|x64.ActiveCfg = Release|x64
-		{80D2991E-1E48-45B3-A110-253CB32B345E}.RelWithDebInfo|x64.Build.0 = Release|x64
-		{80D2991E-1E48-45B3-A110-253CB32B345E}.RelWithDebInfo|x86.ActiveCfg = Release|Win32
-		{80D2991E-1E48-45B3-A110-253CB32B345E}.RelWithDebInfo|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
