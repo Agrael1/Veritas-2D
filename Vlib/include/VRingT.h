@@ -24,78 +24,86 @@
  // THE SOFTWARE.
 
 
-#if defined(T)&&defined(N)&&N<=255
-#include <OptionalT.h>
-#include <Class.h>
-#include <VDefs.h>
+#ifdef RING_T
+#include <malloc.h>
+#include "RuntimeClass.h"
 
-#define Ring(x,n) concat4(c,Ring, x, concat3(_,n,_))
-#define RingT(x,n) concat3(Ring, x, concat3(_,n,_))
-#define c_class RingT(T,N)
-
-struct __rconcat(c_class, _base)
-{
-	T container[N];
-	unsigned char contains;
-	unsigned char current;
-};
-interface
-{
-	Optional(T) (*pop)(selfptr);
-	void (*push)(selfptr, T value);
-	void (*wipe)(selfptr);
-};
-ComposeTypeEx;
-
-inline void virtual(push)(selfptr, T value)
-{
-	if (self->current + 1 < N)
-	{
-		self->container[self->current++] = value;
-	}
-	else
-	{
-		self->container[self->current] = value;
-		self->current = 0;
-	}
-	if (self->contains != N)
-		self->contains++;
-}
-inline Optional(T) virtual(pop)(selfptr)
-{
-	register unsigned char index = 0;
-	if (self->contains > 0)
-	{
-		if ((short)self->current - self->contains > 0)
-		{
-			index = self->current - self->contains;
-		}
-		else
-		{
-			index = self->current + N - self->contains;
-		}
-		self->contains--;
-		return (Optional(T)) { self->container[index], true };
-	}
-	return nullopt(T);
-}
-inline void virtual(wipe)(selfptr)
-{
-	self->contains = 0;
-	self->current = 0;
-}
-
-TMethodTable{
-	.pop = virtual(pop),
-	.push = virtual(push),
-	.wipe = virtual(wipe)
-};
-inline Constructor(selfptr, va_list* ap)
-{
-	InitializeVtableEx(self);
-	self->contains = 0;
-	self->current = 0;
-}
-ENDTEMPLATEDESCDD
 #undef c_class
-#endif
+#define c_class Ring(RING_T)
+#pragma push_macro("RING_T")
+
+#define Ring(T__) __rcat2(Ring_,T__)
+#define unique_ring(T__) UNIQUE(Ring(T__))
+
+typedef struct c_class c_class;
+
+/// @brief Constructs a new ring
+/// @param length - length of ring
+void Constructor(selfptr, uint16_t length);
+
+/// @brief Destroys all the elements in ring as well as the ring itself
+void Destructor(selfptr);
+
+#ifndef TC
+struct c_class
+{
+	uint16_t contains;
+	uint16_t current;
+	uint16_t limit;
+	RING_T* container;
+};
+
+#ifdef IsClass
+/// @brief If object stored is a class it should be destroyed with destructor
+/// @param  element to destroy
+inline void Template(_Destroy_single)(RING_T* element)
+{
+	__rdtor(RING_T)(element);
+}
+#else
+inline void Template(_Destroy_single)(RING_T* element)
+{
+	unused_param(element);
+}
+#endif // IsClass
+#endif //TC
+
+/// @brief Emplaces value into ring, providing pointer to a place of construction
+/// @return valid pointer to an object to be initialized
+NODISCARD RING_T* Template(emplace)(selfptr);
+
+/// @brief Provides pointer to a topmost value
+/// @return valid pointer to an object, if ring is empty then NULL
+inline NODISCARD RING_T* Template(top)(selfptr)
+{
+	return self->contains ? &self->container[(self->current - 1) % self->limit] : NULL;
+}
+
+/// @brief Destroys top value
+inline void Template(pop)(selfptr)
+{
+	if (!self->contains) return;
+	self->current = (self->current - 1) % self->limit;
+	self->contains--;
+#ifdef IsClass
+	__rdtor(RING_T)(&self->container[self->current]);
+#endif // IsClass
+}
+/// @brief Clears entire ring
+inline void Template(clear)(selfptr)
+{
+	while (self->contains)Template(pop)(self);
+	self->current = 0;
+}
+
+inline void Destructor(selfptr)
+{
+#ifdef IsClass
+	Template(clear)(self);
+#endif // IsClass
+	free(self->container);
+}
+
+#undef IsClass
+#undef RING_T
+#endif // RING_T

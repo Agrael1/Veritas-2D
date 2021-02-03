@@ -30,7 +30,7 @@
 #define c_class Optional(OPTIONAL_T)
 #pragma push_macro("OPTIONAL_T")
 
-#define Optional(T__) __rcat2(Optional,T__)
+#define Optional(T__) __rcat2(Optional_,T__)
 #define unique_optional(T__) UNIQUE(Optional(T__))
 #define nullopt(type) ((Optional(type)){0})
 

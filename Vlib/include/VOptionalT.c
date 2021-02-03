@@ -4,4 +4,6 @@
 #define c_class Optional(OPTIONAL_T)
 
 extern inline void Destructor(selfptr);
+#undef OPTIONAL_T
+#include "VOptionalT.c"
 #endif
