@@ -30,5 +30,5 @@ RING_T* Template(emplace)(selfptr)
 
 
 #undef RING_T
-//#include "VRingT.c"
+#include "VRingT.c"
 #endif
