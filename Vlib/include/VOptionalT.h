@@ -35,20 +35,21 @@
 #define nullopt(type) ((Optional(type)){0})
 
 #ifndef TC
-/// @brief Destroys the contents if valid and IsClass is set
-inline void Destructor(selfptr)
-{
-#ifdef IsClass
-	if(bValid) __rdtor(OPTIONAL_T)(&self->Value);
-#endif
-}
-
 /// @brief Optional structure
 typedef struct c_class
 {
 	OPTIONAL_T Value; ///<A class or type to be stored
 	bool bValid; ///<Validator, if 0 -> do not look at the contents
 }c_class;
+
+
+/// @brief Destroys the contents if valid and IsClass is set
+inline void Destructor(selfptr)
+{
+#ifdef IsClass
+	if (bValid) __rdtor(OPTIONAL_T)(&self->Value);
+#endif
+}
 #endif //TC
 
 #undef IsClass

@@ -11,7 +11,9 @@ add_library (Vlib STATIC
 
 	"include/RuntimeClass.h"
 	"include/VString.h"
-	 "include/VHashMapT.h" "include/VHashMapT.c" "include/VRingT.h" "include/VOptionalT.h" "include/VOptionalT.c" "include/VRingT.c" "include/VBitSet.h")
+	 "include/VHashMapT.h" "include/VHashMapT.c" 
+	 "include/VRingT.h" "include/VOptionalT.h" "include/VOptionalT.c" "include/VRingT.c" 
+	 "include/VBitSet.h" "src/VBitSet.c")
 
 target_include_directories("${PROJECT_NAME}" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 # TODO: Добавьте тесты и целевые объекты, если это необходимо.

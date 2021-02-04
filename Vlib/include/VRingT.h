@@ -47,25 +47,11 @@ void Destructor(selfptr);
 #ifndef TC
 struct c_class
 {
-	uint16_t contains;
-	uint16_t current;
-	uint16_t limit;
-	RING_T* container;
+	uint16_t contains; ///<How many elements are currently held inside ring, cannot be greater than limit
+	uint16_t current; ///<Current position in the queue
+	uint16_t limit;		///<Maximum amount of placed elements
+	RING_T* container;	///<Container for elements
 };
-
-#ifdef IsClass
-/// @brief If object stored is a class it should be destroyed with destructor
-/// @param  element to destroy
-inline void Template(_Destroy_single)(RING_T* element)
-{
-	__rdtor(RING_T)(element);
-}
-#else
-inline void Template(_Destroy_single)(RING_T* element)
-{
-	unused_param(element);
-}
-#endif // IsClass
 #endif //TC
 
 /// @brief Emplaces value into ring, providing pointer to a place of construction

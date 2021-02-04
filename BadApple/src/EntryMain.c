@@ -1,8 +1,7 @@
-#include <WinSetup.h>
+#include <VBitSet.h>
+
 
 int main(void)
 {
-	
-
 	return 0;
 }
