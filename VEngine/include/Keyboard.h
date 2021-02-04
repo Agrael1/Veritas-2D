@@ -76,7 +76,7 @@ inline void ClearChar(selfptr)
 }
 
 /// @brief Clears both queues char and key
-inline void Flush(selfptr)
+inline void KeyboardFlush(selfptr)
 {
 	ClearChar(self);
 	ClearKeys(self);
