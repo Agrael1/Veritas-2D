@@ -3,6 +3,7 @@
 
 // Ring(KeyboardEvent) defined
 #include "Keyboard.h"
+#include "Mouse.h"
 
 #ifndef VTEMPLATES_IMPL
 #pragma pop_macro("c_class")

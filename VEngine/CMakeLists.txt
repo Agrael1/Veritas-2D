@@ -11,7 +11,7 @@ add_library ("${PROJECT_NAME}" STATIC
 
 "include/Templates.h"
 "include/WinSetup.h"
- "include/Keyboard.h" "src/Keyboard.c")
+ "include/Keyboard.h" "src/Keyboard.c" "include/Mouse.h" "src/Mouse.c")
 
 target_link_libraries("${PROJECT_NAME}" PUBLIC Vlib)
 target_include_directories("${PROJECT_NAME}" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
