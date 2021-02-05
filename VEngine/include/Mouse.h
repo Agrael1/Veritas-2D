@@ -33,12 +33,12 @@ typedef enum
 typedef struct MouseEvent
 {
 	MouseEventType type;
-	struct 
+	struct
 	{
 		bool bLeftIsPressed : 1;
 		bool bRightIsPressed : 1;
 		bool bmiddleIsPressed : 1;
-		bool padding : sizeof(bool)*CHAR_BIT - 3;
+		bool padding : sizeof(bool)* CHAR_BIT - 3;
 	};
 	int x;			///<x position where the event occured
 	int y;			///<y position where the event occured

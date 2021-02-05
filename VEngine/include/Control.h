@@ -30,9 +30,15 @@ struct MessageWindow
 /// @brief Constructs a hidden messagepump window over console one
 /// @param width  - Width of the console window in pixels
 /// @param height - Height of the console window in pixels
-/// @param ConsoleWindow - self explanatory
+/// @param ConsoleWindow - handle to parent console window
 void Constructor(selfptr, int32_t width, int32_t height, HWND ConsoleWindow);
 void Destructor(selfptr);
+
+/// @brief Awakes or puts the message window to sleep
+inline void Awake(selfptr)
+{
+	PostMessage(self->Window, WM_ACTIVATE, true, 0);
+}
 
 /// @brief Make cursor stuck in some area 
 inline void ConfineCursor(selfptr)
@@ -77,6 +83,7 @@ inline void DisableCursor(selfptr)
 	ConfineCursor(self);
 }
 
+/// @brief Message handler function
 LRESULT HandleMsg(selfptr, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 /// @brief Message pump

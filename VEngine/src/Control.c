@@ -8,26 +8,6 @@
 
 #define WND_CALL_INFO(x) x
 
-// TODO: To window.h
-//void _CatchFocus(selfptr)
-//{
-//	DWORD numRecords;
-//	DWORD numRecsRecieved;
-//	GetNumberOfConsoleInputEvents(self->refCon->hIn, &numRecords);
-//	PINPUT_RECORD records = malloc(numRecords * sizeof(INPUT_RECORD));
-//	ReadConsoleInput(self->refCon->hIn, records, numRecords, &numRecsRecieved);
-//
-//	for (DWORD i = 0; i < numRecsRecieved; i++)
-//	{
-//		if (records[i].EventType == FOCUS_EVENT)
-//		{
-//			PostMessage(self->Window, WM_ACTIVATE, records[i].Event.FocusEvent.bSetFocus, 0);
-//		}
-//	}
-//	free(records);
-//}
-
-
 extern inline void ConfineCursor(selfptr);
 extern inline void FreeCursor(void);
 extern inline void HideCursor(void);
