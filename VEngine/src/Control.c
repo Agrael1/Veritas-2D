@@ -14,6 +14,7 @@ extern inline void HideCursor(void);
 extern inline void CShowCursor(void);
 extern inline void EnableCursor(selfptr);
 extern inline void DisableCursor(selfptr);
+extern inline void ControlAwake(selfptr);
 
 LRESULT HandleMsg(selfptr, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
