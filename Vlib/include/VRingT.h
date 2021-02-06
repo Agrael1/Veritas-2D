@@ -39,10 +39,10 @@ typedef struct c_class c_class;
 
 /// @brief Constructs a new ring
 /// @param length - length of ring
-void Constructor(selfptr, uint16_t length);
+inline void Constructor(selfptr, uint16_t length);
 
 /// @brief Destroys all the elements in ring as well as the ring itself
-void Destructor(selfptr);
+inline void Destructor(selfptr);
 
 #ifndef TC
 struct c_class
@@ -56,7 +56,19 @@ struct c_class
 
 /// @brief Emplaces value into ring, providing pointer to a place of construction
 /// @return valid pointer to an object to be initialized
-NODISCARD RING_T* Template(emplace)(selfptr);
+inline NODISCARD RING_T* Template(emplace)(selfptr)
+{
+#ifdef IsClass	
+	if (self->contains == self->limit)
+	{
+		__rdtor(RING_T)(&self->container[self->current]);
+	}
+#endif // IsClass
+	RING_T* out = &self->container[self->current];
+	self->current = (self->current + 1) % self->limit;
+	if (self->contains < self->limit)self->contains++;
+	return out;
+}
 
 /// @brief Provides pointer to a topmost value
 /// @return valid pointer to an object, if ring is empty then NULL
@@ -88,6 +100,13 @@ inline void Destructor(selfptr)
 	Template(clear)(self);
 #endif // IsClass
 	free(self->container);
+}
+
+inline void Constructor(selfptr, uint16_t length)
+{
+	self->contains = self->current = 0;
+	self->limit = length;
+	ALLOC_CHECK(self->container = calloc(length, sizeof(RING_T)));
 }
 
 #undef IsClass

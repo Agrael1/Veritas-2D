@@ -58,7 +58,6 @@ inline void Constructor(selfptr)
 	self->Dimensions = (COORD){ 0, 0 };
 	self->lOriginalParams = 0;
 	self->rWindowRect = (SMALL_RECT){ 0,0,0,0 };
-	self->ConsoleWindow = 0;
 }
 inline void Destructor(selfptr)
 {

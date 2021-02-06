@@ -41,7 +41,7 @@ typedef struct
 #define c_class VeritasEngine
 
 typedef struct VeritasEngine VeritasEngine;
-typedef const struct IVeritasEngine IVeritasEngine;
+typedef struct IVeritasEngine IVeritasEngine;
 
 struct VeritasEngine
 {

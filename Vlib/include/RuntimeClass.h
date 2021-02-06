@@ -44,7 +44,7 @@
 #define selfptr c_class* self
 
 #define Virtual(x) Template(x)
-#define VirtualTable(Interf) static const struct Interf vfptr =
+#define VirtualTable(Interf) static struct Interf vfptr =
 #define UseVirtual(pointer) pointer->method = &vfptr
 #define ALLOC_CHECK(exp) if(!(exp))exit(99)
 

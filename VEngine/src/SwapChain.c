@@ -2,6 +2,15 @@
 #include "SwapChain.h"
 #include <malloc.h>
 #include <float.h>
+#include <assert.h>
+
+#ifndef _STATIC_ASSERT
+#ifdef __clang__
+#define _STATIC_ASSERT(expr) _Static_assert((expr), #expr)
+#else
+#define _STATIC_ASSERT(expr) typedef char __static_assert_t[(expr) != 0]
+#endif
+#endif
 
 extern inline CHAR_INFO* PresentFrame(selfptr);
 extern inline bool DepthTest(selfptr, unsigned x, unsigned y, float zValue);
@@ -14,7 +23,7 @@ void Constructor(selfptr, COORD Dimensions)
 {
 	self->Dimensions = Dimensions;
 
-	_Static_assert(sizeof(CHAR_INFO) == sizeof(float), "Size of CHAR_INFO is not equal to float");
+	_STATIC_ASSERT(sizeof(CHAR_INFO) == sizeof(float));
 	void* contig_alloc = calloc(3ull * Dimensions.X * Dimensions.Y, sizeof(float));
 
 	self->ZBuffer = (float*)contig_alloc;
