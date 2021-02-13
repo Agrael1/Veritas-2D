@@ -34,10 +34,10 @@
 #define __xcat3(x,y,z)x##y##z
 #define __rcat3(x,y,z) __xcat3(x,y,z)
 
-#define __rctor(x) __rcat3(x,_,ctor)
+#define __rctor(x) __rcat2(x,_ctor)
 #define Constructor __rctor(c_class)
 
-#define __rdtor(x) __rcat3(x,_,dtor)
+#define __rdtor(x) __rcat2(x,_dtor)
 #define Destructor __rdtor(c_class)
 
 #define Implements(Interf) struct Interf* method

@@ -137,5 +137,5 @@ void Template(erase)(selfptr, StringView key)
 }
 
 #undef HASHMAP_T
-#include "htab.c"
+#include "VHashMapT.c"
 #endif

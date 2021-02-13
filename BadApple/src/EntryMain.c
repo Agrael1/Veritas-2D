@@ -1,5 +1,6 @@
 #include "../../MediaPlayer/MPAPI.h"
 #include <VeritasEngine.h>
+#include <VString.h>
 
 #pragma comment(lib, "C:\\Users\\aa\\Documents\\Visual Studio 2019\\Projects\\Veritas-3D\\x64\\Release\\MediaPlayer.lib")
 
@@ -110,5 +111,8 @@ int main(void)
     }
 
     MPRelease(player);
+
+	
+
     return 0;
 }
