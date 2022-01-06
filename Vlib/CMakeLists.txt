@@ -1,11 +1,32 @@
-﻿# CMakeList.txt: проект CMake для Vlib; включите исходный код и определения,
-# укажите здесь логику для конкретного проекта.
-#
-cmake_minimum_required (VERSION 3.15)
+﻿cmake_minimum_required (VERSION 3.15)
 
 project(Vlib C)
 
-# Добавьте источник в исполняемый файл этого проекта.
+# first we can indicate the documentation build as an option and set it to ON by default
+option(BUILD_DOC "Build documentation" ON)
+
+# check if Doxygen is installed
+find_package(Doxygen)
+if (DOXYGEN_FOUND)
+    # set input and output files
+    set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/doc/Doxyfile.in)
+    set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
+
+    # request to configure the file
+    configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
+    message("Doxygen build started")
+
+    # note the option ALL which allows to build the docs together with the application
+    add_custom_target( doc_doxygen ALL
+        COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        COMMENT "Generating API documentation with Doxygen"
+        VERBATIM )
+else (DOXYGEN_FOUND)
+  message("Doxygen need to be installed to generate the doxygen documentation")
+endif (DOXYGEN_FOUND)
+
+
 add_library ("${PROJECT_NAME}" STATIC 
 	"src/VString.c"
 
@@ -16,6 +37,6 @@ add_library ("${PROJECT_NAME}" STATIC
 	 "include/VBitSet.h" "src/VBitSet.c")
 
 target_include_directories("${PROJECT_NAME}" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
-# TODO: Добавьте тесты и целевые объекты, если это необходимо.
+file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/include" DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 add_subdirectory ("test")

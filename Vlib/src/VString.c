@@ -94,14 +94,12 @@ void Destructor(String* self)
 	if (self->large && self->data)
 		free(self->data);
 }
-
 void Move(String* self, String* other)
 {
 	*self = *other;
 	other->large = 0;
 	Constructor(other, NULL, 0);
 }
-
 void Copy(String* self, const String* other)
 {
 	*self = *other;

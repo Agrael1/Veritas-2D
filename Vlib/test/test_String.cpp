@@ -174,7 +174,9 @@ TEST(String, pop_front)
 		s.pop_front();
 		EXPECT_TRUE(s.empty());
 		EXPECT_STREQ(s.c_str(), "");
+#ifndef NDEBUG
 		EXPECT_DEATH(s.pop_front(), "");
+#endif // !NDEBUG
 	}
 
 	{
