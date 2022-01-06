@@ -29,13 +29,16 @@
  * @brief macro definitions for class structures
  */
 #pragma once
+#include <stdint.h>
+
 #define __xcat2(x,y)x##y
 #define __rcat2(x,y) __xcat2(x,y)
 #define __xcat3(x,y,z)x##y##z
 #define __rcat3(x,y,z) __xcat3(x,y,z)
 
-#define __rctor(x) __rcat2(x,_ctor)
-#define Constructor __rctor(c_class)
+#define Constructor __rcat2(c_class,_ctor)
+#define Move  __rcat2(c_class,_move)
+#define Copy  __rcat2(c_class,_copy)
 
 #define __rdtor(x) __rcat2(x,_dtor)
 #define Destructor __rdtor(c_class)
@@ -51,35 +54,6 @@
 #define Template(x) __rcat3(x,_,c_class)
 #define unused_param(x) (void)(x)
 
-#include <stdint.h>
-
-#if defined(_MSC_VER) || (defined(__INTEL_COMPILER) && defined(_WIN32))
-#if defined(_M_X64)
-#define BITNESS 64
-#define LONG_SIZE 4
-#else
-#define BITNESS 32
-#define LONG_SIZE 4
-#endif
-#elif defined(__clang__) || defined(__INTEL_COMPILER) || defined(__GNUC__)
-#if defined(__x86_64)
-#define BITNESS 64
-#else
-#define BITNESS 32
-#endif
-#if __LONG_MAX__ == 2147483647L
-#define LONG_SIZE 4
-#else
-#define LONG_SIZE 8
-#endif
-#endif
-
-#if BITNESS == 64
-typedef int32_t halfptr;
-#else
-typedef int16_t halfptr;
-#endif
-
 typedef void(*dtor_t)(void*);
 
 #if defined(__clang__) || defined(__INTEL_COMPILER) || defined(__GNUC__)
@@ -91,7 +65,7 @@ typedef void(*dtor_t)(void*);
 #else
 #define UNUSED 
 #define COLD
-#define UNIQUE(x) x
+#define UNIQUE(x)
 #define NODISCARD 
 #define DEPRECATED __declspec(deprecated)
 #endif
@@ -101,3 +75,24 @@ typedef void(*dtor_t)(void*);
 #else
 #define CLTYPE(Type) (Type)
 #endif
+
+
+#define DefaultCopy \
+inline void __rcat2(c_class, _copy_assign)(selfptr, c_class* other){\
+	Destructor(self);\
+	Copy(self, other);\
+}
+#define DefaultMove \
+inline void __rcat2(c_class, _move_assign)(selfptr, c_class* other){\
+	Destructor(self);\
+	Move(self, other);\
+}\
+
+#define DefaultOperators DefaultCopy DefaultMove
+
+#define DefaultCopyI \
+extern inline void __rcat2(c_class, _copy_assign)(selfptr, c_class* other);
+#define DefaultMoveI \
+extern inline void __rcat2(c_class, _move_assign)(selfptr, c_class* other);
+
+#define DefaultOperatorsI DefaultCopyI DefaultMoveI

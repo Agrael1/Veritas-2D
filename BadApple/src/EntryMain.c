@@ -2,7 +2,7 @@
 #include <VeritasEngine.h>
 #include <VString.h>
 
-#pragma comment(lib, "C:\\Users\\aa\\Documents\\Visual Studio 2019\\Projects\\Veritas-3D\\x64\\Release\\MediaPlayer.lib")
+#pragma comment(lib, "D:\\Repos\\Veritas-3D\\x64\\Debug\\MediaPlayer.lib")
 
 enum DEF_COLOUR
 {
@@ -89,7 +89,7 @@ bool OnUserCreate(VeritasEngine* self)
 int main(void)
 {
     player = MPInitialize(); 
-    MPSetVideoResource(player, L"C:/users/aa/desktop/BadApple.mp4");
+    MPSetVideoResource(player, L"E:/users/aa/desktop/BadApple.mp4");
 
     if (MPIsInfoReady(player))
     {

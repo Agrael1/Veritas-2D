@@ -26,7 +26,8 @@
 #pragma once
 #include <string.h>
 #include <stdbool.h>
-#include "RuntimeClass.h"
+#include <limits.h>
+#include <RuntimeClass.h>
 
 #pragma push_macro("c_class")
 #undef c_class
@@ -46,18 +47,37 @@ void Constructor(String* self, const char* data, size_t size);
 /// @param self - pointer to initialized string
 void Destructor(String* self);
 
+/// @brief Move Constructor of the string
+/// Clears the data from other, so it does not point to the same data
+/// if other string is small, simple copy is performed
+/// @param self string to construct
+/// @param other string to move from
+void Move(String* self, String* other);
+
+/// @brief Copy constructor from another object
+/// Performs deep copy of the container to unitialized container
+/// @param to gets constructed
+/// @param from - gets copied
+void Copy(String* self, const String* from);
+
+DefaultOperators
+
 /// @brief Do not use contents directly
 union String
 {
     /// @brief Long String representation
     struct
     {
-        char* data; ///<Pointer to allocated data
-        size_t size;    ///<String length 
-        size_t capacity : sizeof(size_t) * 8 - 1; ///<String container size
-        size_t flag : 1; ///< short or long representation
+        char* data; ///< Pointer to allocated data
+        size_t size;    ///< String length 
+        size_t capacity : sizeof(size_t) * CHAR_BIT - 1; ///< String container size
+        size_t large : 1; ///< Short or long representation
     };
-    char altrepr[sizeof(void*) * 3]; ///<Short string
+    struct
+    {
+        char shortstr[sizeof(void*) * 3 - 1]; ///< Short string
+        char last; ///< Last hack byte, that holds remainig capacity (terminating zero if empty)
+    };
 };
 
 /// @brief View over string, used for function arguments
@@ -68,62 +88,21 @@ struct StringView
     size_t size; ///<Length of string
 };
 
-/// @brief Creates a new string by moving data from the old one (old gets invalidated, but destroyable) 
-/// Can be passed to the destructor and will work correctly afterwards 
-/// The only reason it's here because of long strings, that should not be copied.
-/// @param [invalidated] self - pointer to a valid string 
-/// @return [nodiscard] a new string object, must be placed to an uninitialized container immediately
-inline NODISCARD String string_move(String* self)
-{
-    char* data = self->data;
-    self->data = NULL;
-    return CLTYPE(String) { { data, self->size, self->capacity, self->flag} };
-}
-
-/// @brief Assignment operator
-/// @param self - pointer to a valid string(gets correctly initialized)
-/// @param from - copy value 
-inline void string_assign(String* self, String from) //activates for unwinder
-{
-    Destructor(self);
-    *self = from;
-}
-
-/// @brief Move from one initialized string to another, performing destruction on 'to'
-/// @param to	- gets destroyed and reinitialized 
-/// @param from	- gets emptied
-inline void string_move_assign(String* to, String* from)
-{
-    string_assign(to, string_move(from));
-}
-
-/// @brief Copy constructor from another object
-/// @param from - gets copied
-/// @return [nodiscard] a new string object, must be placed to an uninitialized container immediately
-NODISCARD String string_copy(const String* from);
-
-/// @brief Copy assign operator, performing destruction on 'to' and copying contents of 'from'
-/// @param to - gets destroyed and reinitialized
-/// @param from - gets copied
-inline void string_copy_assign(String* to, String* from)
-{
-    string_assign(to, string_copy(from));
-}
 
 /// @brief Get a constant char string
 /// @param self - char string from
 /// @return Const char array
-inline NODISCARD const char* c_str(const String* self)
+inline const char* c_str(const String* self)
 {
-    return !self->flag ? (const char*)self : self->data;
+    return self->large ? self->data : (const char*)self;
 }
 
 /// @brief Get a length of string
 /// @param self - pointer to a valid string 
 /// @return length in bytes
-inline NODISCARD size_t string_length(const String* self)
+inline size_t string_length(const String* self)
 {
-    return !self->flag ? sizeof(String) - 1 - self->altrepr[sizeof(String) - 1] : self->size;
+    return self->large ? self->size : sizeof(String) - 1 - self->last;
 }
 
 /// @brief Get a character at position n
@@ -140,7 +119,9 @@ inline char string_at(const String* self, size_t n)
 /// @return true if empty
 inline bool string_empty(const String* self)
 {
-    return !self->flag ? !self->altrepr[0] : !self->data || !self->data[0];
+    return self->large ? 
+        !self->data || !self->data[0] : 
+        (self->last == sizeof(String) - 1);
 }
 
 /// @brief How much can a container hold before reallocation
@@ -148,7 +129,9 @@ inline bool string_empty(const String* self)
 /// @return size of container
 inline size_t string_capacity(const String* self)
 {
-    return (!self->flag) ? (size_t)self->altrepr[sizeof(String) - 1] : self->capacity;
+    return !self->large ? 
+        sizeof(String) :
+        self->capacity;
 }
 
 /// @brief Compares two strings
@@ -204,23 +187,25 @@ void string_push_back(String* self, char c);
 /// @param self - pointer to a valid string
 void string_clear(String* self);
 
-/// @brief Inserts a part of a 'from' string into 'self' erases contents after start!
+/// @brief Concatenates strings into first one
 /// @param self - string to write to
-/// @param start - after which symbol to write
-/// @param from - string to write from
-void string_insert_range(String* self, size_t start, StringView from);
-
-/// @brief 
-/// @param self - string to write to
-/// @param from - string to write from
+/// @param from - string to copy from
 void string_cat(String* self, const String* from);
 
-/// @brief 
+/// @brief Appends charachter stream to the end of the current string
 /// @param self - string to write to
 /// @param input - string to write from
 void string_append(String* self, const char* input);
 
+/// @brief Adds charachter stream before string 
+/// writes bytes at the beginning without separation
+/// @param self - string to write to
+/// @param input - string to prepend
+void string_prepend(String* self, const char* input);
 
+/// @brief removes charachter from the front of the string
+/// @param self - string 
+void string_pop_front(String* self);
 
 #ifndef VSTRING_IMPL
 #pragma pop_macro("c_class")

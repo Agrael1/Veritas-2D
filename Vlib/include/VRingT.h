@@ -26,6 +26,7 @@
 
 #ifdef RING_T
 #include <malloc.h>
+#include <stdint.h>
 #include "RuntimeClass.h"
 
 #undef c_class

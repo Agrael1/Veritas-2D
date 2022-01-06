@@ -49,7 +49,7 @@ typedef enum
 	MRelease,
 	WheelUp,
 	WheelDown,
-	Move,
+	MMove,
 	Enter,
 	Leave,
 }MouseEventType;
@@ -132,7 +132,7 @@ inline void OnMouseMove(selfptr, int newx, int newy)
 	self->posX = newx;
 	self->posY = newy;
 
-	MakeMouseEvent(emplace_Ring_MouseEvent(&self->MouseEvents), Move, self);
+	MakeMouseEvent(emplace_Ring_MouseEvent(&self->MouseEvents), MMove, self);
 }
 
 /// @brief Writes leave event to event queue 
