@@ -11,5 +11,6 @@ Once it was a test of C language and a platform to learn C++, but now it became 
 - [ ] WinRT player to cmake
 - [ ] Restore old game in CGE
 - [ ] Tests for containers
-- [ ] Workflow
+- [x] Workflow
 - [ ] Interfacing to pixel graphics
+- [ ] Remove .sln
