@@ -27,7 +27,7 @@
 #ifdef RING_T
 #include <malloc.h>
 #include <stdint.h>
-#include "RuntimeClass.h"
+#include <RuntimeClass.h>
 
 #undef c_class
 #define c_class Ring(RING_T)
@@ -46,6 +46,7 @@ inline void Constructor(selfptr, uint16_t length);
 inline void Destructor(selfptr);
 
 #ifndef TC
+/// @brief Ring container
 struct c_class
 {
 	uint16_t contains; ///<How many elements are currently held inside ring, cannot be greater than limit
@@ -75,14 +76,18 @@ inline NODISCARD RING_T* Template(emplace)(selfptr)
 /// @return valid pointer to an object, if ring is empty then NULL
 inline NODISCARD RING_T* Template(top)(selfptr)
 {
-	return self->contains ? &self->container[(self->current - 1) % self->limit] : NULL;
+	return self->contains ?
+		self->current ?
+		&self->container[(self->current - 1) % self->limit] :
+		&self->container[self->limit - 1] :
+		NULL;
 }
 
 /// @brief Destroys top value
 inline void Template(pop)(selfptr)
 {
 	if (!self->contains) return;
-	self->current = (self->current - 1) % self->limit;
+	self->current = self->current ? (self->current - 1) % self->limit : self->limit - 1;
 	self->contains--;
 #ifdef IsClass
 	__rdtor(RING_T)(&self->container[self->current]);
@@ -95,6 +100,7 @@ inline void Template(clear)(selfptr)
 	self->current = 0;
 }
 
+/// @brief Destroys the ring properly
 inline void Destructor(selfptr)
 {
 #ifdef IsClass
@@ -103,11 +109,13 @@ inline void Destructor(selfptr)
 	free(self->container);
 }
 
+/// @brief Creates ring with length elements
+/// @param length - length of the ring (number of elements)
 inline void Constructor(selfptr, uint16_t length)
 {
 	self->contains = self->current = 0;
 	self->limit = length;
-	ALLOC_CHECK(self->container = calloc(length, sizeof(RING_T)));
+	ALLOC_CHECK(self->container = (RING_T*)calloc(length, sizeof(RING_T)));
 }
 
 #undef IsClass

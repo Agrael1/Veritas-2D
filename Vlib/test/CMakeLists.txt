@@ -8,7 +8,7 @@ include(GoogleTest)
 add_executable(
   "${PROJECT_NAME}"
   "test_String.cpp"
-)
+ "test_VRing.cpp")
 target_link_libraries(
 	"${PROJECT_NAME}" PUBLIC
 	Vlib

@@ -45,6 +45,10 @@ public:
 	{
 		::string_prepend(&s, c.data());
 	}
+	void append(std::string_view c)
+	{
+		::string_append(&s, c.data());
+	}
 	void pop_front()
 	{
 		::string_pop_front(&s);
@@ -164,6 +168,51 @@ TEST(String, prepend)
 		s.prepend("fuck");
 		EXPECT_EQ(s.length(), a.size() + 5);
 		EXPECT_STREQ(s.c_str(), "fuckeabcdefghierdfzsdzsczcs");
+		EXPECT_TRUE(s.is_long());
+	}
+}
+TEST(String, append)
+{
+	{
+		CVString s;
+		s.append("a");
+		EXPECT_FALSE(s.empty());
+		EXPECT_NE(s.length(), 0);
+		EXPECT_STREQ(s.c_str(), "a");
+	}
+
+	{
+		CVString s{ "abcd" };
+		s.append("e");
+		EXPECT_EQ(s.length(), 5);
+		EXPECT_STREQ(s.c_str(), "abcde");
+		s.append("fuck");
+		EXPECT_EQ(s.length(), 9);
+		EXPECT_STREQ(s.c_str(), "abcdefuck");
+	}
+
+	{
+		std::string a = "abcdefghierdfzsdzsczcsdfzds";
+		CVString s{ a.c_str() };
+		s.append("e");
+		EXPECT_EQ(s.length(), a.size() + 1);
+		EXPECT_STREQ(s.c_str(), "abcdefghierdfzsdzsczcsdfzdse");
+		s.append("fuck");
+		EXPECT_EQ(s.length(), a.size() + 5);
+		EXPECT_STREQ(s.c_str(), "abcdefghierdfzsdzsczcsdfzdsefuck");
+	}
+
+	{
+		std::string a = "abcdefghierdfzsdzsczcs";
+		CVString s{ a.c_str() };
+		EXPECT_FALSE(s.is_long());
+		s.append("e");
+		EXPECT_EQ(s.length(), a.size() + 1);
+		EXPECT_STREQ(s.c_str(), "abcdefghierdfzsdzsczcse");
+		EXPECT_FALSE(s.is_long());
+		s.append("fuck");
+		EXPECT_EQ(s.length(), a.size() + 5);
+		EXPECT_STREQ(s.c_str(), "abcdefghierdfzsdzsczcsefuck");
 		EXPECT_TRUE(s.is_long());
 	}
 }
