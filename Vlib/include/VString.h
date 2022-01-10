@@ -56,7 +56,7 @@ void Move(String* self, String* other);
 
 /// @brief Copy constructor from another object
 /// Performs deep copy of the container to unitialized container
-/// @param to gets constructed
+/// @param self gets constructed
 /// @param from - gets copied
 void Copy(String* self, const String* from);
 

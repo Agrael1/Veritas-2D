@@ -1,8 +1,6 @@
-#include "../../MediaPlayer/MPAPI.h"
+#include <MPAPI.h>
 #include <VeritasEngine.h>
 #include <VString.h>
-
-#pragma comment(lib, "D:\\Repos\\Veritas-3D\\x64\\Debug\\MediaPlayer.lib")
 
 enum DEF_COLOUR
 {

@@ -7,6 +7,7 @@ project ("ConsoleApplication5")
 
 set(CMAKE_CXX_STANDARD 20)
 
+
 include(FetchContent)
 FetchContent_Declare(
   googletest
@@ -22,5 +23,6 @@ enable_testing()
 add_subdirectory ("Vlib")
 add_subdirectory ("VEngine")
 add_subdirectory ("BadApple")
+add_subdirectory ("MediaPlayer")
 
 
