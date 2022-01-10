@@ -75,6 +75,7 @@ bld/
 
 # Executables
 *.exe
+!NuGet/nuget.exe
 *.out
 *.app
 *.i*86
