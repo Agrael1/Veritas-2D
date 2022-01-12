@@ -29,10 +29,10 @@
 #define HashMap(T__) __rcat2(HashMap_,T__)
 #define unique_hash_ptr(T__) UNIQUE(HashMap(T__))
 
-#ifdef HASHMAP_T
+#ifdef HMAP_T
 #undef c_class
-#define c_class HashMap(HASHMAP_T)
-#pragma push_macro("HASHMAP_T")
+#define c_class HashMap(HMAP_T)
+#pragma push_macro("HMAP_T")
 
 typedef struct __rcat2(_, c_class)* c_class; ///<unique_ptr template declaration
 
@@ -42,7 +42,7 @@ typedef struct __rcat2(_, c_class)* c_class; ///<unique_ptr template declaration
 typedef struct Template(hash_item)
 {
     String key; ///<Key gets stored as a string object
-    HASHMAP_T value; ///<Value stored as a full object and gets destroyed if IsClass is defined
+    HMAP_T value; ///<Value stored as a full object and gets destroyed if IsClass is defined
     struct Template(hash_item)* next; ///<simple list
 }Template(hash_item);
 
@@ -57,12 +57,12 @@ struct __rcat2(_, c_class)
 #ifdef IsClass
 /// @brief If object stored is a class it should be destroyed with destructor
 /// @param  element to destroy
-inline void Template(_Destroy_single)(HASHMAP_T* element)
+inline void Template(_Destroy_single)(HMAP_T* element)
 {
-    __rdtor(HASHMAP_T)(element);
+    __rdtor(HMAP_T)(element);
 }
 #else
-inline void Template(_Destroy_single)(HASHMAP_T* element)
+inline void Template(_Destroy_single)(HMAP_T* element)
 {
     unused_param(element);
 }
@@ -82,17 +82,12 @@ void Destructor(selfptr);
 /// Initialization has to be performed manually over the returned pointer
 /// @param key - key to an object
 /// @return pointer to a memory for a new object to use constructor on
-NODISCARD HASHMAP_T* Template(emplace)(selfptr, StringView key);
+NODISCARD HMAP_T* Template(emplace)(selfptr, StringView key);
 
 /// @brief Searches a value mapped to a key provided
 /// @param key - key to an object
 /// @return valid pointer if the object is found, NULL if not
-NODISCARD HASHMAP_T* Template(find)(selfptr, const String* key);
-
-/// @brief Searches a value mapped to a key provided
-/// @param key - key to an object
-/// @return valid pointer if the object is found, NULL if not
-NODISCARD HASHMAP_T* Template(cfind)(selfptr, const char* key);
+NODISCARD HMAP_T* Template(find)(selfptr, StringView key);
 
 /// @brief Erases an element with a specific key
 /// @param key - key to an object 
@@ -103,7 +98,7 @@ void Template(clear)(selfptr);
 
 
 #undef IsClass
-#undef HASHMAP_T
+#undef HMAP_T
 
 #endif // T
 

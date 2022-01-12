@@ -30,7 +30,24 @@ if (NOT ret EQUAL 0)
     message(FATAL_ERROR "Failed to install nuget package Microsoft.Windows.CppWinRT")
 endif()
 
-file(GLOB CPPWINRT_DIR ${CMAKE_BINARY_DIR}/packages/Microsoft.Windows.CppWinRT.*)
+file(GLOB CPPWINRT_DIRS ${CMAKE_BINARY_DIR}/packages/Microsoft.Windows.CppWinRT.*)
+list(LENGTH CPPWINRT_DIRS CPPWINRT_DIRS_L)
+if(${CPPWINRT_DIRS_L} GREATER 1)
+    #Sort directories by version in descending order, so the first dir is top version
+    list(SORT CPPWINRT_DIRS COMPARE NATURAL ORDER DESCENDING)
+    list(GET CPPWINRT_DIRS 0 CPPWINRT_DIR)
+
+    #Remove older version
+    MATH(EXPR CPPWINRT_DIRS_L "${CPPWINRT_DIRS_L}-1")
+    foreach(I RANGE 1 ${CPPWINRT_DIRS_L})
+        list(GET CPPWINRT_DIRS ${I} OLD)
+        file(REMOVE_RECURSE ${OLD})
+    endforeach()
+else()
+    list(GET CPPWINRT_DIRS 0 CPPWINRT_DIR)
+endif()
+
+
 
 set(CPPWINRT ${CPPWINRT_DIR}/bin/cppwinrt.exe)
 execute_process(COMMAND
