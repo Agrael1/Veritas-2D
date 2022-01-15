@@ -207,6 +207,10 @@ void string_prepend(String* self, const char* input);
 /// @param self - string 
 void string_pop_front(String* self);
 
+/// @brief allocates memory for the string
+/// @param self - string 
+void string_reserve(String* self, size_t count);
+
 #ifndef VSTRING_IMPL
 #pragma pop_macro("c_class")
 #endif

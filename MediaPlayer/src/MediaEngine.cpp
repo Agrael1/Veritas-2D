@@ -1,5 +1,6 @@
 #include "MediaEngine.h"
 #include <wil/com.h>
+#include <filesystem>
 
 class MediaEngineNotify : public winrt::implements< MediaEngineNotify, IMFMediaEngineNotify >
 {
@@ -122,6 +123,8 @@ void MediaEnginePlayer::SetSource(std::wstring_view sourceUri)
     m_isFinished = false;
 
     if (!m_mediaEngine)return;
+    if (!std::filesystem::exists(sourceUri))return; //early return
+
     winrt::check_hresult(m_mediaEngine->SetSource(bstrURL.get()));
     winrt::check_hresult(m_mediaEngine->Load());
 
