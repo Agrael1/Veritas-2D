@@ -30,6 +30,10 @@
  */
 #pragma once
 #include <stdint.h>
+#include <stdlib.h>
+
+
+
 
 #define __xcat2(x,y)x##y
 #define __rcat2(x,y) __xcat2(x,y)
