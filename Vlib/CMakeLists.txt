@@ -31,9 +31,11 @@ endif (DOXYGEN_FOUND)
 
 add_library ("${PROJECT_NAME}" STATIC 
 	"src/VString.c"
+	
 
 	"include/RuntimeClass.h"
 	"include/VString.h"
+	
 	 "include/VHashMapT.h" "include/VHashMapT.c" 
 	 "include/VRingT.h" "include/VOptionalT.h" "include/VOptionalT.c" "include/VRingT.c" 
 	 "include/VBitSet.h" "src/VBitSet.c")

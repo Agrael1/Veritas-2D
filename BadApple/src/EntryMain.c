@@ -1,6 +1,8 @@
 #include <MPAPI.h>
 #include <VeritasEngine.h>
 #include <VString.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 enum DEF_COLOUR
 {
@@ -84,10 +86,22 @@ bool OnUserCreate(VeritasEngine* self)
 	return true;
 }
 
-int main(void)
+int main(int argc, char** argv)
 {
+	if (argc > 2) {
+		printf("Usage: %s [filename]\n Plays black and white video specified in filename\n"
+			"Looks for BadApple.mp4 by default", argv[0]);
+		return 1;
+	}
+	wchar_t* file = L"BadApple.mp4";
+	if (argc == 2)
+	{
+		file = alloca((strlen(argv[1])+1)*sizeof(*file));
+		mbstowcs(file, argv[1], strlen(argv[1]));
+	}
+
     player = MPInitialize(); 
-    MPSetVideoResource(player, L"E:/users/aa/desktop/BadApple.mp4");
+    MPSetVideoResource(player, file);
 
     if (MPIsInfoReady(player))
     {
@@ -107,6 +121,10 @@ int main(void)
 
         VeritasEngine_dtor(&ve);
     }
+	else
+	{
+		printf("File Not Found\n");
+	}
 
     MPRelease(player);
 

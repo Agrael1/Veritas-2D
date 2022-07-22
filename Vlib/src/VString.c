@@ -192,6 +192,11 @@ void string_pop_front(String* self)
 	memmove(self->data, self->data + 1, self->size--);
 }
 
+void string_reserve(String* self, size_t count)
+{
+	reallocate_for(self, count);
+}
+
 void string_cat(String* self, const String* from)
 {
 	string_append(self, c_str(from));
