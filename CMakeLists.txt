@@ -22,6 +22,7 @@ enable_testing()
 # Включите подпроекты.
 add_subdirectory ("Vlib")
 add_subdirectory ("VEngine")
+add_subdirectory ("Maze")
 add_subdirectory ("BadApple")
 add_subdirectory ("MediaPlayer")
 

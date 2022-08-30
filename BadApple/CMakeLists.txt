@@ -12,7 +12,7 @@ endif ()
 # Добавьте источник в исполняемый файл этого проекта.
 add_executable ("${PROJECT_NAME}" 
 "src/EntryMain.c"
-  )
+   "../Maze/include/Maze.h")
 
 target_link_libraries("${PROJECT_NAME}" PUBLIC VEngine MediaPlayer)
 target_include_directories("${PROJECT_NAME}" PRIVATE 
