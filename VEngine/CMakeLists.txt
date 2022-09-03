@@ -4,9 +4,11 @@
 cmake_minimum_required (VERSION 3.8)
 
 project(VEngine C)
-set(CMAKE_C_STANDARD 11)
+
+
+set(CMAKE_C_STANDARD 17)
 if (MSVC) 
-	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /std:c11") 
+	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /std:c17") 
 endif ()
 
 add_custom_target(InvalidateTemplates ALL

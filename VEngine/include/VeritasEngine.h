@@ -52,6 +52,11 @@ struct VeritasEngine
 	ConsoleWindow Window;
 	MessageWindow Control;
 	float fElapsedSeconds;
+
+	uintptr_t GraphicsThread;
+	volatile bool bActive;
+	volatile bool bSleeping;
+	HANDLE Holder;
 };
 struct IVeritasEngine
 {

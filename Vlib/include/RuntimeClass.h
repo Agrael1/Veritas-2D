@@ -69,7 +69,7 @@ typedef void(*dtor_t)(void*);
 #else
 #define UNUSED 
 #define COLD
-#define UNIQUE(x)
+#define UNIQUE(x) _Static_assert(0, "Unique does not work in MSVC")
 #define NODISCARD 
 #define DEPRECATED __declspec(deprecated)
 #endif

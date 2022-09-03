@@ -132,7 +132,8 @@ inline void BeginFrame(selfptr, CHAR_INFO color)
 
 // Old Functions
 //void (*DrawTriangleWireframe)(selfptr, int x1, int y1, int x2, int y2, int x3, int y3, CHAR_INFO color);
-//void (*DrawLine)(selfptr, int x1, int y1, int x2, int y2, CHAR_INFO color);
+void DrawLine(selfptr, int x1, int y1, int x2, int y2, CHAR_INFO color);
+void DrawRectangleWireframe(selfptr, int x1, int y1, int x2, int y2, CHAR_INFO color);
 //void (*DrawRectangle)(selfptr, int x1, int y1, int x2, int y2, unsigned short color);
 
 #ifndef SWAPCHAIN_IMPL

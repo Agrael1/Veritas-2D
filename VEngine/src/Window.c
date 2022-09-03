@@ -5,6 +5,7 @@
 extern inline void Constructor(selfptr);
 extern inline void Destructor(selfptr);
 
+extern inline void WaitForInput(selfptr);
 extern inline bool ConShowCursor(selfptr, bool value);
 extern inline void Restore(selfptr);
 extern inline void SetPalette(selfptr, COLORREF palette[16]);
@@ -12,7 +13,7 @@ extern inline void OutputToScreen(selfptr, CHAR_INFO* buffer);
 
 bool SetFont(const selfptr, uint8_t fontw, uint8_t fonth)
 {
-	CONSOLE_FONT_INFOEX cfi;
+	CONSOLE_FONT_INFOEX cfi = {0};
 	cfi.cbSize = sizeof(cfi);
 	cfi.nFont = 0;
 	cfi.dwFontSize.X = fontw;
@@ -72,9 +73,12 @@ COORD CreateConsole(selfptr, uint16_t width, uint16_t height, uint8_t fontw, uin
 bool CatchFocus(selfptr)
 {
 	DWORD numRecords;
-	DWORD numRecsRecieved;
+	DWORD numRecsRecieved = 0;
 	GetNumberOfConsoleInputEvents(self->hIn, &numRecords);
+	if (!numRecords)return false;
 	PINPUT_RECORD records = malloc(numRecords * sizeof(INPUT_RECORD));
+	if (!records)return false;
+
 	ReadConsoleInput(self->hIn, records, numRecords, &numRecsRecieved);
 
 	bool out = false;

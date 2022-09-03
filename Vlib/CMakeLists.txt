@@ -38,7 +38,7 @@ add_library ("${PROJECT_NAME}" STATIC
 	
 	 "include/VHashMapT.h" "include/VHashMapT.c" 
 	 "include/VRingT.h" "include/VOptionalT.h" "include/VOptionalT.c" "include/VRingT.c" 
-	 "include/VBitSet.h" "src/VBitSet.c")
+	 "include/VBitSet.h" "src/VBitSet.c"  "include/VectorT.h" "include/VectorT.c")
 
 target_include_directories("${PROJECT_NAME}" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/include" DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

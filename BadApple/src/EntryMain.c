@@ -53,7 +53,7 @@ enum PIXEL_TYPE
 void* player;
 uint32_t width = 0, height = 0;
 
-bool OnUserUpdate(VeritasEngine* self, float unused)
+bool OnUserUpdate(VeritasEngine* self, double unused)
 {
     if (!MPIsFinished(player))
     {

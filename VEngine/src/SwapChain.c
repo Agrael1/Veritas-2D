@@ -37,11 +37,18 @@ void Destructor(selfptr)
 }
 
 
-//void _Clip(selfptr, int* x, int* y)
-//{
-//	if (*x > self->nFrameLength) *x = self->nFrameLength;
-//	if (*y > self->nFrameHeight) *y = self->nFrameHeight;
-//}
+static inline void Clip(selfptr, int* x, int* y)
+{
+	if (*x > self->Dimensions.X) *x = self->Dimensions.X;
+	if (*y > self->Dimensions.Y) *y = self->Dimensions.Y;
+}
+static inline swapptr(void** a, void** b)
+{
+	void* x = *a;
+	*a = *b;
+	*b = x;
+}
+
 //
 //
 //// Old Functions
@@ -67,48 +74,56 @@ void Destructor(selfptr)
 //		_FillRegion(self, x1, y1, x2, y2, (CHAR_INFO) { L' ', color });
 //}
 //
-//#define FRAC_BITS 8
-//void _DrawLine(selfptr, int x1, int y1, int x2, int y2, CHAR_INFO color)
-//{
-//	_Clip(self, &x1, &y1);
-//	_Clip(self, &x2, &y2);
-//
-//	int dx = x2 - x1;
-//	int dy = y2 - y1;
-//	bool isSwapped = false;
-//
-//	if (!dx && !dy)
-//		_PrintFrame(self, x1, y1, color);
-//
-//	if (dy > dx)
-//	{
-//		swapptr((void**)&dx, (void**)&dy);
-//		swapptr((void**)&x1, (void**)&y1);
-//		swapptr((void**)&x2, (void**)&y2);
-//		isSwapped = false;
-//	}
-//	if (x1 > x2)
-//	{
-//		swapptr((void**)&x1, (void**)&x2);
-//		swapptr((void**)&y1, (void**)&y2);
-//	}
-//
-//	int y = y1 << FRAC_BITS;
-//	int k = (dy << FRAC_BITS) / dx;
-//
-//	if (!isSwapped)
-//		for (int x = x1; x <= x2; x++)
-//		{
-//			_PrintFrame(self, x, y >> FRAC_BITS, color);
-//			y += k;
-//		}
-//	else
-//		for (int x = x1; x <= x2; x++)
-//		{
-//			_PrintFrame(self, y >> FRAC_BITS, x, color);
-//			y += k;
-//		}
-//}
+
+#define FRAC_BITS 8
+void DrawLine(selfptr, int x1, int y1, int x2, int y2, CHAR_INFO color)
+{
+	Clip(self, &x1, &y1);
+	Clip(self, &x2, &y2);
+
+	int dx = x2 - x1;
+	int dy = y2 - y1;
+	bool isSwapped = false;
+
+	if (!dx && !dy)
+		PrintFrame(self, x1, y1, color);
+
+	if (dy > dx)
+	{
+		swapptr((void**)&dx, (void**)&dy);
+		swapptr((void**)&x1, (void**)&y1);
+		swapptr((void**)&x2, (void**)&y2);
+		isSwapped = true;
+	}
+	if (x1 > x2)
+	{
+		swapptr((void**)&x1, (void**)&x2);
+		swapptr((void**)&y1, (void**)&y2);
+	}
+
+	int y = y1 << FRAC_BITS;
+	int k = (dy << FRAC_BITS) / dx;
+
+	if (!isSwapped)
+		for (int x = x1; x <= x2; x++)
+		{
+			PrintFrame(self, x, y >> FRAC_BITS, color);
+			y += k;
+		}
+	else
+		for (int x = x1; x <= x2; x++)
+		{
+			PrintFrame(self, y >> FRAC_BITS, x, color);
+			y += k;
+		}
+}
+void DrawRectangleWireframe(selfptr, int x1, int y1, int x2, int y2, CHAR_INFO color)
+{
+	DrawLine(self, x1, y1, x1, y2, color);
+	DrawLine(self, x1, y1, x2, y1, color);
+	DrawLine(self, x1, y2, x2, y2, color);
+	DrawLine(self, x2, y1, x2, y2, color);
+}
 //void _DrawTriangleWireframe(selfptr, int x1, int y1, int x2, int y2, int x3, int y3, CHAR_INFO color)
 //{
 //	_DrawLine(self, x1, y1, x2, y2, color);

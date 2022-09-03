@@ -120,6 +120,10 @@ inline void OutputToScreen(selfptr, CHAR_INFO* buffer)
 	},
 		& self->rWindowRect);
 }
+inline void WaitForInput(selfptr)
+{
+	WaitForSingleObject(self->hIn, INFINITE);
+}
 
 #define WND_CALL_INFO(call) (call) //TODO
 

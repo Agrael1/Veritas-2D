@@ -1,17 +1,16 @@
 #define VENGINE_IMPL
 #include "VeritasEngine.h"
+#include <process.h>
 
-volatile BOOL bActive = false;
+
+static bool empty_func() { return true; }
 
 extern inline void Show(selfptr);
 
+// False makes application quit
 bool Virtual(HandleInputEvents)(void* self, const KeyboardEvent event)
 {
-	if (event.type == Press){
-		// check if the event was for the escape key
-		if (event.code == VK_ESCAPE)return false;
-	}
-	return true;
+	return !(event.type == Press && event.code == VK_ESCAPE);
 }
 bool PassEvents(selfptr)
 {
@@ -31,100 +30,95 @@ void _CreateDeviceAndSwapChain(selfptr, VConsoleDesc VPDesc)
 {
 	_CreateDevice(self);
 }
-DWORD GameThread(selfptr)
+void GameThread(selfptr)
 {
-	int gResult = 0;
-	Optional(WPARAM) message = { 0 };
-
 	// Time counting
 	LARGE_INTEGER StartingTime, EndingTime;
 	LARGE_INTEGER Frequency;
 	QueryPerformanceFrequency(&Frequency);
 
 	if (!self->method->OnUserCreate(self))
-		return 2;
+		return;
 
-	// first try
 	QueryPerformanceCounter(&StartingTime);
-	if (!self->method->OnUserUpdate(self, self->fElapsedSeconds))
-	{
-		gResult = 4;
-		bActive = false;
-	}
-	else
-	{
-		bActive = true;
-	}
+	Sleep(16); //usual time for 60 fps, not to overdrive the input
 
 	// Game Loop
-	while (bActive)
+	while (self->bActive)
 	{
-		QueryPerformanceCounter(&EndingTime);
-		// Catch a focus if not in it
 		if (!self->Control.bInFocus)
 		{
-			if(CatchFocus(&self->Window)) ControlAwake(&self->Control);
+			self->bSleeping = true;
+			WaitForSingleObject(self->Holder, INFINITE);
+			self->bSleeping = false;
 		}
-			
 
-		// Read Messages
-		if ((message = ProcessMessages()).bValid)
-		{
-			bActive = false;
-			break;
-		};
-
-		// Process queue
-		if (!PassEvents(self))
-		{
-			gResult = 1;
-			bActive = false;
-			break;
-		};
-
-		// Process mouse
-		if (self->method->HandleMouse)
-			self->method->HandleMouse(self, &self->Control.mouse, self->fElapsedSeconds);
-
-		// Process continuous input
-		if (self->method->HandleControls)
-			self->method->HandleControls(self, &self->Control.kbd, self->fElapsedSeconds);
-
-		// render frame
-		if (!self->method->OnUserUpdate(self, self->fElapsedSeconds))
-		{
-			gResult = 0;
-			bActive = false;
-			break;
-		};
-
+		QueryPerformanceCounter(&EndingTime);
 		self->fElapsedSeconds = (float)(EndingTime.QuadPart - StartingTime.QuadPart) / (float)Frequency.QuadPart;
 		StartingTime = EndingTime;
+
+		// Process queue and render to a frame
+		if (!PassEvents(self) 
+			|| !self->method->OnUserUpdate(self, self->fElapsedSeconds))break;
+
+		self->method->HandleMouse(self, &self->Control.mouse, self->fElapsedSeconds);
+		self->method->HandleControls(self, &self->Control.kbd, self->fElapsedSeconds);
 
 		// present frame
 		Show(self);
 	}
 
-	if (self->method->OnUserDestroy && !self->method->OnUserDestroy(self))
-	{
-		gResult = 3;
-	}
-	return gResult;
-}
-void Start(selfptr)
-{
-	// parse game output (or not)
-	GameThread(self);
+	self->method->OnUserDestroy(self);
+	self->bActive = false; //ensure loop ends on false
+	self->GraphicsThread = 0;
 }
 
-VirtualTable(IVeritasEngine){
+void Start(selfptr)
+{
+	self->bSleeping = false;
+	self->bActive = true;
+	Optional(WPARAM) message = { 0 };
+	self->GraphicsThread = _beginthread(GameThread, 0, self);
+	// parse game output (or not)
+	while (self->bActive)
+	{
+		if ((message = ProcessMessages()).bValid)
+		{
+			self->bActive = false;
+			break;
+		}
+		if (!self->Control.bInFocus)
+		{
+			ResetEvent(self->Holder);
+			while (!&self->bSleeping); // Spinlock
+
+			WaitMessage();
+			if (CatchFocus(&self->Window))
+			{
+				SetEvent(self->Holder);
+				ControlAwake(&self->Control);
+			}
+		}
+	}
+	if (self->GraphicsThread)
+		WaitForSingleObject(self->GraphicsThread, INFINITE);
+}
+
+VirtualTable(IVeritasEngine) {
 	.HandleInputEvents = Virtual(HandleInputEvents),
+	.HandleControls = empty_func,
+	.OnUserCreate = empty_func,
+	.OnUserUpdate = empty_func,
+	.OnUserDestroy = empty_func,
+	.HandleMouse = empty_func
 };
 
 void Constructor(selfptr, VConsoleDesc screenparams)
 {
 	self->method = &vfptr;
 	self->fElapsedSeconds = 0.0f;
+	self->Holder = CreateEvent(NULL, true, true, NULL);
+
 	ConsoleWindow_ctor(&self->Window);
 	COORD frame = CreateConsole(&self->Window, screenparams.width, screenparams.height, screenparams.fontw, screenparams.fonth);
 	SwapChain_ctor(&self->Swap, frame);
@@ -132,7 +126,7 @@ void Constructor(selfptr, VConsoleDesc screenparams)
 }
 void Destructor(selfptr)
 {
-	SwapChain_dtor(&self->Swap);
 	MessageWindow_dtor(&self->Control);
+	SwapChain_dtor(&self->Swap);
 	ConsoleWindow_dtor(&self->Window);
 }
