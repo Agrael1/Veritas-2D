@@ -52,8 +52,9 @@ static bool HandleInputEvents(void* self, const KeyboardEvent event)
 
 bool OnUserCreate(selfptr)
 {
+	srand(511);
 	Subdivide(&self->maze, 200, 70, 70);
-	MakeRooms(&self->maze, 20, 30);
+	MakeRooms(&self->maze, 20, 30, 4);
 	return true;
 }
 bool OnUserUpdate(selfptr, double fElapsedSeconds)
@@ -61,11 +62,17 @@ bool OnUserUpdate(selfptr, double fElapsedSeconds)
 	BSPNode* x = self->maze.graph;
 	while (x != self->maze._end)
 	{
-		if(x->left == NULL && x->right == NULL)
-			DrawRectangleWireframe(&self->engine.Swap, x->x1, x->y1, x->x2, x->y2, (CHAR_INFO) { L' ', DBG_DARK_RED });
+		if (x->x2 - x->x1 == 0 || x->y2 - x->y1 == 0) {
+			x++;
+			continue;
+		}
+		if (x->left == NULL && x->right == NULL)
+			DrawRectangleWireframe(&self->engine.Swap, x->x1, x->y1, x->x2, x->y2,
+				(CHAR_INFO) {
+			L' ', x->corridor ? DBG_GREEN : DBG_DARK_RED
+		});
 		x++;
 	}
-	return true;
 }
 bool OnUserDestroy(selfptr)
 {

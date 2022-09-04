@@ -21,7 +21,7 @@ extern inline void Template(pop_front)(selfptr);
 void Constructor(selfptr)
 {
 	self->capacity_ = 16;
-	ALLOC_CHECK(self->data_ = malloc(16 * sizeof(VECTOR_T)));
+	ALLOC_CHECK(self->data_ = (VECTOR_T*)malloc(16 * sizeof(VECTOR_T)));
 	self->end_ = self->data_;
 }
 void Destructor(selfptr)
@@ -72,7 +72,7 @@ VECTOR_T* Template(_Emplace_reallocate)(selfptr)
 	const size_t _Newsize = _Oldsize + 1;
 	const size_t _Newcapacity = _Calculate_growth(_Oldsize, _Newsize);
 
-	ALLOC_CHECK(self->data_ = realloc(self->data_, _Newcapacity * sizeof(VECTOR_T)));
+	ALLOC_CHECK(self->data_ = (VECTOR_T*)realloc(self->data_, _Newcapacity * sizeof(VECTOR_T)));
 	self->end_ = self->data_ + _Oldsize;
 	self->capacity_ = _Newcapacity;
 	return self->end_++;
@@ -113,7 +113,7 @@ void Template(reserve)(selfptr, size_t new_cap)
 	{
 		size_t _OldSize = (size_t)(self->end_ - self->data_);
 		self->capacity_ = new_cap;
-		ALLOC_CHECK(self->data_ = realloc(self->data_,
+		ALLOC_CHECK(self->data_ = (VECTOR_T*)realloc(self->data_,
 			new_cap * sizeof(VECTOR_T)));
 		self->end_ = self->data_ + _OldSize;
 	}
@@ -121,7 +121,7 @@ void Template(reserve)(selfptr, size_t new_cap)
 void Template(shrink_to_fit)(selfptr)
 {
 	self->capacity_ = Template(size)(self);
-	self->data_ = realloc(self->data_,
+	self->data_ = (VECTOR_T*)realloc(self->data_,
 		self->capacity_ * sizeof(VECTOR_T));
 	self->end_ = self->data_ + self->capacity_;
 }
