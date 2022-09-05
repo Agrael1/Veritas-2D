@@ -1,6 +1,5 @@
 #define GEN_IMPL
 #include <algorithm>
-#include <stack>
 extern "C"
 {
 #include <Generator.h>
@@ -44,7 +43,11 @@ public:
 		case Horizontal:
 		{
 			BNode* a = ((BNode*)left)->SearchRecurseV(x, w, lesser);
-			return a ? a : ((BNode*)right)->SearchRecurseV(x, w, lesser);
+			BNode* b = ((BNode*)right)->SearchRecurseV(x, w, lesser);
+			if (a && !b)return a;
+			if (!a && b)return b;
+
+			return a->y1 > b->y1 ^ lesser ? b : a;
 		}
 		default:
 			return NULL;
@@ -68,7 +71,11 @@ public:
 		case Vertical:
 		{
 			BNode* a = ((BNode*)left)->SearchRecurseH(y, w, lesser);
-			return a ? a : ((BNode*)right)->SearchRecurseH(y, w, lesser);
+			BNode* b = ((BNode*)right)->SearchRecurseH(y, w, lesser);
+			if (a && !b)return a;
+			if (!a && b)return b;
+
+			return a->x1 > b->x1 ^ lesser ? b : a;
 		}
 		default:
 			return NULL;
@@ -341,7 +348,8 @@ void ConnectNodes(BSPTree& tree, BNode* node1, BNode* node2, /*out*/ BSPNode* c,
 		uint16_t ir2 = min(node1->y2, node2->y2);
 
 		int16_t h = ir2 - ir1;
-		if (h < c->width)return;
+		if (h < c->width)
+			return;
 
 		c->y1 = ir1 + rrand(0, h - c->width);
 		c->y2 = c->y1 + c->width;
