@@ -1,0 +1,518 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Файлы исходного кода">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Заголовочные файлы">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Файлы ресурсов">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Заголовочные файлы\Engine">
+      <UniqueIdentifier>{f35d50dd-aa7c-4e18-a4bb-3ea4a9f0db85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\Engine">
+      <UniqueIdentifier>{5111f1b0-c3d6-4b87-8d15-05b2667b29af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Заголовочные файлы\Engine\Framework">
+      <UniqueIdentifier>{b6d2c2ef-bc61-4f80-8d16-6ae2b6213a0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Заголовочные файлы\Engine\Console">
+      <UniqueIdentifier>{21b6d209-ada9-41a5-89f7-2f2af4900d9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\Engine\Console">
+      <UniqueIdentifier>{bfa89c91-29da-4316-b0d9-e3a027804a11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\Engine\Framework">
+      <UniqueIdentifier>{d0db9896-f2f1-49fc-9d1e-427a00b73e62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Заголовочные файлы\Engine\Graphics">
+      <UniqueIdentifier>{22374a9d-ce13-4982-9cf5-e0bca2c2308d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Заголовочные файлы\Engine\Graphics\Primitives">
+      <UniqueIdentifier>{e86c07a3-114b-43d1-8517-547c9977c67f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Заголовочные файлы\Engine\Graphics\Pipeline">
+      <UniqueIdentifier>{74ec8121-dcfb-4274-8724-5a118b6b1309}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\asm">
+      <UniqueIdentifier>{18a2de8d-282b-4471-8a14-b058cda34bac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Заголовочные файлы\Engine\Graphics\Shading">
+      <UniqueIdentifier>{16c8482a-c9eb-4848-bd0c-65f02c93f7af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Заголовочные файлы\Demo">
+      <UniqueIdentifier>{2d7dbdf6-3781-49ea-8362-629cf313894e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Заголовочные файлы\Engine\Framework\Containers">
+      <UniqueIdentifier>{67329047-506c-46b1-9351-be6d7ee2d725}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Заголовочные файлы\Engine\Framework\Misc">
+      <UniqueIdentifier>{b56e2b58-79df-4d1b-968e-b6f9591997a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\Engine\Framework\Containers">
+      <UniqueIdentifier>{40131b22-f686-4905-a16e-aab712463813}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Заголовочные файлы\Engine\Graphics\VObjects">
+      <UniqueIdentifier>{febd7de4-9776-4c8c-a2de-28e8f87e1c29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\Engine\Graphics">
+      <UniqueIdentifier>{7626ae30-4323-4fac-987d-f58341eb0ae8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\Engine\Graphics\VObjects">
+      <UniqueIdentifier>{c0bd522c-3697-421f-b6d5-123e79afaadb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\Engine\Graphics\Pipeline">
+      <UniqueIdentifier>{d61b51a7-2988-4bdb-8ae9-c988949b72d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\Engine\Graphics\Shading">
+      <UniqueIdentifier>{785ca2ad-4eba-4049-a57d-767dbf6fc0a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Заголовочные файлы\Engine\Graphics\Scenes">
+      <UniqueIdentifier>{0cfd3d6b-5932-447c-ac5d-7eb6a29a2b7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\Engine\Graphics\Scenes">
+      <UniqueIdentifier>{e569dfc9-eaf8-4823-9b79-327c35dddc99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Заголовочные файлы\Engine\Graphics\Shading\FlatLight">
+      <UniqueIdentifier>{dadd845a-a2cd-469f-99af-36b478ffbc2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Заголовочные файлы\Engine\Graphics\Shading\Gouraud">
+      <UniqueIdentifier>{dc6cb959-4f38-4135-8dec-02af5d1e80f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\Engine\Graphics\Shading\Flat">
+      <UniqueIdentifier>{6d763fe2-3942-42aa-9866-6a5d6ff8ba59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\Engine\Graphics\Shading\Gouraud">
+      <UniqueIdentifier>{6c4bc3af-d01f-416c-97b8-e04d8041b092}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Заголовочные файлы\Engine\Console\Input">
+      <UniqueIdentifier>{6e1acdf1-ea0a-451f-8519-5c3b72eced9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\Engine\Console\Input">
+      <UniqueIdentifier>{46c6ccda-a6b2-4a96-aecc-35ad480aa22d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Заголовочные файлы\Engine\Physics">
+      <UniqueIdentifier>{e42ac436-bcf3-4840-9083-23757fae38ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\Engine\Physics">
+      <UniqueIdentifier>{c10f753a-b2c0-4efb-a8e8-bad393e54d19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\Demo">
+      <UniqueIdentifier>{eb06c30d-87e2-4dd9-8dbc-e2338147504d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Заголовочные файлы\Engine\Framework\Drawable">
+      <UniqueIdentifier>{9665dedf-718c-4963-b8fa-846501d5452f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\Engine\Framework\Drawable">
+      <UniqueIdentifier>{7dae4cd2-cf27-4e57-8b79-abd3a1c78ff0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Заголовочные файлы\Engine\Framework\Resources">
+      <UniqueIdentifier>{107bf5a2-81c8-44e2-9074-c2e6646944dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Заголовочные файлы\Engine\Graphics\Palettes">
+      <UniqueIdentifier>{9e2e1900-ba94-459e-899a-a363bc452329}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Заголовочные файлы\VFramework">
+      <UniqueIdentifier>{12db1d93-e642-4fbe-9629-30cc2c597c7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\VFramework">
+      <UniqueIdentifier>{781e08d8-457f-4f03-b384-5c769c7bf77b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Заголовочные файлы\VFramework\Templates">
+      <UniqueIdentifier>{19e93cbd-4685-43d0-ba26-0d29582a07ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Заголовочные файлы\VFramework\Containers">
+      <UniqueIdentifier>{ae482b96-68a1-4566-ab75-57bc4e2426c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Заголовочные файлы\VFramework\Intrinsics">
+      <UniqueIdentifier>{00500b50-bbad-4529-b750-bd7658c62f41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\VFramework\Containers">
+      <UniqueIdentifier>{3fe1b302-9b89-48da-9d70-94ed602c94aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\VFramework\Intrinsics">
+      <UniqueIdentifier>{f419bf94-0cbf-4377-8ac9-c315a79c9439}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Заголовочные файлы\Engine\Bindable">
+      <UniqueIdentifier>{8a49e677-5008-41a1-8ea4-9ee495b8cb91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\Engine\Bindable">
+      <UniqueIdentifier>{72414281-77f6-4108-84ec-2d0a93a9d13c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="VeritasEngine.c">
+      <Filter>Файлы исходного кода\Engine\Console</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.c">
+      <Filter>Файлы исходного кода\Engine\Console</Filter>
+    </ClCompile>
+    <ClCompile Include="Control.c">
+      <Filter>Файлы исходного кода\Engine\Console\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Keyboard.c">
+      <Filter>Файлы исходного кода\Engine\Console\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Mouse.c">
+      <Filter>Файлы исходного кода\Engine\Console\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="EntryMain.c">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\VObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Pipeline.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorIndexPS.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\Shading</Filter>
+    </ClCompile>
+    <ClCompile Include="Test.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Icosphere.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\Shading</Filter>
+    </ClCompile>
+    <ClCompile Include="LoaderTest.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="DefaultVS.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\Shading\Flat</Filter>
+    </ClCompile>
+    <ClCompile Include="ExperimentalPS.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\Shading\Flat</Filter>
+    </ClCompile>
+    <ClCompile Include="FlatLightGS.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\Shading\Flat</Filter>
+    </ClCompile>
+    <ClCompile Include="GouraudVS.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\Shading\Gouraud</Filter>
+    </ClCompile>
+    <ClCompile Include="GouraudPS.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\Shading\Gouraud</Filter>
+    </ClCompile>
+    <ClCompile Include="VLine.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="Triangle.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="CubeSceneTex.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="GouraudPST.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\Shading\Gouraud</Filter>
+    </ClCompile>
+    <ClCompile Include="GouraudVST.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\Shading\Gouraud</Filter>
+    </ClCompile>
+    <ClCompile Include="VActor.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\VObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Maze3D.c">
+      <Filter>Файлы исходного кода\Demo</Filter>
+    </ClCompile>
+    <ClCompile Include="MazeGen.c">
+      <Filter>Файлы исходного кода\Demo</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsAggregate.c">
+      <Filter>Файлы исходного кода\Engine\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexShader.c">
+      <Filter>Файлы исходного кода\Engine\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Drawable.c">
+      <Filter>Файлы исходного кода\Engine\Framework\Drawable</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector.c">
+      <Filter>Файлы исходного кода\Engine\Framework\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="Codex.c">
+      <Filter>Файлы исходного кода\Engine\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="CubeTexDr.c">
+      <Filter>Файлы исходного кода\Engine\Graphics\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="PixelShader.c">
+      <Filter>Файлы исходного кода\Engine\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureBuffer.c">
+      <Filter>Файлы исходного кода\Engine\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="TransformBuffer.c">
+      <Filter>Файлы исходного кода\Engine\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.c">
+      <Filter>Файлы исходного кода\Engine\Framework\Drawable</Filter>
+    </ClCompile>
+    <ClCompile Include="CubeDemo.c">
+      <Filter>Файлы исходного кода\Demo</Filter>
+    </ClCompile>
+    <ClCompile Include="SwapChain.c">
+      <Filter>Файлы исходного кода\Engine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="VFramework\Auto_ptr.c">
+      <Filter>Файлы исходного кода\VFramework\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="VFramework\VString.c">
+      <Filter>Файлы исходного кода\VFramework\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="VFramework\BitStack.c">
+      <Filter>Файлы исходного кода\VFramework\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="VFramework\BitSetBase.c">
+      <Filter>Файлы исходного кода\VFramework\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="VFramework\Shared_ptr.c">
+      <Filter>Файлы исходного кода\VFramework\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="VFramework\HashMap.c">
+      <Filter>Файлы исходного кода\VFramework\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="VFramework\Class.c">
+      <Filter>Файлы исходного кода\VFramework\Intrinsics</Filter>
+    </ClCompile>
+    <ClCompile Include="VFramework\Exception.c">
+      <Filter>Файлы исходного кода\VFramework\Intrinsics</Filter>
+    </ClCompile>
+    <ClCompile Include="VFramework\Unwinder.c">
+      <Filter>Файлы исходного кода\VFramework\Intrinsics</Filter>
+    </ClCompile>
+    <ClCompile Include="VFramework\va_raw.c">
+      <Filter>Файлы исходного кода\VFramework\Intrinsics</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="EngineCommons.h">
+      <Filter>Заголовочные файлы\Engine\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Mouse.h">
+      <Filter>Заголовочные файлы\Engine\Console\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Keyboard.h">
+      <Filter>Заголовочные файлы\Engine\Console\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Control.h">
+      <Filter>Заголовочные файлы\Engine\Console\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="VeritasEngine.h">
+      <Filter>Заголовочные файлы\Engine\Console</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>Заголовочные файлы\Engine\Console</Filter>
+    </ClInclude>
+    <ClInclude Include="WinSetup.h">
+      <Filter>Заголовочные файлы\Engine\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="IndexedTriangleList.h">
+      <Filter>Заголовочные файлы\Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Standard.h">
+      <Filter>Заголовочные файлы\Engine\Framework\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="Box.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="Icosahedron.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="Pipeline.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="CubeDemo.h">
+      <Filter>Заголовочные файлы\Demo</Filter>
+    </ClInclude>
+    <ClInclude Include="Maze3D.h">
+      <Filter>Заголовочные файлы\Demo</Filter>
+    </ClInclude>
+    <ClInclude Include="Maze.h">
+      <Filter>Заголовочные файлы\Demo</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\VObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Color.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Shading</Filter>
+    </ClInclude>
+    <ClInclude Include="ColorIndexPS.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Shading</Filter>
+    </ClInclude>
+    <ClInclude Include="Icosphere.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Test.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="FlatLightGS.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Shading\FlatLight</Filter>
+    </ClInclude>
+    <ClInclude Include="DefaultVS.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Shading\FlatLight</Filter>
+    </ClInclude>
+    <ClInclude Include="GSBase.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Shading</Filter>
+    </ClInclude>
+    <ClInclude Include="PSBase.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Shading</Filter>
+    </ClInclude>
+    <ClInclude Include="ExperimentalPS.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Shading\FlatLight</Filter>
+    </ClInclude>
+    <ClInclude Include="LoaderTest.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="GouraudVS.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Shading\Gouraud</Filter>
+    </ClInclude>
+    <ClInclude Include="GouraudPS.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Shading\Gouraud</Filter>
+    </ClInclude>
+    <ClInclude Include="VLine.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Triangle.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Tri.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Shading</Filter>
+    </ClInclude>
+    <ClInclude Include="Header.h">
+      <Filter>Файлы ресурсов</Filter>
+    </ClInclude>
+    <ClInclude Include="CubeSceneTex.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="GouraudPST.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Shading\Gouraud</Filter>
+    </ClInclude>
+    <ClInclude Include="GouraudVST.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Shading\Gouraud</Filter>
+    </ClInclude>
+    <ClInclude Include="VActor.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\VObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsAggregate.h">
+      <Filter>Заголовочные файлы\Engine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Codex.h">
+      <Filter>Заголовочные файлы\Engine\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="VSBase.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Shading</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexShader.h">
+      <Filter>Заголовочные файлы\Engine\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="BindableBase.h">
+      <Filter>Заголовочные файлы\Engine\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawable.h">
+      <Filter>Заголовочные файлы\Engine\Framework\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector.h">
+      <Filter>Заголовочные файлы\Engine\Framework\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="CubeTexDr.h">
+      <Filter>Заголовочные файлы\Engine\Graphics\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="PixelShader.h">
+      <Filter>Заголовочные файлы\Engine\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureBuffer.h">
+      <Filter>Заголовочные файлы\Engine\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="TransformBuffer.h">
+      <Filter>Заголовочные файлы\Engine\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>Заголовочные файлы\Engine\Framework\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="BindingIncludes.h">
+      <Filter>Заголовочные файлы\Engine\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Colormap.h">
+      <Filter>Заголовочные файлы\Engine\Framework\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Templates.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="SwapChain.h">
+      <Filter>Заголовочные файлы\Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="VFramework\Exception.h">
+      <Filter>Заголовочные файлы\VFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="VFramework\Auto_ptr.h">
+      <Filter>Заголовочные файлы\VFramework\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="VFramework\New.h">
+      <Filter>Заголовочные файлы\VFramework\Intrinsics</Filter>
+    </ClInclude>
+    <ClInclude Include="VFramework\Unwinder.h">
+      <Filter>Заголовочные файлы\VFramework\Intrinsics</Filter>
+    </ClInclude>
+    <ClInclude Include="VFramework\VDefs.h">
+      <Filter>Заголовочные файлы\VFramework\Intrinsics</Filter>
+    </ClInclude>
+    <ClInclude Include="VFramework\VString.h">
+      <Filter>Заголовочные файлы\VFramework\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="VFramework\WinSetup.h">
+      <Filter>Заголовочные файлы\VFramework\Intrinsics</Filter>
+    </ClInclude>
+    <ClInclude Include="VFramework\Class.h">
+      <Filter>Заголовочные файлы\VFramework\Intrinsics</Filter>
+    </ClInclude>
+    <ClInclude Include="VFramework\OptionalT.h">
+      <Filter>Заголовочные файлы\VFramework\Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="VFramework\RingT.h">
+      <Filter>Заголовочные файлы\VFramework\Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="VFramework\BitSetBase.h">
+      <Filter>Заголовочные файлы\VFramework\Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="VFramework\BitsetT.h">
+      <Filter>Заголовочные файлы\VFramework\Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="VFramework\BitStack.h">
+      <Filter>Заголовочные файлы\VFramework\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="VFramework\Shared_ptr.h">
+      <Filter>Заголовочные файлы\VFramework\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="VFramework\HashMap.h">
+      <Filter>Заголовочные файлы\VFramework\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="VFramework\va_raw.h">
+      <Filter>Заголовочные файлы\VFramework\Intrinsics</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="memset32.asm">
+      <Filter>Файлы исходного кода\asm</Filter>
+    </MASM>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="L16TC.palette">
+      <Filter>Заголовочные файлы\Engine\Graphics\Palettes</Filter>
+    </None>
+    <None Include="DB16.palette">
+      <Filter>Заголовочные файлы\Engine\Graphics\Palettes</Filter>
+    </None>
+    <None Include="cpp.hint" />
+  </ItemGroup>
+</Project>

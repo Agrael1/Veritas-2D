@@ -1,18 +1,20 @@
-cmake_minimum_required (VERSION 3.15)
-project(Tests_Vlib CXX)
+project("vlib_test" CXX)
 
-include_directories("${googletest_SOURCE_DIR}/googletest/include")
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}../include")
-include(GoogleTest)
-
-add_executable(
-  "${PROJECT_NAME}"
-  "test_String.cpp"
- "test_VRing.cpp" "test_VHashMap.cpp")
-target_link_libraries(
-	"${PROJECT_NAME}" PUBLIC
-	Vlib
-	gtest_main
+add_executable(${PROJECT_NAME}
+	"test_String.cpp"
+	"test_VRing.cpp" 
+	"test_VHashMap.cpp"
 )
 
-gtest_discover_tests("${PROJECT_NAME}")
+target_link_libraries(
+	"${PROJECT_NAME}" PRIVATE
+	ver::vlib
+	Catch2::Catch2WithMain
+)
+
+set_target_properties(${PROJECT_NAME} PROPERTIES
+	CXX_STANDARD 20
+	CXX_STANDARD_REQUIRED ON
+)
+
+catch_discover_tests(${PROJECT_NAME} TEST_PREFIX "ver.${PROJECT_NAME}.")
